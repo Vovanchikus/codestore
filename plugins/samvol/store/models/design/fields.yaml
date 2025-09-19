@@ -6,29 +6,30 @@ fields:
         span: full
         type: relation
     title:
-        label: 'Название материала'
+        label: "Название материала"
         span: auto
         type: text
     slug:
         label: url
         span: auto
         type: text
+        preset: title
     original_price:
         label: Цена
         span: auto
         type: number
     price:
-        label: 'Новая цена'
+        label: "Новая цена"
         span: auto
         type: number
     desc:
         label: Описание
         size: large
-        language: php
+        mode: tab
         span: full
-        type: codeeditor
+        type: markdown
     screenshots:
-        label: 'Загрузить скриншот'
+        label: "Загрузить скриншот"
         mode: image
         useCaption: true
         thumbOptions:
@@ -37,12 +38,24 @@ fields:
         span: full
         type: fileupload
     archive_path:
-        label: 'Загрузка архива'
+        label: "Загрузка архива"
         mode: file
-        fileTypes: 'rar,zip,7z'
+        fileTypes: "rar,zip,7z"
         useCaption: true
         thumbOptions:
             mode: crop
             extension: auto
         span: full
         type: fileupload
+    author_name:
+        label: "Имя (Ник) автора материала"
+        span: auto
+        type: text
+    source:
+        label: Источник
+        span: auto
+        type: text
+    added_by_user:
+        label: Добавил Материал
+        span: auto
+        type: relation

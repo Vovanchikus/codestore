@@ -1,0 +1,10 @@
+name: Comments
+form: $/samvol/store/models/comment/fields.yaml
+modelClass: Samvol\Store\Models\Comment
+defaultRedirect: samvol/store/comments
+create:
+    redirect: 'samvol/store/comments/update/:id'
+    redirectClose: samvol/store/comments
+update:
+    redirect: samvol/store/comments
+    redirectClose: samvol/store/comments

@@ -1,0 +1,10 @@
+name: Designs
+form: $/samvol/store/models/design/fields.yaml
+modelClass: Samvol\Store\Models\Design
+defaultRedirect: samvol/store/designs
+create:
+    redirect: 'samvol/store/designs/update/:id'
+    redirectClose: samvol/store/designs
+update:
+    redirect: samvol/store/designs
+    redirectClose: samvol/store/designs

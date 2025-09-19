@@ -1,0 +1,31 @@
+columns:
+    id:
+        label: ID
+        type: number
+    title:
+        label: Название
+        type: text
+        searchable: true
+        sortable: true
+    category_id:
+        label: Категория
+        type: number
+        searchable: true
+        sortable: true
+    original_price:
+        label: 'Стартовая цена'
+        type: number
+    created_at:
+        label: 'Дата добавления'
+        type: date
+        searchable: true
+        sortable: true
+    updated_at:
+        label: 'Дата обновления'
+        type: date
+    deleted_at:
+        label: 'Дата удаления'
+        type: date
+    price:
+        label: 'Новая цена'
+        type: number

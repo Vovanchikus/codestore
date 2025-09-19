@@ -1,19 +1,19 @@
 columns:
-    user.name:
-        label: 'Логин пользователя'
-        type: text
+    users:
+        label: "Логин пользователя"
+        type: relation
         searchable: true
         sortable: true
     item_type:
-        label: 'Тип материала'
+        label: "Тип материала"
         type: number
         searchable: true
         sortable: true
     item_id:
-        label: 'ID материала'
+        label: "ID материала"
         type: number
     comment_text:
-        label: 'Текст комментария'
+        label: "Текст комментария"
         type: text
     created_at:
         label: Дата

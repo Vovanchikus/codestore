@@ -1,7 +1,7 @@
 columns:
-    name:
-        label: 'Название категории'
-        type: text
     id:
         label: ID
         type: number
+    name:
+        label: "Название категории"
+        type: text

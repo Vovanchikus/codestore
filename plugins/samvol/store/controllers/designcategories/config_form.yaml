@@ -1,0 +1,10 @@
+name: DesignCategories
+form: $/samvol/store/models/designcategory/fields.yaml
+modelClass: Samvol\Store\Models\DesignCategory
+defaultRedirect: samvol/store/designcategories
+create:
+    redirect: 'samvol/store/designcategories/update/:id'
+    redirectClose: samvol/store/designcategories
+update:
+    redirect: samvol/store/designcategories
+    redirectClose: samvol/store/designcategories

@@ -42,3 +42,6 @@
 1.0.15:
     - 'Created table samvol_store_ratings'
     - builder_table_create_samvol_store_ratings.php
+1.0.16:
+    - 'Updated table samvol_store_designs'
+    - builder_table_update_samvol_store_designs_5.php

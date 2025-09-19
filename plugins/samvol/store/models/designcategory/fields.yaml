@@ -1,9 +1,10 @@
 fields:
     name:
-        label: 'Название категории'
+        label: "Название категории"
         span: auto
         type: text
     slug:
         label: Url
         span: auto
         type: text
+        preset: name

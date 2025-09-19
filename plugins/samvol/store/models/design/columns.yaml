@@ -6,23 +6,26 @@ columns:
         label: title
         type: text
         searchable: true
+        sortable: true
     category_id:
         label: category_id
         type: number
         searchable: true
         sortable: true
     original_price:
-        label: 'Стартовая цена'
+        label: "Стартовая цена"
         type: number
     created_at:
-        label: created_at
+        label: "Дата добавления"
         type: datetime
+        searchable: true
+        sortable: true
     updated_at:
-        label: updated_at
+        label: обновления
         type: datetime
     deleted_at:
-        label: deleted_at
+        label: "Дата удаления"
         type: datetime
     price:
-        label: 'Новая цена'
+        label: "Новая цена"
         type: number

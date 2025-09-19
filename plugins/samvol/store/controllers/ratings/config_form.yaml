@@ -1,0 +1,10 @@
+name: Ratings
+form: $/samvol/store/models/rating/fields.yaml
+modelClass: Samvol\Store\Models\Rating
+defaultRedirect: samvol/store/ratings
+create:
+    redirect: 'samvol/store/ratings/update/:id'
+    redirectClose: samvol/store/ratings
+update:
+    redirect: samvol/store/ratings
+    redirectClose: samvol/store/ratings

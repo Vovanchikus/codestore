@@ -1,0 +1,10 @@
+name: ExtensionCategories
+form: $/samvol/store/models/extensioncategory/fields.yaml
+modelClass: Samvol\Store\Models\ExtensionCategory
+defaultRedirect: samvol/store/extensioncategories
+create:
+    redirect: 'samvol/store/extensioncategories/update/:id'
+    redirectClose: samvol/store/extensioncategories
+update:
+    redirect: samvol/store/extensioncategories
+    redirectClose: samvol/store/extensioncategories

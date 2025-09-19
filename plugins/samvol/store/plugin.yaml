@@ -3,3 +3,35 @@ plugin:
     description: 'samvol.store::lang.plugin.description'
     author: Samvol
     icon: 'fas icon-shopping-cart'
+navigation:
+    store:
+        label: Store
+        url: samvol/store/comments
+        icon: icon-life-ring
+        sideMenu:
+            comments:
+                label: Комментарии
+                url: samvol/store/comments
+                icon: icon-sitemap
+            ratings:
+                label: Рейтинг
+                url: samvol/store/ratings
+                icon: icon-sitemap
+    designs:
+        label: Дизайн
+        url: samvol/store/designs
+        icon: icon-life-ring
+        sideMenu:
+            design_categories:
+                label: Категории
+                url: samvol/store/designcategories
+                icon: icon-sitemap
+    extensions:
+        label: Расширения
+        url: samvol/store/extensions
+        icon: icon-life-ring
+        sideMenu:
+            extension_categories:
+                label: Категории
+                url: samvol/store/extensioncategories
+                icon: icon-sitemap

@@ -1,0 +1,10 @@
+name: Extensions
+form: $/samvol/store/models/extension/fields.yaml
+modelClass: Samvol\Store\Models\Extension
+defaultRedirect: samvol/store/extensions
+create:
+    redirect: 'samvol/store/extensions/update/:id'
+    redirectClose: samvol/store/extensions
+update:
+    redirect: samvol/store/extensions
+    redirectClose: samvol/store/extensions
