@@ -1,0 +1,21 @@
+fields:
+    users:
+        label: Пользователь
+        nameFrom: name
+        descriptionFrom: description
+        span: auto
+        type: relation
+    item_id:
+        label: 'ID обьекта'
+        span: auto
+        type: number
+    item_type:
+        label: 'Тип продукта'
+        showSearch: true
+        span: auto
+        type: dropdown
+    value:
+        label: Оценка
+        showSearch: true
+        span: auto
+        type: dropdown

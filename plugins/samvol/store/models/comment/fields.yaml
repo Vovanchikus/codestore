@@ -1,0 +1,22 @@
+fields:
+    users:
+        label: Пользователь
+        nameFrom: name
+        descriptionFrom: description
+        span: auto
+        type: relation
+    item_id:
+        label: 'ID обьекта'
+        span: auto
+        type: number
+    item_type:
+        label: 'Тип продукта'
+        showSearch: true
+        span: auto
+        type: dropdown
+    comment_text:
+        label: 'Текст комментария'
+        size: large
+        language: php
+        span: full
+        type: codeeditor

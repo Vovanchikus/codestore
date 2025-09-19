@@ -1,0 +1,20 @@
+columns:
+    user.name:
+        label: 'Логин пользователя'
+        type: text
+        searchable: true
+        sortable: true
+    item_type:
+        label: 'Тип материала'
+        type: number
+        searchable: true
+        sortable: true
+    item_id:
+        label: 'ID материала'
+        type: number
+    comment_text:
+        label: 'Текст комментария'
+        type: text
+    created_at:
+        label: Дата
+        type: date

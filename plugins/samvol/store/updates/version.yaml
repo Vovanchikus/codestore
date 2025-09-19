@@ -1,0 +1,44 @@
+1.0.1:
+    - 'Initialize plugin.'
+1.0.2:
+    - 'Created table samvol_store_design'
+    - builder_table_create_samvol_store_design.php
+1.0.3:
+    - 'Created table samvol_store_design_categories'
+    - builder_table_create_samvol_store_design_categories.php
+1.0.4:
+    - 'Updated table samvol_store_design'
+    - builder_table_update_samvol_store_design.php
+1.0.5:
+    - 'Updated table samvol_store_design'
+    - builder_table_update_samvol_store_designs.php
+1.0.6:
+    - 'Created table samvol_store_extensions'
+    - builder_table_create_samvol_store_extensions.php
+1.0.7:
+    - 'Created table samvol_store_extension_categories'
+    - builder_table_create_samvol_store_extension_categories.php
+1.0.8:
+    - 'Updated table samvol_store_designs'
+    - builder_table_update_samvol_store_designs_2.php
+1.0.9:
+    - 'Updated table samvol_store_extensions'
+    - builder_table_update_samvol_store_extensions.php
+1.0.10:
+    - 'Updated table samvol_store_designs'
+    - builder_table_update_samvol_store_designs_3.php
+1.0.11:
+    - 'Updated table samvol_store_extensions'
+    - builder_table_update_samvol_store_extensions_2.php
+1.0.12:
+    - 'Updated table samvol_store_designs'
+    - builder_table_update_samvol_store_designs_4.php
+1.0.13:
+    - 'Updated table samvol_store_extensions'
+    - builder_table_update_samvol_store_extensions_3.php
+1.0.14:
+    - 'Created table samvol_store_comments'
+    - builder_table_create_samvol_store_comments.php
+1.0.15:
+    - 'Created table samvol_store_ratings'
+    - builder_table_create_samvol_store_ratings.php

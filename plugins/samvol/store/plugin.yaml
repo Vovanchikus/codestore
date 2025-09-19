@@ -1,0 +1,5 @@
+plugin:
+    name: 'samvol.store::lang.plugin.name'
+    description: 'samvol.store::lang.plugin.description'
+    author: Samvol
+    icon: 'fas icon-shopping-cart'

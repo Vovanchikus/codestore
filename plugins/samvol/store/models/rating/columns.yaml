@@ -1,0 +1,22 @@
+columns:
+    user.name:
+        label: 'Автор голоса'
+        type: text
+        searchable: true
+        sortable: true
+    item_type:
+        label: 'Тип обьекта'
+        type: number
+        searchable: true
+        sortable: true
+    item_id:
+        label: 'ID обьекта'
+        type: number
+    value:
+        label: Оценка
+        type: number
+        searchable: true
+        sortable: true
+    created_at:
+        label: 'Дата голоса'
+        type: date

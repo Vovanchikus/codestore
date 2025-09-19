@@ -1,0 +1,48 @@
+fields:
+    category:
+        label: Категория
+        nameFrom: name
+        descriptionFrom: description
+        span: full
+        type: relation
+    title:
+        label: 'Название расширения'
+        span: auto
+        type: text
+    slug:
+        label: Url
+        span: auto
+        type: text
+    original_price:
+        label: Цена
+        span: auto
+        type: number
+    price:
+        label: 'Новая цена'
+        span: auto
+        type: number
+    desc:
+        label: Описание
+        size: large
+        language: php
+        span: full
+        type: codeeditor
+    screenshots:
+        label: 'Загрузка скриншотов'
+        mode: image
+        useCaption: true
+        thumbOptions:
+            mode: crop
+            extension: auto
+        span: full
+        type: fileupload
+    archive_path:
+        label: 'Загрузка архива'
+        mode: file
+        fileTypes: 'rar,zip,7z'
+        useCaption: true
+        thumbOptions:
+            mode: crop
+            extension: auto
+        span: full
+        type: fileupload
