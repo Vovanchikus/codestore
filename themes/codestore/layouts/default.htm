@@ -17,28 +17,14 @@ description = "Default шаблон"
     </head>
     <body>
 
-        <!-- Header -->
-        <header id="layout-header">
-            {% partial 'site/header' %}
-        </header>
 
-        <!-- Content -->
-        <section id="layout-content">
-            {% page %}
-        </section>
+        <main>{% page %}</main>
 
-        <!-- Footer -->
-        <footer id="layout-footer">
-            {% partial 'site/footer' %}
-        </footer>
-
-        <!-- Scripts -->
-        <script src="{{ 'assets/vendor/jquery.js'|theme }}"></script>
-        <script src="{{ 'assets/vendor/bootstrap.js'|theme }}"></script>
-        <script src="{{ 'assets/javascript/app.js'|theme }}"></script>
 
         {% snowboard all %}
         {% scripts %}
+
+
 
     </body>
 </html>

@@ -2,7 +2,7 @@
     root.SamvolUiCoreModules = root.SamvolUiCoreModules || {};
     root.SamvolUiCoreModules.loader = factory;
 })(window, function () {
-    'use strict';
+    "use strict";
 
     let overlay = null;
     let runningRequests = 0;
@@ -12,8 +12,8 @@
             return overlay;
         }
 
-        overlay = document.createElement('div');
-        overlay.className = 'ui-core-loader';
+        overlay = document.createElement("div");
+        overlay.className = "ui-core-loader";
         overlay.innerHTML = '<div class="ui-core-loader__spinner"></div>';
         document.body.appendChild(overlay);
         return overlay;
@@ -25,36 +25,36 @@
         }
 
         if (runningRequests > 0) {
-            overlay.classList.add('is-active');
+            overlay.classList.add("is-active");
         } else {
-            overlay.classList.remove('is-active');
+            overlay.classList.remove("is-active");
         }
     };
 
-    return function install() {
-        if (document.body) {
-            ensureOverlay();
-        } else {
-            document.addEventListener('DOMContentLoaded', ensureOverlay, { once: true });
-        }
+    if (document.body) {
+        ensureOverlay();
+    } else {
+        document.addEventListener("DOMContentLoaded", ensureOverlay, {
+            once: true,
+        });
+    }
 
-        return {
-            show() {
-                runningRequests += 1;
-                ensureOverlay();
-                toggle();
-            },
-            hide() {
-                runningRequests = Math.max(0, runningRequests - 1);
-                toggle();
-            },
-            reset() {
-                runningRequests = 0;
-                toggle();
-            },
-            isVisible() {
-                return runningRequests > 0;
-            },
-        };
+    return {
+        show() {
+            runningRequests += 1;
+            ensureOverlay();
+            toggle();
+        },
+        hide() {
+            runningRequests = Math.max(0, runningRequests - 1);
+            toggle();
+        },
+        reset() {
+            runningRequests = 0;
+            toggle();
+        },
+        isVisible() {
+            return runningRequests > 0;
+        },
     };
 });
