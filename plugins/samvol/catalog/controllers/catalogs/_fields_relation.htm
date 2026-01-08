@@ -1,0 +1,23 @@
+<?php $formWidget = $this->formGetWidget(); ?>
+<?php $sessionKey = $formWidget ? $formWidget->getSessionKey() : null; ?>
+
+<div class="callout callout-info mb-3">
+    <p>
+        Чтобы элементы каталога сразу имели человекочитаемое название и URL,
+        можно добавить готовые поля
+        <strong>Название материала</strong> и <strong>URL</strong>. Опция
+        помогает избежать дублирования, но остаётся необязательной — поля всегда
+        можно удалить или изменить.
+    </p>
+    <button
+        type="button"
+        class="btn btn-sm btn-secondary"
+        data-request="onAddDefaultFields"
+        data-request-data="_session_key: '<?= e($sessionKey) ?>'"
+        data-request-flash
+    >
+        Добавить поля «Название материала» и «URL»
+    </button>
+</div>
+
+<div id="catalog-fields-relation"><?= $this->relationRender('fields') ?></div>

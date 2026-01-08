@@ -1,0 +1,9 @@
+1.0.1:
+    - First release of Catalog plugin
+    - create_catalogs_table.php
+    - create_catalog_fields_table.php
+    - create_catalog_categories_table.php
+    - create_catalog_items_table.php
+1.0.2:
+    - Allow deferred binding for fields and categories
+    - update_catalog_relations_nullable.php

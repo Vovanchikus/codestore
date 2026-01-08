@@ -1,0 +1,61 @@
+name: Catalog
+modelClass: Samvol\Catalog\Models\Catalog
+defaultRedirect: samvol/catalog/catalogs
+form:
+    tabs:
+        fields:
+            name:
+                label: Name
+                span: left
+                tab: Основное
+                required: true
+            code:
+                label: Code
+                span: right
+                tab: Основное
+                preset:
+                    field: name
+                    type: slug
+                required: true
+            description:
+                label: Description
+                type: textarea
+                size: small
+                span: full
+                tab: Основное
+            is_active:
+                label: Active
+                type: switch
+                tab: Основное
+                span: left
+            fields_block:
+                label: Поля
+                type: partial
+                path: $/samvol/catalog/controllers/catalogs/_fields_relation.htm
+                tab: Поля
+            categories_block:
+                label: Категории
+                type: partial
+                path: $/samvol/catalog/controllers/catalogs/_categories_relation.htm
+                tab: Категории
+            features:
+                label: Features
+                type: checkboxlist
+                span: full
+                tab: Функции
+                options: getFeatureOptions
+            settings:
+                label: Settings
+                type: codeeditor
+                language: json
+                size: huge
+                stretch: true
+                tab: Настройки
+create:
+    title: Create catalog
+    redirect: samvol/catalog/catalogs/update/:id
+    redirectClose: samvol/catalog/catalogs
+update:
+    title: Edit catalog
+    redirect: samvol/catalog/catalogs
+    redirectClose: samvol/catalog/catalogs

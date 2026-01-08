@@ -1,0 +1,18 @@
+fields:
+    label: Fields
+    view:
+        list: $/samvol/catalog/models/field/columns.yaml
+        toolbarButtons: create|delete
+    manage:
+        form: $/samvol/catalog/models/field/fields.yaml
+        list: $/samvol/catalog/models/field/columns.yaml
+        recordsPerPage: 10
+categories:
+    label: Categories
+    view:
+        list: $/samvol/catalog/models/category/columns.yaml
+        toolbarButtons: create|delete
+    manage:
+        form: $/samvol/catalog/models/category/fields_relation.yaml
+        list: $/samvol/catalog/models/category/columns.yaml
+        recordsPerPage: 10

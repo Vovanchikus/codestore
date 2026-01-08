@@ -1,0 +1,36 @@
+fields:
+    name:
+        label: Name
+        span: left
+        required: true
+    code:
+        label: Code
+        span: right
+        required: true
+    type:
+        label: Type
+        type: dropdown
+        options:
+            text: Text
+            textarea: Textarea
+            number: Number
+            select: Select
+            checkbox: Checkbox
+            file: File
+        span: left
+        required: true
+    is_required:
+        label: Required
+        type: switch
+        span: right
+    options:
+        label: Options (JSON)
+        type: codeeditor
+        language: json
+        size: huge
+        comment: Used for select fields
+        span: full
+    sort_order:
+        label: Sort order
+        type: number
+        span: left

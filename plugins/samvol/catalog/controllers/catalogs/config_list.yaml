@@ -1,0 +1,27 @@
+list:
+    columns:
+        name:
+            label: Name
+            searchable: true
+        code:
+            label: Code
+            searchable: true
+        is_active:
+            label: Active
+            type: switch
+        created_at:
+            label: Created
+            type: datetime
+modelClass: Samvol\Catalog\Models\Catalog
+title: Catalogs
+recordUrl: samvol/catalog/catalogs/update/:id
+noRecordsMessage: backend::lang.list.no_records
+showSetup: true
+showCheckboxes: true
+defaultSort:
+    column: created_at
+    direction: desc
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: backend::lang.list.search_prompt

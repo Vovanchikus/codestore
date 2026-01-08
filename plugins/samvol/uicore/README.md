@@ -7,17 +7,19 @@
 1. Скопировать папку `plugins/samvol/uicore` в проект Winter CMS.
 2. Выполнить `php artisan winter:up`, чтобы применить миграции, если они появятся.
 3. Добавить компонент `uiCore` в нужный layout или страницу:
-   ```twig
-   [uiCore]
-   ==
-   {% component 'uiCore' %}
-   ```
-   Компонент автоматически подключает CSS и JS UiCore.
+    ```twig
+    [uiCore]
+    ==
+    {% component 'uiCore' %}
+    ```
+    Компонент автоматически подключает CSS и JS UiCore.
 
 ## Backend API
 
 ### AjaxResponse
+
 Используйте `Samvol\UiCore\Classes\AjaxResponse` или сервис ниже для единообразных ответов:
+
 ```php
 return AjaxResponse::success(['id' => 10], 'Сохранено');
 return AjaxResponse::error('Серверная ошибка');
@@ -27,6 +29,7 @@ return AjaxResponse::validationError(['name' => ['Обязательно']]);
 ### AjaxService
 
 Централизованный пайплайн обработки бизнес-кода с try/catch, авторизацией и логами.
+
 ```php
 use Samvol\UiCore\Services\AjaxService;
 
@@ -47,9 +50,10 @@ public function onCreate()
 ### UiEvents
 
 Backend-события для расширения:
-- `samvol.uicore.ajax.before`
-- `samvol.uicore.ajax.after`
-- `samvol.uicore.ajax.error`
+
+-   `samvol.uicore.ajax.before`
+-   `samvol.uicore.ajax.after`
+-   `samvol.uicore.ajax.error`
 
 ```php
 Event::listen(UiEvents::AJAX_AFTER, function ($data, $options) {
@@ -62,6 +66,7 @@ Event::listen(UiEvents::AJAX_AFTER, function ($data, $options) {
 UiCore публикует `window.UI` с модулями `toast`, `modal`, `loader`, `request`, `confirm`, `events`.
 
 ### Подключение Snowboard и UiCore в layout
+
 ```twig
 {% snowboard all %}
 {% styles %}
@@ -76,12 +81,14 @@ UiCore публикует `window.UI` с модулями `toast`, `modal`, `loa
     <script src="{{ 'plugins/samvol/uicore/assets/js/ui-core.js'|theme }}"></script>
 {% endscripts %}
 ```
+
 Компонент `uiCore` делает это автоматически.
 
 ### UI.request
+
 ```javascript
-UI.request('#form', 'MyPlugin\\Component::onSave', {
-    data: new FormData(document.querySelector('#form')),
+UI.request("#form", "MyPlugin\\Component::onSave", {
+    data: new FormData(document.querySelector("#form")),
     success(response) {
         console.log(response.data);
     },
@@ -90,27 +97,31 @@ UI.request('#form', 'MyPlugin\\Component::onSave', {
     },
 });
 ```
+
 Loader включается автоматически, ошибки выводятся через toast.
 
 ### Toast
+
 ```javascript
-UI.toast.success('Сохранено', { timeout: 5000, position: 'top-center' });
-UI.toast.error('Ошибка', { position: 'bottom-right' });
-UI.toast.info('Информация');
+UI.toast.success("Сохранено", { timeout: 5000, position: "top-center" });
+UI.toast.error("Ошибка", { position: "bottom-right" });
+UI.toast.info("Информация");
 ```
+
 Доступные позиции: `top-right` (по умолчанию), `top-center`, `bottom-right`. Таймер при наведении ставится на паузу.
 
 ### Modal и Confirm
+
 ```javascript
-UI.modal.open('<p>Содержимое</p>', {
-    title: 'Заголовок',
+UI.modal.open("<p>Содержимое</p>", {
+    title: "Заголовок",
     actions: [
-        { label: 'Отмена', variant: 'ghost' },
-        { label: 'OK', variant: 'primary', onClick: () => console.log('OK') },
+        { label: "Отмена", variant: "ghost" },
+        { label: "OK", variant: "primary", onClick: () => console.log("OK") },
     ],
 });
 
-UI.confirm('Удалить запись?', function (result) {
+UI.confirm("Удалить запись?", function (result) {
     if (result) {
         // пользователь подтвердил
     }
@@ -118,21 +129,25 @@ UI.confirm('Удалить запись?', function (result) {
 ```
 
 ### Loader
+
 ```javascript
 UI.loader.show();
 // ... асинхронные операции ...
 UI.loader.hide();
 ```
+
 Обычно управляется автоматически через `UI.request`.
 
 ### Events
+
 ```javascript
-UI.events.on('snowboard:ajaxError', (event) => {
-    console.warn('Ошибка Snowboard', event.detail);
+UI.events.on("snowboard:ajaxError", (event) => {
+    console.warn("Ошибка Snowboard", event.detail);
 });
 ```
 
 ## Пример полной страницы (Home)
+
 ```twig
 title = "Home"
 url = "/"
@@ -164,11 +179,13 @@ uiCoreReady(function (UI) {
 ```
 
 ## Требования
-- Winter CMS 1.2+
-- Snowboard assets (подключаются через `{% snowboard all %}`)
-- Отсутствие jQuery (UiCore полностью на чистом JS)
+
+-   Winter CMS 1.2+
+-   Snowboard assets (подключаются через `{% snowboard all %}`)
+-   Отсутствие jQuery (UiCore полностью на чистом JS)
 
 ## Расширение
-- Добавляйте новые JS-модули в `assets/js` и регистрируйте через `window.SamvolUiCoreModules`.
-- Переопределяйте стили через CSS-переменные в своей теме.
-- Для кастомных Snowboard событий используйте `UI.events` или `UiEvents` на сервере.
+
+-   Добавляйте новые JS-модули в `assets/js` и регистрируйте через `window.SamvolUiCoreModules`.
+-   Переопределяйте стили через CSS-переменные в своей теме.
+-   Для кастомных Snowboard событий используйте `UI.events` или `UiEvents` на сервере.

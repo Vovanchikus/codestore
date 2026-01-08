@@ -1,0 +1,39 @@
+tabs:
+    fields:
+        catalog_id:
+            label: Catalog
+            type: dropdown
+            options: getCatalogIdOptions
+            emptyOption: -- Select catalog --
+            tab: Основное
+            span: left
+            required: true
+        category:
+            label: Category
+            type: relation
+            nameFrom: name
+            tab: Основное
+            span: right
+            scope: forCatalog
+            emptyOption: -- None --
+            dependsOn: catalog_id
+        status:
+            label: Status
+            type: dropdown
+            options: getStatusOptions
+            tab: Основное
+            span: left
+            required: true
+        published_at:
+            label: Published at
+            type: datepicker
+            mode: datetime
+            useTimezone: true
+            tab: Основное
+            span: right
+        dynamic_fields_placeholder:
+            label: Dynamic fields
+            type: partial
+            path: $/samvol/catalog/controllers/items/_dynamic_fields_placeholder.htm
+            dependsOn: catalog_id
+            tab: Dynamic Fields

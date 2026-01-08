@@ -1,0 +1,34 @@
+fields:
+    parent:
+        label: Parent category
+        type: relation
+        span: right
+        nameFrom: name
+        emptyOption: -- Root --
+        scope: forCatalog
+    name:
+        label: Name
+        span: left
+        required: true
+    slug:
+        label: Slug
+        span: right
+        preset:
+            field: name
+            type: slug
+        required: true
+    description:
+        label: Description
+        type: textarea
+        size: large
+        span: full
+    is_active:
+        label: Active
+        type: switch
+        span: left
+    data:
+        label: Data (JSON)
+        type: codeeditor
+        language: json
+        size: huge
+        span: full

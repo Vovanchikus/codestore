@@ -1,0 +1,12 @@
+columns:
+    name:
+        label: Name
+    code:
+        label: Code
+    type:
+        label: Type
+    is_required:
+        label: Required
+        type: switch
+    sort_order:
+        label: Sort order

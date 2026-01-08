@@ -1,0 +1,13 @@
+list: $/samvol/catalog/models/category/columns.yaml
+modelClass: Samvol\Catalog\Models\Category
+title: Categories
+recordUrl: samvol/catalog/categories/update/:id
+showCheckboxes: true
+showSetup: true
+defaultSort:
+    column: name
+
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: backend::lang.list.search_prompt
