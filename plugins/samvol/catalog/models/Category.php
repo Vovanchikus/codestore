@@ -1,8 +1,11 @@
 <?php namespace Samvol\Catalog\Models;
 
 use Model;
+use System\Models\File;
 use Winter\Storm\Database\Traits\NestedTree;
 use Winter\Storm\Database\Traits\Validation;
+use Winter\Storm\Exception\ValidationException;
+use Winter\Storm\Support\Arr;
 
 class Category extends Model
 {
@@ -16,6 +19,8 @@ class Category extends Model
         'name',
         'slug',
         'description',
+        'icon_mode',
+        'icon_svg',
         'is_active',
         'data'
     ];
@@ -36,6 +41,57 @@ class Category extends Model
         'items' => [Item::class],
         'children' => [self::class, 'key' => 'parent_id'],
     ];
+
+    public $attachOne = [
+        'icon' => File::class,
+    ];
+
+    public function beforeValidate(): void
+    {
+        // Treat icon as absent if user marked it for deletion in the form.
+        $iconMarkedForDeletion = $this->iconMarkedForDeletion();
+
+        $hasFile = $this->icon && $this->icon->exists && !$iconMarkedForDeletion;
+        $hasSvg = trim((string) $this->icon_svg) !== '';
+
+        // Determine mode from explicit choice or fallback to existing data.
+        $this->icon_mode = $this->icon_mode ?: ($hasSvg ? 'svg' : 'file');
+
+        if ($hasFile && $hasSvg) {
+            throw new ValidationException([
+                'icon' => 'Выберите либо загруженную иконку, либо SVG код, но не оба варианта.',
+                'icon_svg' => 'Выберите либо загруженную иконку, либо SVG код, но не оба варианта.'
+            ]);
+        }
+    }
+
+    public function afterFetch(): void
+    {
+        // Preselect mode based on existing data so only the filled variant shows.
+        if (!$this->icon_mode) {
+            $this->icon_mode = ($this->icon && $this->icon->exists) ? 'file' : ((trim((string) $this->icon_svg) !== '') ? 'svg' : 'file');
+        }
+    }
+
+    protected function iconMarkedForDeletion(): bool
+    {
+        $data = post();
+        if (!$data) {
+            return false;
+        }
+
+        $category = Arr::get($data, 'Category');
+        if (!is_array($category)) {
+            return false;
+        }
+
+        $icon = Arr::get($category, 'icon');
+        if (!is_array($icon)) {
+            return false;
+        }
+
+        return !empty($icon['_delete']);
+    }
 
     public function scopeActive($query)
     {

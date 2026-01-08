@@ -1,0 +1,54 @@
+title = "Каталог по категории"
+url = "/:catalogCode/:categorySlug"
+
+[catalogList]
+catalogCode = "{{ :catalogCode }}"
+categorySlug = "{{ :categorySlug }}"
+==
+{# Заголовок каталога #}
+<h1>{{ catalog.name }}</h1>
+
+{# Текущая категория по переданному slug (если не задан slug — покажет все элементы) #}
+{% if categorySlug and categories|length %}
+  {% set currentCategory = categories|filter(c => c.slug == categorySlug)|first %}
+  {% if currentCategory %}
+    <h2>Категория: {{ currentCategory.name }}</h2>
+  {% endif %}
+{% endif %}
+
+{# Элементы (если categorySlug пуст — все элементы каталога) #}
+{% for record in items %}
+  <article class="catalog-item">
+    <h2>{{ record.display_name }}</h2>
+
+    {# Минимальный набор динамических полей #}
+    <p><strong>Title:</strong> {{ record.data.title }}</p>
+    <p><strong>Brief:</strong> {{ record.data.brief }}</p>
+
+    {# Ссылка на детальную страницу элемента #}
+    {% if record.category %}
+      <a href="{{ 'catalog/catalog-item'|page({
+        catalogCode: catalog.code,
+        categorySlug: record.category.slug,
+        itemSlug: record.data.slug
+      }) }}">
+        Подробнее
+      </a>
+    {% endif %}
+  </article>
+{% else %}
+  <p>Элементы отсутствуют в этой категории.</p>
+{% endfor %}
+
+{# Пагинация #}
+{% if items.lastPage() > 1 %}
+  <nav class="pagination">
+    {% for pageNumber in 1..items.lastPage() %}
+      <a href="{{ this.page.baseFileName|page({
+        ('page'): pageNumber,
+        catalogCode: catalog.code,
+        categorySlug: categorySlug
+      }) }}">{{ pageNumber }}</a>
+    {% endfor %}
+  </nav>
+{% endif %}

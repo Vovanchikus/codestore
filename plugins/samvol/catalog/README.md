@@ -1,5 +1,7 @@
 # Catalog plugin
 
+This README documents the `Samvol.Catalog` plugin located at `plugins/samvol/catalog`.
+
 Гибкий движок каталогов для Winter CMS 1.2+: один плагин обслуживает любое число независимых каталогов, динамических полей и категорий. Компоненты не содержат вёрстки и возвращают только данные — фронтенд полностью управляется вашей темой.
 
 ## Возможности
@@ -252,6 +254,45 @@ AJAX-ответ содержит `item` и сообщения в стандар�
 ```
 
 ## Дополнительные заметки
+
+## Категории: иконки (файл или SVG)
+
+Категория может иметь либо загруженную иконку, либо встроенный SVG-код. Если заполнить оба варианта, сохранение вернёт ошибку `Choose either an uploaded icon or SVG code, not both.`
+
+-   В форме есть переключатель источника (balloon): загрузка файла или SVG-код. Показывается только активный вариант, он определяется по уже сохранённым данным.
+
+### Пример Twig: список категорий с иконками
+
+```twig
+{# Берём активные категории с иконками #}
+{% set categories = Samvol\Catalog\Models\Category.active().with('icon').get() %}
+
+<ul class="catalog-categories">
+    {% for category in categories %}
+        <li class="catalog-category">
+            {# Если есть SVG-код — рендерим его, иначе показываем загруженный файл #}
+            {% if category.icon_svg %}
+                <span class="category-icon" aria-hidden="true">{{ category.icon_svg|raw }}</span>
+            {% elseif category.icon %}
+                <img src="{{ category.icon.thumb(96, 96, { mode: 'crop' }) }}" alt="{{ category.name }}" loading="lazy">
+            {% endif %}
+
+            {# Название #}
+            <h3>{{ category.name }}</h3>
+
+            {# Описание (необязательно) #}
+            {% if category.description %}
+                <p>{{ category.description }}</p>
+            {% endif %}
+        </li>
+    {% else %}
+        <li>Категории не найдены.</li>
+    {% endfor %}
+</ul>
+```
+
+-   `{{ category.icon_svg|raw }}` — выводит сохранённый SVG-код без экранирования.
+-   `{{ category.icon.thumb(96, 96, { mode: 'crop' }) }}` — превью загруженного изображения 96×96.
 
 -   Все JSON-поля (`fields.options`, `categories.data`, `items.data`) проходят валидацию на `json`. Если вы редактируете их вручную, используйте валидный синтаксис.
 -   Миграции `update_catalog_relations_nullable` делают `catalog_id`, `category_id` необязательными на ранних этапах, чтобы можно было создавать черновики с отложенным выбором каталога.

@@ -10,3 +10,9 @@
 1.0.3:
     - Add ability to enable/disable catalog fields
     - add_is_enabled_to_fields.php
+1.0.4:
+    - Add SVG code option for category icons
+    - add_icon_svg_to_categories.php
+1.0.5:
+    - Add icon source selector for category icons
+    - add_icon_mode_to_categories.php

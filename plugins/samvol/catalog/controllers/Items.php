@@ -76,6 +76,13 @@ class Items extends Controller
 
         $fieldNames = [];
 
+        // Очистить ранее добавленные динамические поля, чтобы не было дублей при повторном рендере
+        foreach ($form->getFields() as $name => $fieldObj) {
+            if ($fieldObj->tab === 'Dynamic Fields') {
+                $form->removeField($name);
+            }
+        }
+
         $enabledFields->sortBy('sort_order')->each(function (Field $field) use ($form, &$fieldNames) {
             $config = [
                 'label'     => $field->name,

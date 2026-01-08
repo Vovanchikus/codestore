@@ -1,35 +1,67 @@
 fields:
     catalog:
-        label: Catalog
+        label: Выберите каталог
         type: relation
         span: left
         nameFrom: name
         required: true
     parent:
-        label: Parent category
+        label: Родительская категория
         type: relation
         span: right
         nameFrom: name
-        emptyOption: -- Root --
+        emptyOption: -- Родительская категория --
         scope: forCatalog
     name:
-        label: Name
+        label: Название категории
         span: left
         required: true
     slug:
-        label: Slug
+        label: URL
         span: right
         preset:
             field: name
             type: slug
         required: true
     description:
-        label: Description
+        label: Описание категории
         type: textarea
         size: large
         span: full
+    icon_mode:
+        label: Источник иконки
+        type: balloon-selector
+        span: left
+        default: file
+        options:
+            file: Загрузить иконку
+            svg: SVG код
+        comment: Выберите способ указания иконки. Будет показан только выбранный вариант ввода.
+    icon_svg:
+        label: Иконка (SVG код)
+        type: codeeditor
+        language: html
+        size: huge
+        span: full
+        comment: Вставьте встроенную разметку SVG. Оставьте пустым, если вы используете загруженную иконку ниже.
+        trigger:
+            action: show
+            field: icon_mode
+            condition: value[svg]
+    icon:
+        label: Загрузить иконку
+        type: fileupload
+        mode: image
+        fileTypes: jpeg,jpg,png,svg,webp
+        span: left
+        imageHeight: 120
+        comment: Загрузите изображение иконки. Оставьте пустым, если вы указали SVG код выше.
+        trigger:
+            action: show
+            field: icon_mode
+            condition: value[file]
     is_active:
-        label: Active
+        label: Активировать категорию
         type: switch
         span: left
     data:

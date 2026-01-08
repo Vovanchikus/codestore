@@ -62,8 +62,8 @@ Winter is built on top of the wildly-popular [Laravel](https://laravel.com) fram
 
 You can get in touch with the maintainer team using the following mediums:
 
-* [Follow us on Twitter](https://twitter.com/usewintercms) for announcements and updates.
-* [Join us on Discord](https://discord.gg/D5MFSPH6Ux) to chat with us.
+-   [Follow us on Twitter](https://twitter.com/usewintercms) for announcements and updates.
+-   [Join us on Discord](https://discord.gg/D5MFSPH6Ux) to chat with us.
 
 ## Contributing
 
@@ -73,9 +73,9 @@ Before contributing issues or pull requests, be sure to review the [Contributing
 
 Please follow the following guides and code standards:
 
-* [PSR 4 Coding Standards](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md)
-* [PSR 2 Coding Style Guide](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md)
-* [PSR 1 Coding Standards](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md)
+-   [PSR 4 Coding Standards](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md)
+-   [PSR 2 Coding Style Guide](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md)
+-   [PSR 1 Coding Standards](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md)
 
 ### Code of conduct
 
@@ -91,7 +91,7 @@ Winter CMS development is financially supported by the generosity of the followi
     <img src="https://raw.githubusercontent.com/laravel/art/refs/heads/master/logo-type/5%20svg/3%20RGB/1%20Full%20Color/laravel-logotype-rgb-red.svg" alt="Laravel logo" width="300">
 </a>
 
-Laravel provides [Laravel Vapor](https://vapor.laravel.com/?ref=wintercms) to the Winter CMS project which is used to power the serverless PHP hosting used for our [main website and documentation](https://wintercms.com/). 
+Laravel provides [Laravel Vapor](https://vapor.laravel.com/?ref=wintercms) to the Winter CMS project which is used to power the serverless PHP hosting used for our [main website and documentation](https://wintercms.com/).
 
 <a href="https://froala.com/wysiwyg-editor/" target="_blank">
     <img src="https://froala.com/wp-content/uploads/2019/10/froala.svg" alt="Froala logo" width="300">
@@ -103,7 +103,7 @@ Froala provides a perpetual, Enterprise license to Winter CMS which allows us an
 
 Big thanks to our sponsors on OpenCollective:
 
-- Orville
+-   Orville
 
 ## License
 

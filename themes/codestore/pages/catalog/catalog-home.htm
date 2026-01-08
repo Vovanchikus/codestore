@@ -1,0 +1,95 @@
+title = "Каталог"
+url = "/:catalogCode"
+
+[catalogList]
+catalogCode = "{{ :catalogCode }}"
+[catalogsList]
+==
+{# Заголовок каталога #}
+<h1>{{ catalog.name }}</h1>
+
+{# Все активные каталоги для навигации #}
+{% component 'catalogsList' %}
+
+{# Вывод категорий каталога с ссылками на фильтр по categorySlug #}
+{% if categories|length %}
+  <div class="catalog-categories">
+    <h2>Категории</h2>
+    <ul>
+      {% for cat in categories %}
+        <li>
+          {# Ссылка на страницу категории #}
+          <a href="{{ 'catalog/catalog-category'|page({ catalogCode: catalog.code, categorySlug: cat.slug }) }}">
+            {% if cat.icon %}
+                <img src="{{ cat.icon.path }}" alt="{{ cat.name }} ">
+            {% elseif cat.icon_svg %}
+                {{ cat.icon_svg|raw }}
+            {% endif %}
+            {{ cat.name }} <br>
+            {{ cat.description }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+{# Цикл по элементам каталога #}
+{% for record in items %}
+  <article class="catalog-item">
+    {# Название элемента #}
+    <h2>{{ record.display_name }}</h2>
+
+    {# Название категории элемента (если есть) #}
+    {% if record.category %}
+      <h3>Категория: {{ record.category.name }}</h3>
+    {% endif %}
+
+    {# Динамические поля: title, brief, message #}
+    <p><strong>Title:</strong> {{ record.data.title }}</p>
+    <p><strong>Brief:</strong> {{ record.data.brief }}</p>
+    <div><strong>Message:</strong> {{ record.data.message|raw }}</div>
+
+    {# Скриншоты (attachMany) #}
+    {% if record.screenshot|length %}
+      <div class="screens">
+        <strong>Скриншоты:</strong>
+        {% for image in record.screenshot %}
+          <img src="{{ image.path }}" alt="{{ record.display_name }}">
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {# Архив (attachOne) #}
+    {% if record.archive %}
+      <p><a href="{{ record.archive.path }}">Скачать архив</a></p>
+    {% endif %}
+
+    {# Ссылка на страницу элемента #}
+    {% if record.category %}
+      <p>
+        <a href="{{ 'catalog/catalog-item'|page({
+          catalogCode: catalog.code,
+          categorySlug: record.category.slug,
+          itemSlug: record.data.slug
+        }) }}">
+          Подробнее
+        </a>
+      </p>
+    {% endif %}
+  </article>
+{% else %}
+  <p>Элементы отсутствуют.</p>
+{% endfor %}
+
+{# Пагинация #}
+{% if items.lastPage() > 1 %}
+  <nav class="pagination">
+    {% for pageNumber in 1..items.lastPage() %}
+      <a href="{{ this.page.baseFileName|page({
+        ('page'): pageNumber,
+        catalogCode: catalog.code
+      }) }}">{{ pageNumber }}</a>
+    {% endfor %}
+  </nav>
+{% endif %}

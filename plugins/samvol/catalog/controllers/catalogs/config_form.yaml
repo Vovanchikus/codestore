@@ -5,7 +5,7 @@ form:
     tabs:
         fields:
             name:
-                label: Name
+                label: Название каталога
                 span: left
                 tab: Основное
                 required: true
@@ -13,18 +13,19 @@ form:
                 label: Code
                 span: right
                 tab: Основное
+                comment: Будет отображаться в URL-адресе.
                 preset:
                     field: name
                     type: slug
                 required: true
             description:
-                label: Description
+                label: Описание каталога
                 type: textarea
                 size: small
                 span: full
                 tab: Основное
             is_active:
-                label: Active
+                label: Активировать каталог
                 type: switch
                 tab: Основное
                 span: left
@@ -39,13 +40,13 @@ form:
                 path: $/samvol/catalog/controllers/catalogs/_categories_relation.htm
                 tab: Категории
             features:
-                label: Features
+                label: Дополнительный функционал
                 type: checkboxlist
                 span: full
                 tab: Функции
                 options: getFeatureOptions
             settings:
-                label: Settings
+                label: Настройки
                 type: codeeditor
                 language: json
                 size: huge

@@ -1,0 +1,57 @@
+title = "Элемент каталога"
+url = "/:catalogCode/:categorySlug/:itemSlug"
+
+[catalogItem]
+catalogCode = "{{ :catalogCode }}"
+itemSlug = "{{ :itemSlug }}"
+==
+{% if item %}
+    {# Заголовок элемента #}
+    <h1>{{ item.display_name }}</h1>
+
+    {# Категория элемента #}
+    {% if item.category %}
+        <h2>Категория: {{ item.category.name }}</h2>
+    {% endif %}
+
+    {# Все динамические поля по схеме fields #}
+    <dl>
+    {% for field in fields %}
+        <dt>{{ field.name }}</dt>
+        <dd>{{ item.data[field.code] }}</dd>
+    {% endfor %}
+    </dl>
+
+    {# Скриншоты attachMany #}
+    {% if item.screenshot|length %}
+        <div class="screens">
+            <strong>Скриншоты:</strong>
+            {% for image in item.screenshot %}
+                <img src="{{ image.path }}" alt="{{ item.display_name }}">
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {# Архив attachOne #}
+    {% if item.archive %}
+        <p><a href="{{ item.archive.path }}">Скачать архив</a></p>
+    {% endif %}
+
+    {# Ссылка обратно в каталог (общий список) #}
+    <p>
+        {% if item.category %}
+            <a href="{{ 'catalog/catalog-category'|page({
+                catalogCode: catalog.code,
+                categorySlug: item.category.slug
+            }) }}">
+                Вернуться к категории
+            </a>
+        {% else %}
+            <a href="{{ 'catalog/catalog'|page({ catalogCode: catalog.code }) }}">
+                Вернуться в каталог
+            </a>
+        {% endif %}
+    </p>
+{% else %}
+    <p>Элемент не найден.</p>
+{% endif %}

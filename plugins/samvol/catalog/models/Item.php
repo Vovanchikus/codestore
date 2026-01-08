@@ -1,6 +1,7 @@
 <?php namespace Samvol\Catalog\Models;
 
 use Model;
+use Log;
 use System\Models\File;
 use Winter\Storm\Database\Traits\Validation;
 
@@ -86,6 +87,16 @@ class Item extends Model
     public function getStatusOptions(): array
     {
         return self::statusOptions();
+    }
+
+    public function beforeSave(): void
+    {
+        if ($this->isDirty('data')) {
+            Log::info('Catalog Item data updated', [
+                'id' => $this->id,
+                'data' => $this->data,
+            ]);
+        }
     }
 
     public function getCatalogIdOptions(): array

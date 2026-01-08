@@ -31,6 +31,11 @@ class CatalogItem extends ComponentBase
                 'type'    => 'string',
                 'default' => '{{ :item }}'
             ],
+            'itemSlug' => [
+                'title'   => 'Item slug',
+                'type'    => 'string',
+                'default' => '{{ :itemSlug }}'
+            ],
             'onlyPublished' => [
                 'title'   => 'Only published',
                 'type'    => 'checkbox',
@@ -69,7 +74,9 @@ class CatalogItem extends ComponentBase
         }
 
         $id = (int) $this->property('itemId');
-        if (!$id) {
+        $slug = trim((string) $this->property('itemSlug'));
+
+        if (!$id && $slug === '') {
             throw new ApplicationException('Missing item identifier.');
         }
 
@@ -78,6 +85,12 @@ class CatalogItem extends ComponentBase
             $query->where('status', Item::STATUS_PUBLISHED);
         }
 
-        return $query->find($id);
+        if ($id) {
+            return $query->find($id);
+        }
+
+        return $query
+            ->where('data->slug', $slug)
+            ->first();
     }
 }
