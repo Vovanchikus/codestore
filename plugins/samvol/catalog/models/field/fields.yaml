@@ -17,18 +17,27 @@ fields:
             select: Select
             checkbox: Checkbox
             file: File
+            slug: Slug
+            richeditor: Rich editor
+            file_single: File upload (single)
+            file_multi: File upload (multi)
         span: left
         required: true
     is_required:
         label: Required
         type: switch
         span: right
+    is_enabled:
+        label: Enabled
+        type: switch
+        span: left
+        default: true
     options:
         label: Options (JSON)
         type: codeeditor
         language: json
         size: huge
-        comment: Used for select fields
+        comment: Used for select/options and file upload settings
         span: full
     sort_order:
         label: Sort order

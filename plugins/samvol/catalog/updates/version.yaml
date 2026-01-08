@@ -7,3 +7,6 @@
 1.0.2:
     - Allow deferred binding for fields and categories
     - update_catalog_relations_nullable.php
+1.0.3:
+    - Add ability to enable/disable catalog fields
+    - add_is_enabled_to_fields.php

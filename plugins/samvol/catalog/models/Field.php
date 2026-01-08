@@ -2,6 +2,8 @@
 
 use Model;
 use Winter\Storm\Database\Traits\Validation;
+use Winter\Storm\Exception\ValidationException;
+use Winter\Storm\Support\Str;
 
 class Field extends Model
 {
@@ -15,6 +17,7 @@ class Field extends Model
         'code',
         'type',
         'is_required',
+        'is_enabled',
         'options',
         'sort_order',
     ];
@@ -24,8 +27,35 @@ class Field extends Model
     public $rules = [
         'name' => 'required',
         'code' => 'required',
-        'type' => 'required|in:text,textarea,number,select,checkbox,file,slug'
+        'type' => 'required|in:text,textarea,number,select,checkbox,file,slug,richeditor,file_single,file_multi'
     ];
+
+    protected $casts = [
+        'is_enabled' => 'boolean',
+    ];
+
+    public function beforeValidate(): void
+    {
+        if ($this->code) {
+            $this->code = Str::slug($this->code, '_');
+        }
+
+        $catalogId = $this->catalog_id ?: ($this->catalog ? $this->catalog->id : null);
+        if ($catalogId) {
+            $query = self::where('catalog_id', $catalogId)
+                ->where('code', $this->code);
+
+            if ($this->exists) {
+                $query->where('id', '<>', $this->id);
+            }
+
+            if ($query->exists()) {
+                throw new ValidationException([
+                    'code' => 'Поле с таким кодом уже существует в этом каталоге.',
+                ]);
+            }
+        }
+    }
 
     public $belongsTo = [
         'catalog' => [Catalog::class]
@@ -34,6 +64,11 @@ class Field extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_order');
+    }
+
+    public function scopeEnabled($query)
+    {
+        return $query->where('is_enabled', true);
     }
 
     public function setOptionsAttribute($value): void

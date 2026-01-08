@@ -2,7 +2,6 @@
 
 use BackendMenu;
 use Backend\Classes\Controller;
-use Log;
 use Samvol\Catalog\Models\Catalog;
 use Samvol\Catalog\Models\Field;
 
@@ -63,8 +62,12 @@ class Items extends Controller
             return;
         }
 
-        if ($catalog->fields->isEmpty()) {
-            $this->vars['catalogDynamicFieldMessage'] = 'Для выбранного каталога пока не создано ни одного пользовательского поля.';
+        $enabledFields = $catalog->fields->filter(function (Field $field) {
+            return (bool) $field->is_enabled;
+        });
+
+        if ($enabledFields->isEmpty()) {
+            $this->vars['catalogDynamicFieldMessage'] = 'Для выбранного каталога пока не включено ни одного пользовательского поля.';
             $this->vars['catalogDynamicFieldMessageType'] = 'info';
             return;
         }
@@ -73,18 +76,20 @@ class Items extends Controller
 
         $fieldNames = [];
 
-        $catalog->fields->sortBy('sort_order')->each(function (Field $field) use ($form, &$fieldNames) {
+        $enabledFields->sortBy('sort_order')->each(function (Field $field) use ($form, &$fieldNames) {
             $config = [
-                'label'    => $field->name,
-                'tab'      => 'Dynamic Fields',
-                'span'     => $field->type === 'textarea' ? 'full' : 'auto',
-                'required' => (bool) $field->is_required,
-                'type'     => $this->resolveFieldWidget($field->type),
+                'label'     => $field->name,
+                'tab'       => 'Dynamic Fields',
+                'span'      => $this->resolveFieldSpan($field->type),
+                'required'  => (bool) $field->is_required,
+                'type'      => $this->resolveFieldWidget($field->type),
                 'dependsOn' => ['catalog_id'],
             ];
 
+            $options = is_array($field->options) ? $field->options : [];
+
             if ($field->type === 'select') {
-                $config['options'] = $field->options ?: [];
+                $config['options'] = $options;
                 $config['emptyOption'] = '--';
             }
 
@@ -96,7 +101,11 @@ class Items extends Controller
                 $config['preset'] = $this->buildSlugPresetConfig($field);
             }
 
-            $fieldName = 'data[' . $field->code . ']';
+            if (in_array($field->type, ['file_single', 'file_multi'], true)) {
+                $this->applyFileUploadConfig($config, $field, $options);
+            }
+
+            $fieldName = $this->resolveFieldInputName($field);
             $form->removeField($fieldName);
             $form->addTabFields([
                 $fieldName => $config,
@@ -119,10 +128,47 @@ class Items extends Controller
                 return 'checkbox';
             case 'file':
                 return 'mediafinder';
+            case 'file_single':
+            case 'file_multi':
+                return 'fileupload';
+            case 'richeditor':
+                return 'richeditor';
             case 'slug':
                 return 'text';
             default:
                 return 'text';
+        }
+    }
+
+    protected function resolveFieldInputName(Field $field): string
+    {
+        if (in_array($field->type, ['file_single', 'file_multi'], true)) {
+            return $field->code;
+        }
+
+        return 'data[' . $field->code . ']';
+    }
+
+    protected function resolveFieldSpan(string $type): string
+    {
+        return in_array($type, ['textarea', 'richeditor', 'file', 'file_single', 'file_multi'], true)
+            ? 'full'
+            : 'auto';
+    }
+
+    protected function applyFileUploadConfig(array &$config, Field $field, array $options): void
+    {
+        $config['type'] = 'fileupload';
+        $config['span'] = 'full';
+        $config['mode'] = $options['mode'] ?? ($field->type === 'file_multi' ? 'image' : 'file');
+        $config['useCaption'] = $field->type === 'file_multi';
+
+        if (!empty($options['file_types'])) {
+            $config['fileTypes'] = $options['file_types'];
+        }
+
+        if ($field->type === 'file_multi' && !empty($options['max_files'])) {
+            $config['maxFiles'] = (int) $options['max_files'];
         }
     }
 

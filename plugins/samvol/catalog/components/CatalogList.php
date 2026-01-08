@@ -59,7 +59,9 @@ class CatalogList extends ComponentBase
 
         $this->page['catalog'] = $this->catalog;
         $this->page['items'] = $items;
-        $this->page['fields'] = $this->catalog ? $this->catalog->fields()->ordered()->get() : collect();
+        $this->page['fields'] = $this->catalog
+            ? $this->catalog->fields()->enabled()->ordered()->get()
+            : collect();
         $this->page['features'] = $this->catalog ? ($this->catalog->features ?: []) : [];
         $this->page['categories'] = $this->catalog
             ? $this->catalog->categories()->active()->get()

@@ -3,6 +3,10 @@ fields:
     view:
         list: $/samvol/catalog/models/field/columns.yaml
         toolbarButtons: create|delete
+        toolbarPartial: $/samvol/catalog/controllers/catalogs/_fields_toolbar.php
+        defaultSort:
+            column: sort_order
+            direction: asc
     manage:
         form: $/samvol/catalog/models/field/fields.yaml
         list: $/samvol/catalog/models/field/columns.yaml

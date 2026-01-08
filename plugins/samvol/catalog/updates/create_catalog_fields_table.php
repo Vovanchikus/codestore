@@ -15,6 +15,7 @@ class CreateCatalogFieldsTable extends Migration
             $table->string('code');
             $table->string('type');
             $table->boolean('is_required')->default(false);
+            $table->boolean('is_enabled')->default(true);
             $table->json('options')->nullable();
             $table->integer('sort_order')->default(0);
             $table->timestamps();

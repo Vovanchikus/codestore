@@ -1,11 +1,11 @@
 <?php namespace Samvol\Catalog\Controllers;
 
+use ApplicationException;
 use BackendMenu;
-use Backend\Behaviors\FormController as FormControllerBehavior;
 use Backend\Classes\Controller;
 use Flash;
-use Log;
 use Samvol\Catalog\Models\Catalog;
+use Samvol\Catalog\Models\Field;
 
 class Catalogs extends Controller
 {
@@ -25,83 +25,68 @@ class Catalogs extends Controller
     {
         parent::__construct();
         BackendMenu::setContext('Samvol.Catalog', 'catalogs', 'catalogs');
+        $this->addJs('/plugins/samvol/catalog/assets/js/catalog-tabs-guard.js');
     }
 
-    public function onAddDefaultFields()
+    public function relationExtendViewWidget($widget, $field, $model)
     {
-        Log::debug('Catalogs: onAddDefaultFields called', [
-            'post' => post(),
-        ]);
-
-        $model = $this->getCurrentFormModel();
-
-        if (!$model) {
-            Flash::warning('Не удалось определить каталог.');
-            Log::warning('Catalogs: failed to resolve model in onAddDefaultFields');
+        if ($field !== 'fields') {
             return;
         }
 
-        $sessionKey = $this->getFormSessionKey();
-        Log::debug('Catalogs: resolved session key for default fields', [
-            'session_key' => $sessionKey,
-            'model_exists' => $model->exists,
-            'model_id' => $model->id,
-        ]);
+        $widget->bindEvent('list.injectRowClass', function ($record) {
+            return $record->is_enabled ? null : 'text-muted';
+        });
+    }
 
-        $formContext = $model->exists
-            ? FormControllerBehavior::CONTEXT_UPDATE
-            : FormControllerBehavior::CONTEXT_CREATE;
+    public function onRelationButtonDisableFields()
+    {
+        return $this->toggleFieldsEnabled(false);
+    }
 
-        $this->initForm($model, $formContext);
-        $this->initRelation($model, 'fields');
+    public function onRelationButtonEnableFields()
+    {
+        return $this->toggleFieldsEnabled(true);
+    }
 
-        $created = $model->createDefaultItemFields($sessionKey);
+    protected function toggleFieldsEnabled(bool $enabled)
+    {
+        $checkedIds = array_filter((array) post('checked'));
 
-        if (empty($created)) {
-            Flash::info('Стандартные поля уже добавлены.');
-        } else {
-            $titles = array_map(function ($field) {
-                return $field->name;
-            }, $created);
-            Flash::success('Добавлены поля: ' . implode(', ', $titles));
+        if (empty($checkedIds)) {
+            throw new ApplicationException('Выберите хотя бы одно поле.');
         }
+
+        $catalog = $this->model instanceof Catalog ? $this->model : null;
+
+        if (!$catalog) {
+            $formWidget = $this->formGetWidget();
+            $catalog = $formWidget ? $formWidget->model : null;
+        }
+
+        if (!$catalog) {
+            $catalogId = (int) (Field::whereIn('id', $checkedIds)->value('catalog_id') ?? 0);
+            $catalog = $catalogId ? Catalog::find($catalogId) : null;
+        }
+
+        if (!$catalog instanceof Catalog || !$catalog->id) {
+            throw new ApplicationException('Не удалось определить каталог для переключения полей. Сохраните каталог.');
+        }
+
+        $fields = Field::whereIn('id', $checkedIds)->get();
+        if ($fields->isEmpty()) {
+            throw new ApplicationException('Не удалось найти выбранные поля.');
+        }
+
+        $this->initRelation($catalog, 'fields');
+
+        Field::where('catalog_id', $catalog->id)
+            ->whereIn('id', $checkedIds)
+            ->update(['is_enabled' => $enabled]);
+
+        Flash::success($enabled ? 'Поля включены' : 'Поля отключены');
 
         return $this->relationRefresh('fields');
     }
 
-    protected function getCurrentFormModel(): ?Catalog
-    {
-        $widget = $this->formGetWidget();
-        if ($widget && $widget->model instanceof Catalog) {
-            Log::debug('Catalogs: using model from form widget', [
-                'model_exists' => $widget->model->exists,
-                'model_id' => $widget->model->id,
-            ]);
-            return $widget->model;
-        }
-
-        $recordId = post('record_id') ?? post('id') ?? $this->params[0] ?? null;
-        if ($recordId) {
-            Log::debug('Catalogs: resolving model by record id', ['record_id' => $recordId]);
-            return $this->formFindModelObject($recordId);
-        }
-
-        $model = $this->formCreateModelObject();
-        $model->fill(post('Catalog', []));
-        Log::debug('Catalogs: created new model instance for deferred fields', [
-            'filled_attributes' => $model->getAttributes(),
-        ]);
-        return $model;
-    }
-
-    protected function getFormSessionKey(): ?string
-    {
-        $sessionKey = post('_session_key');
-        if ($sessionKey) {
-            return $sessionKey;
-        }
-
-        $widget = $this->formGetWidget();
-        return $widget ? $widget->getSessionKey() : null;
-    }
 }

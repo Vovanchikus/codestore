@@ -1,6 +1,7 @@
 <?php namespace Samvol\Catalog\Models;
 
 use Model;
+use System\Models\File;
 use Winter\Storm\Database\Traits\Validation;
 
 class Item extends Model
@@ -27,6 +28,14 @@ class Item extends Model
     public $belongsTo = [
         'catalog' => [Catalog::class],
         'category' => [Category::class]
+    ];
+
+    public $attachMany = [
+        'screenshot' => [File::class],
+    ];
+
+    public $attachOne = [
+        'archive' => [File::class],
     ];
 
     public $rules = [
@@ -59,7 +68,7 @@ class Item extends Model
 
         $catalog->fields()->ordered()->get()->each(function (Field $field) use (&$rules) {
             if ($field->is_required) {
-                $rules['data.' . $field->code] = 'required';
+                $rules[$this->getValidationAttributeForField($field)] = 'required';
             }
         });
 
@@ -96,5 +105,14 @@ class Item extends Model
         }
 
         return 'Item #' . $this->id;
+    }
+
+    protected function getValidationAttributeForField(Field $field): string
+    {
+        if (in_array($field->type, ['file_single', 'file_multi'], true)) {
+            return $field->code;
+        }
+
+        return 'data.' . $field->code;
     }
 }
