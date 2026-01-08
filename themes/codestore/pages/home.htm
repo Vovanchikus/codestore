@@ -3,6 +3,7 @@ url = "/"
 layout = "default"
 
 [uiCore]
+[catalogsList]
 ==
 
 {# Подключаем инфраструктурный компонент UiCore, который регистрирует AJAX handlers и ассеты #}
@@ -30,6 +31,12 @@ layout = "default"
     </div>
 
     <a href="{{ 'catalog/catalog'|page({'catalogCode': 'design'}) }}">Дизайн</a>
+
+    {# Все активные каталоги через компонент catalogsList #}
+    <div class="home-catalogs">
+        <h2>Каталоги</h2>
+        {% component 'catalogsList' %}
+    </div>
 
     <pre id="ui-demo-output" class="ui-core-demo__output">Ожидаем ответ от CoreBridge…</pre>
 </section>

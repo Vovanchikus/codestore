@@ -8,7 +8,7 @@
 -   Конструктор полей (`text`, `textarea`, `number`, `select`, `checkbox`, `file`) с JSON-опциями и валидацией.
 -   Категории произвольной глубины, хранящие дополнительный JSON в `Category.data`.
 -   Элементы со статусами `draft/published`, хранением значений в `Item.data`, привязкой к каталогу и категории.
--   Фронтенд-компоненты `catalogList`, `catalogItem`, `catalogForm`, отдающие данные, пагинацию, features и динамические поля.
+-   Фронтенд-компоненты `catalogList`, `catalogItem`, `catalogForm`, `catalogsList`, отдающие данные, пагинацию, features и динамические поля.
 
 ## Установка
 
@@ -57,6 +57,101 @@
 ## Фронтенд компоненты
 
 Компоненты передают данные в Twig, а тема решает, как их отобразить.
+
+### Поля и данные, доступные в компонентах
+
+`catalogList`
+
+-   `{{ catalog.name }}`, `{{ catalog.code }}` — метаданные каталога
+-   `{{ items }}` — пагинированная коллекция элементов (LengthAwarePaginator)
+-   `{{ categories }}` — список категорий каталога
+-   `{{ fields }}` — схема динамических полей (только включённые)
+-   `{{ features }}` — массив признаков (comments/rating/views/files/moderation)
+
+`catalogItem`
+
+-   `{{ catalog }}` — текущий каталог
+-   `{{ item }}` — текущий элемент
+-   `{{ fields }}` — схема динамических полей
+-   `{{ features }}` — признаки каталога
+
+`catalogForm`
+
+-   `{{ catalog }}` — каталог, для которого работает форма
+-   `{{ item }}` — редактируемый элемент (или пустой для создания)
+-   `{{ fields }}` — динамические поля каталога (включённые)
+-   `{{ categories }}` — категории каталога
+-   `{{ features }}` — признаки каталога
+
+Стандартные поля элемента (доступны во всех компонентах, где есть `item` или `record`):
+
+-   `{{ item.display_name }}` — человекочитаемый заголовок (берётся из `data.title` или `data.name`)
+-   `{{ item.data.title }}` — название материала
+-   `{{ item.data.slug }}` — URL-часть (slug)
+-   `{{ item.data.brief }}` — краткое описание
+-   `{{ item.data.message }}` — полный текст (HTML)
+-   `{{ item.data.version }}` — версия материала
+-   `{{ item.data.author_name }}` — имя автора
+-   `{{ item.data.author_email }}` — email автора
+-   `{{ item.data.source }}` — ссылка на источник
+-   `{{ item.data.docpage_url }}` — ссылка на документацию
+
+Файлы:
+
+-   Галерея скриншотов (attachMany): `{% for image in record.screenshot %}<img src="{{ image.path }}">{% endfor %}`
+-   Архив (attachOne): `{{ record.archive.path }}`
+
+### Справочник Twig-кодов и когда их применять
+
+Как выбрать `item` или `record`:
+
+-   На странице детали (компонент `catalogItem`) доступна одна запись в переменной `item` → используйте `item.*`.
+-   На странице списка (компонент `catalogList`) доступна пагинация `items`; внутри цикла `for record in items` текущая запись — `record` → используйте `record.*`.
+
+Базовые данные элемента:
+
+-   `{{ item.display_name }}` / `{{ record.display_name }}` — человекочитаемый заголовок (из `data.title`/`data.name`, fallback `Item #id`).
+-   `{{ item.id }}` / `{{ record.id }}` — ID материала.
+-   `{{ item.status }}` — статус (`draft`/`published`).
+-   `{{ item.created_at }}`, `{{ item.updated_at }}`, `{{ item.published_at }}` — метки времени (форматируйте: `|date('d.m.Y H:i')`).
+-   Категория: `{{ item.category.name }}`, `{{ item.category.id }}`, `{{ item.category.slug }}` (если привязана).
+
+Стандартные поля (хранятся в `data`):
+
+-   `{{ item.data.title }}` / `{{ record.data.title }}` — название материала.
+-   `{{ item.data.slug }}` — slug (часть URL).
+-   `{{ item.data.brief }}` — краткое описание.
+-   `{{ item.data.message }}` — полный текст (HTML/richeditor).
+-   `{{ item.data.version }}` — версия.
+-   `{{ item.data.author_name }}` — имя автора.
+-   `{{ item.data.author_email }}` — email автора.
+-   `{{ item.data.source }}` — ссылка на источник.
+-   `{{ item.data.docpage_url }}` — ссылка на документацию.
+
+Файлы:
+
+-   Скриншоты (attachMany):
+    ```twig
+    {% for image in record.screenshot %}
+      <img src="{{ image.path }}" alt="{{ record.display_name }}">
+    {% endfor %}
+    ```
+    Вместо `record` используйте `item` на странице детали. Для превью — `image.thumb(300,200,{ mode:'crop' })`.
+-   Архив (attachOne): `{{ record.archive.path }}` или `{{ item.archive.path }}` — ссылка на файл.
+
+Ссылки и навигация:
+
+-   Ссылка на страницу элемента (если маршрут `/catalog/:catalogCode/:itemSlug`):
+    `{{ 'catalog-item'|page({ catalogCode: catalog.code, itemSlug: record.data.slug }) }}`
+-   Ссылка на категорию (если используется `categorySlug`):
+    `{{ 'catalog'|page({ catalogCode: catalog.code, categorySlug: record.category.slug }) }}`
+
+Что всегда приходит в компонентах:
+
+-   `catalogsList`: `catalogs` (все активные каталоги)
+-   `catalogList`: `catalog`, `items`, `categories`, `fields`, `features`.
+-   `catalogItem`: `catalog`, `item`, `fields`, `features`.
+-   `catalogForm`: `catalog`, `item` (или пустой), `fields`, `categories`, `features`.
 
 ### `catalogList`
 
@@ -136,6 +231,25 @@
 ```
 
 AJAX-ответ содержит `item` и сообщения в стандартном формате Winter. Можно подключить Snowboard (`data-request`) либо UiCore (`samvol/uicore`) при необходимости.
+
+### `catalogsList`
+
+Параметры: отсутствуют. Возвращает `catalogs` — коллекцию всех активных каталогов (по scope `active`). Используйте в шапке или на любой странице, чтобы построить меню без PHP в Twig.
+
+```twig
+{% component 'catalogsList' %}
+{% if catalogs|length %}
+    <ul>
+        {% for catalog in catalogs %}
+            <li>
+                <a href="{{ 'catalog/catalog'|page({ catalogCode: catalog.code }) }}">{{ catalog.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Каталоги отсутствуют.</p>
+{% endif %}
+```
 
 ## Дополнительные заметки
 

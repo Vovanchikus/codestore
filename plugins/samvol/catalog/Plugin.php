@@ -18,6 +18,7 @@ class Plugin extends PluginBase
     public function registerComponents(): array
     {
         return [
+            '\\Samvol\\Catalog\\Components\\CatalogsList' => 'catalogsList',
             '\\Samvol\\Catalog\\Components\\CatalogList' => 'catalogList',
             '\\Samvol\\Catalog\\Components\\CatalogItem' => 'catalogItem',
             '\\Samvol\\Catalog\\Components\\CatalogForm' => 'catalogForm',
