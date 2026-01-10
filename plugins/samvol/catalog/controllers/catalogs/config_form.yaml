@@ -39,19 +39,77 @@ form:
                 type: partial
                 path: $/samvol/catalog/controllers/catalogs/_categories_relation.htm
                 tab: Категории
-            features:
-                label: Дополнительный функционал
-                type: checkboxlist
-                span: full
-                tab: Функции
-                options: getFeatureOptions
-            settings:
-                label: Настройки
-                type: codeeditor
-                language: json
-                size: huge
-                stretch: true
+            sorting_section:
+                label: Сортировка
+                type: section
                 tab: Настройки
+                comment: Управляет видимостью и вариантом сортировки на фронтенде.
+            sorting_enabled:
+                label: Включить сортировку
+                type: switch
+                span: full
+                tab: Настройки
+                default: true
+                comment: Выключите, чтобы скрыть выбор сортировки на фронте и применять порядок по дате.
+            sorting_default:
+                label: Сортировка по умолчанию
+                type: dropdown
+                span: left
+                tab: Настройки
+                comment: Применяется, если в URL нет параметра ?sort=
+                options: getSortingDefaultOptions
+                default: date_desc
+                dependsOn: sorting_enabled
+                trigger:
+                    action: hide
+                    field: sorting_enabled
+                    condition: unchecked
+            sorting_allowed:
+                label: Разрешённые сортировки
+                type: checkboxlist
+                span: right
+                tab: Настройки
+                options: getSortingAllowedOptions
+                comment: Отметьте коды, которые должны быть доступны посетителям.
+                default: [date_desc]
+                dependsOn: sorting_enabled
+                trigger:
+                    action: hide
+                    field: sorting_enabled
+                    condition: unchecked
+            comments_section:
+                label: Комментарии
+                type: section
+                tab: Настройки
+                comment: Включите, чтобы разрешить посетителям оставлять комментарии.
+            feature_comments:
+                label: Включить комментарии
+                type: switch
+                span: left
+                tab: Настройки
+                default: false
+            rating_section:
+                label: Рейтинг
+                type: section
+                tab: Настройки
+                comment: Управляет отображением рейтинга и голосованием.
+            feature_rating:
+                label: Включить рейтинг
+                type: switch
+                span: left
+                tab: Настройки
+                default: false
+            moderation_section:
+                label: Модерация
+                type: section
+                tab: Настройки
+                comment: Добавляет очередь модерации для материалов.
+            feature_moderation:
+                label: Включить модерацию
+                type: switch
+                span: left
+                tab: Настройки
+                default: false
 create:
     title: Create catalog
     redirect: samvol/catalog/catalogs/update/:id

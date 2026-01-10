@@ -34,8 +34,17 @@ itemSlug = "{{ :itemSlug }}"
 
     {# Архив attachOne #}
     {% if item.archive %}
-        <p><a href="{{ item.archive.path }}">Скачать архив</a></p>
+          <a href="javascript:void(0);"
+              id="download-btn"
+              class="btn btn-link"
+              data-request="catalogItem::onDownload"
+              data-request-loading>
+              Скачать файл
+          </a>
+        <div class="text-muted">Загрузок: {{ item.downloads_count|default(0) }}</div>
     {% endif %}
+
+    <p class="text-muted">Просмотров: {{ item.views_count|default(0) }}</p>
 
     {# Ссылка обратно в каталог (общий список) #}
     <p>
@@ -55,3 +64,35 @@ itemSlug = "{{ :itemSlug }}"
 {% else %}
     <p>Элемент не найден.</p>
 {% endif %}
+
+{% put scripts %}
+<script>
+(function () {
+    var btn = document.getElementById('download-btn');
+    if (!btn) return;
+
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        var handler = 'catalogItem::onDownload';
+        var success = function (resp) {
+            if (resp && resp.link) {
+                window.location = resp.link;
+            }
+        };
+
+        if (window.UI && typeof UI.request === 'function') {
+            UI.request(btn, handler, { success: success });
+            return;
+        }
+
+        if (window.Snowboard && typeof Snowboard.request === 'function') {
+            Snowboard.request(btn, handler, { success: success });
+            return;
+        }
+
+        console.warn('No UI.request or Snowboard.request found');
+    });
+})();
+</script>
+{% endput %}

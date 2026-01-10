@@ -16,7 +16,26 @@ categorySlug = "{{ :categorySlug }}"
   {% endif %}
 {% endif %}
 
+{# Сортировка через GET ?sort=... #}
+{% if availableSorts|length %}
+<form method="get" class="catalog-sorting">
+  <label for="catalog-sort">Сортировать:</label>
+  <select id="catalog-sort" name="sort" onchange="this.form.submit()">
+    {% for code, label in availableSorts %}
+      <option value="{{ code }}" {% if code == currentSort %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  {# сохраняем прочие параметры страницы #}
+  {% for name, value in this.request.get %}
+    {% if name != 'sort' %}
+      <input type="hidden" name="{{ name }}" value="{{ value }}">
+    {% endif %}
+  {% endfor %}
+</form>
+{% endif %}
+
 {# Элементы (если categorySlug пуст — все элементы каталога) #}
+<div id="catalog-list">
 {% for record in items %}
   <article class="catalog-item">
     <h2>{{ record.display_name }}</h2>
@@ -52,3 +71,4 @@ categorySlug = "{{ :categorySlug }}"
     {% endfor %}
   </nav>
 {% endif %}
+</div>

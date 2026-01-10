@@ -49,12 +49,37 @@ class CatalogItem extends ComponentBase
         $this->catalog = $this->loadCatalog();
         $this->item = $this->loadItem();
 
+        if ($this->item) {
+            $this->incrementViews($this->item);
+        }
+
         $this->page['catalog'] = $this->catalog;
         $this->page['item'] = $this->item;
         $this->page['fields'] = $this->catalog
             ? $this->catalog->fields()->enabled()->ordered()->get()
             : collect();
         $this->page['features'] = $this->catalog ? ($this->catalog->features ?: []) : [];
+    }
+
+    public function onDownload()
+    {
+        $this->catalog = $this->catalog ?: $this->loadCatalog();
+        $this->item = $this->item ?: $this->loadItem();
+
+        if (!$this->item) {
+            throw new ApplicationException('Item not found.');
+        }
+
+        $file = $this->item->archive;
+        if (!$file) {
+            throw new ApplicationException('File not found.');
+        }
+
+        $this->item->increment('downloads_count');
+
+        return [
+            'link' => $file->getPath(),
+        ];
     }
 
     protected function loadCatalog(): ?Catalog
@@ -92,5 +117,10 @@ class CatalogItem extends ComponentBase
         return $query
             ->where('data->slug', $slug)
             ->first();
+    }
+
+    private function incrementViews(Item $item): void
+    {
+        $item->increment('views_count');
     }
 }

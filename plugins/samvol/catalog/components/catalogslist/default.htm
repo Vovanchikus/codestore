@@ -6,7 +6,7 @@
         <span class="catalogs-list__name">{{ catalog.name }}</span>
         {# Ссылка на страницу каталога #}
         <a
-            href="{{ 'catalog/catalog'|page({ catalogCode: catalog.code }) }}"
+            href="{{ 'catalog/catalog-home'|page({ catalogCode: catalog.code }) }}"
             class="catalogs-list__link"
             >Перейти</a
         >

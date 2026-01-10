@@ -3,6 +3,7 @@
 use Cms\Classes\ComponentBase;
 use Samvol\Catalog\Models\Catalog;
 use Samvol\Catalog\Models\Item;
+use Samvol\Catalog\Services\CatalogSorting;
 
 class CatalogList extends ComponentBase
 {
@@ -55,7 +56,13 @@ class CatalogList extends ComponentBase
     public function onRun(): void
     {
         $this->catalog = $this->loadCatalog();
-        $items = $this->catalog ? $this->loadItems() : collect();
+        $currentSort = $this->catalog
+            ? CatalogSorting::resolveSortCode($this->catalog, $this->getRequestedSort())
+            : null;
+
+        $items = $this->catalog
+            ? $this->loadItems($currentSort)
+            : collect();
 
         $this->page['catalog'] = $this->catalog;
         $this->page['items'] = $items;
@@ -66,6 +73,10 @@ class CatalogList extends ComponentBase
         $this->page['categories'] = $this->catalog
             ? $this->catalog->categories()->active()->get()
             : collect();
+        $this->page['currentSort'] = CatalogSorting::isEnabled($this->catalog) ? $currentSort : null;
+        $this->page['availableSorts'] = $this->catalog && CatalogSorting::isEnabled($this->catalog)
+            ? CatalogSorting::getAvailableSorts($this->catalog)
+            : [];
     }
 
     protected function loadCatalog(): ?Catalog
@@ -78,7 +89,7 @@ class CatalogList extends ComponentBase
         return Catalog::active()->whereCode($code)->first();
     }
 
-    protected function loadItems()
+    protected function loadItems(?string $sortCode)
     {
         if (!$this->catalog) {
             return collect();
@@ -97,12 +108,25 @@ class CatalogList extends ComponentBase
             }
         }
 
-        $query->orderBy('created_at', 'desc');
+        if ($sortCode) {
+            if (CatalogSorting::isEnabled($this->catalog)) {
+                CatalogSorting::applySorting($query, $this->catalog, $sortCode);
+            }
+        } else {
+            $query->orderBy('published_at', 'desc');
+        }
 
         return $query->paginate(
             (int) $this->property('perPage'),
             ['*'],
             $this->property('pageParam')
         );
+    }
+
+
+    protected function getRequestedSort(): ?string
+    {
+        $sort = request()->query('sort');
+        return is_string($sort) ? $sort : null;
     }
 }
