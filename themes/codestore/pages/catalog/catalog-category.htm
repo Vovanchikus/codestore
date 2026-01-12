@@ -1,38 +1,41 @@
 title = "Каталог по категории"
 url = "/:catalogCode/:categorySlug"
+layout = "default"
 
 [catalogList]
 catalogCode = "{{ :catalogCode }}"
 categorySlug = "{{ :categorySlug }}"
 ==
+<div class="catalog">
+
+  <div class="catalog__controls box--light">
+
+    <div class="catalog__controls-top">
+      {% partial 'catalog/breadcrumbs' catalog=catalog category=currentCategory %}
+      <div class="catalog__controls-count">Всего:<span>{{ items.total() }}</span></div>
+    </div>{# catalog__controls-top #}
+
+    <div class="catalog__controls-middle">
+        {% partial 'catalog/categories' %}
+    </div>{# catalog-controls-middle #}
+
+    <div class="catalog__sorting"></div>{# catalog-sorting #}
+  </div>
+
+</div>{# catalog #}
+
 {# Заголовок каталога #}
 <h1>{{ catalog.name }}</h1>
+{% if items is defined %}
+  <p class="catalog__count">{{ items.total() }} материалов в категории</p>
+{% endif %}
 
 {# Текущая категория по переданному slug (если не задан slug — покажет все элементы) #}
-{% if categorySlug and categories|length %}
-  {% set currentCategory = categories|filter(c => c.slug == categorySlug)|first %}
-  {% if currentCategory %}
-    <h2>Категория: {{ currentCategory.name }}</h2>
-  {% endif %}
-{% endif %}
+{# {% if currentCategory %}
+  <h2>Категория: {{ currentCategory.name }}</h2>
+{% endif %} #}
 
-{# Сортировка через GET ?sort=... #}
-{% if availableSorts|length %}
-<form method="get" class="catalog-sorting">
-  <label for="catalog-sort">Сортировать:</label>
-  <select id="catalog-sort" name="sort" onchange="this.form.submit()">
-    {% for code, label in availableSorts %}
-      <option value="{{ code }}" {% if code == currentSort %}selected{% endif %}>{{ label }}</option>
-    {% endfor %}
-  </select>
-  {# сохраняем прочие параметры страницы #}
-  {% for name, value in this.request.get %}
-    {% if name != 'sort' %}
-      <input type="hidden" name="{{ name }}" value="{{ value }}">
-    {% endif %}
-  {% endfor %}
-</form>
-{% endif %}
+ {% partial "catalog/sorting" %}
 
 {# Элементы (если categorySlug пуст — все элементы каталога) #}
 <div id="catalog-list">

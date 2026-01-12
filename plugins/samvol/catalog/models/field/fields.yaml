@@ -35,7 +35,7 @@ fields:
     options:
         label: Options (JSON)
         type: codeeditor
-        language: json
+        language: javascript
         size: huge
         comment: Used for select/options and file upload settings
         span: full

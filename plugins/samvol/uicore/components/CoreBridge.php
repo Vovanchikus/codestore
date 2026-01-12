@@ -52,10 +52,10 @@ class CoreBridge extends ComponentBase
         $this->addCss('/plugins/samvol/uicore/assets/css/ui-core.css');
 
         // Подключаем JS
-        $this->addJs('/plugins/samvol/uicore/assets/js/request.js');
-        $this->addJs('/plugins/samvol/uicore/assets/js/toast.js');
-        $this->addJs('/plugins/samvol/uicore/assets/js/modal.js');
-        $this->addJs('/plugins/samvol/uicore/assets/js/loader.js');
-        $this->addJs('/plugins/samvol/uicore/assets/js/ui-core.js');
+        $this->addJs('/plugins/samvol/uicore/assets/js/request.js', ['defer' => true]);
+        $this->addJs('/plugins/samvol/uicore/assets/js/toast.js', ['defer' => true]);
+        $this->addJs('/plugins/samvol/uicore/assets/js/modal.js', ['defer' => true]);
+        $this->addJs('/plugins/samvol/uicore/assets/js/loader.js', ['defer' => true]);
+        $this->addJs('/plugins/samvol/uicore/assets/js/ui-core.js', ['defer' => true]);
     }
 }

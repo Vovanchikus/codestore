@@ -1,18 +1,11 @@
-{% if catalogs|length %} {# Список активных каталогов #}
-<ul class="catalogs-list">
+{% if catalogs|length %}
     {% for catalog in catalogs %}
-    <li>
-        {# Название каталога #}
-        <span class="catalogs-list__name">{{ catalog.name }}</span>
-        {# Ссылка на страницу каталога #}
-        <a
-            href="{{ 'catalog/catalog-home'|page({ catalogCode: catalog.code }) }}"
-            class="catalogs-list__link"
-            >Перейти</a
-        >
-    </li>
+
+        <li class="header-nav__item">
+            <a href="{{ 'catalog/catalog-home'|page({ catalogCode: catalog.code }) }}" class="header-nav__link">
+                {{ catalog.name }}
+            </a>
+        </li>
+
     {% endfor %}
-</ul>
-{% else %} {# Заглушка, если каталоги отсутствуют #}
-<p>Каталоги отсутствуют.</p>
 {% endif %}

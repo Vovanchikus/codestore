@@ -3,6 +3,7 @@
 use Model;
 use Samvol\Catalog\Services\CatalogSorting;
 use Winter\Storm\Database\Traits\Validation;
+use Winter\Storm\Exception\ValidationException;
 
 class Catalog extends Model
 {
@@ -14,6 +15,9 @@ class Catalog extends Model
     protected ?bool $sortingEnabledVirtual = null;
     protected ?string $sortingDefaultVirtual = null;
     protected ?array $sortingAllowedVirtual = null;
+    protected ?bool $trackUpdatesEnabledVirtual = null;
+    protected ?string $trackUpdatesFieldVirtual = null;
+    protected ?string $trackUpdatesLogFieldVirtual = null;
 
     protected $table = 'samvol_catalogs';
 
@@ -39,6 +43,25 @@ class Catalog extends Model
         'items' => [Item::class, 'delete' => true],
     ];
 
+    public function beforeValidate(): void
+    {
+        $existing = CatalogSorting::getTrackUpdatesSettings($this);
+
+        $enabled = $this->trackUpdatesEnabledVirtual !== null
+            ? (bool) $this->trackUpdatesEnabledVirtual
+            : (bool) ($existing['enabled'] ?? false);
+
+        $logField = $this->trackUpdatesLogFieldVirtual !== null
+            ? $this->trackUpdatesLogFieldVirtual
+            : ($existing['log_field'] ?? null);
+
+        if ($enabled && (!is_string($logField) || $logField === '')) {
+            throw new ValidationException([
+                'track_updates_log_field' => 'Укажите поле для истории обновлений.',
+            ]);
+        }
+    }
+
     public function beforeSave(): void
     {
         $existingSorting = CatalogSorting::getSortingSettings($this);
@@ -51,16 +74,86 @@ class Catalog extends Model
             ? $this->sortingDefaultVirtual
             : ($existingSorting['default'] ?? null);
 
-        $allowed = $this->sortingAllowedVirtual !== null
-            ? $this->sortingAllowedVirtual
-            : ($existingSorting['allowed'] ?? null);
+        // Determine allowed selection taking into account form submission behaviour:
+        // - If virtual value set (setter called) use it.
+        // - Else, if HTTP form was submitted and the request contains the 'sorting_allowed'
+        //   key (possibly nested) use its value (could be empty array when all unchecked).
+        // - Otherwise fall back to existing saved value.
+        $allowed = null;
+        if ($this->sortingAllowedVirtual !== null) {
+            $allowed = $this->sortingAllowedVirtual;
+        } else {
+            try {
+                $postAll = request()->all();
 
-        $this->settings = CatalogSorting::mergeSortingSettings(
+                $containsKey = false;
+                $foundValue = null;
+
+                // First check top-level and one-level nested arrays for 'sorting_allowed'
+                foreach ($postAll as $k => $v) {
+                    if ($k === 'sorting_allowed') {
+                        $containsKey = true;
+                        $foundValue = $v;
+                        break;
+                    }
+                    if (is_array($v) && array_key_exists('sorting_allowed', $v)) {
+                        $containsKey = true;
+                        $foundValue = $v['sorting_allowed'];
+                        break;
+                    }
+                }
+
+                if (!$containsKey) {
+                    // Deep recursive search for key 'sorting_allowed'
+                    $found = function ($arr) use (&$found, &$containsKey, &$foundValue) {
+                        if (!is_array($arr)) return;
+                        foreach ($arr as $k => $v) {
+                            if ($k === 'sorting_allowed') {
+                                $containsKey = true;
+                                $foundValue = $v;
+                                return;
+                            }
+                            if (is_array($v)) {
+                                $found($v);
+                                if ($containsKey) return;
+                            }
+                        }
+                    };
+                    $found($postAll);
+                }
+
+                if ($containsKey) {
+                    $allowed = is_array($foundValue) ? $foundValue : (is_string($foundValue) ? [$foundValue] : []);
+                } else {
+                    // Form submitted but no sorting_allowed key -> treat as explicit empty selection
+                    // Only treat as form-submitted if request method is POST
+                    $allowed = request()->method() === 'POST' ? [] : ($existingSorting['allowed'] ?? null);
+                }
+            } catch (\Throwable $e) {
+                $allowed = $existingSorting['allowed'] ?? null;
+            }
+        }
+
+        // Expand group keys (like 'date'/'name') from admin UI into concrete codes
+        $expandedAllowed = CatalogSorting::expandAllowedSelection($this, $allowed);
+        $expandedDefault = CatalogSorting::expandDefaultSelection($this, is_string($default) ? $default : null);
+
+        $logField = $this->resolveTrackUpdatesLogField();
+
+        $settings = CatalogSorting::mergeSortingSettings(
             $this,
             $this->settings,
-            $default,
-            $allowed,
+            $expandedDefault,
+            $expandedAllowed,
             $enabled
+        );
+
+        $this->settings = CatalogSorting::mergeTrackUpdatesSettings(
+            $this,
+            $settings,
+            $this->trackUpdatesEnabledVirtual,
+            $this->trackUpdatesFieldVirtual,
+            $logField
         );
     }
 
@@ -227,12 +320,14 @@ class Catalog extends Model
 
     public function getSortingDefaultOptions(): array
     {
+        // Default select should list all concrete sort definitions (asc/desc states),
+        // independent from the 'allowed' visibility list.
         return CatalogSorting::optionLabelsWithStatus($this);
     }
 
     public function getSortingAllowedOptions(): array
     {
-        return CatalogSorting::optionLabelsWithStatus($this);
+        return CatalogSorting::adminOptions($this);
     }
 
     public function getSortingDefaultAttribute(): ?string
@@ -260,12 +355,51 @@ class Catalog extends Model
         if ($this->sortingAllowedVirtual !== null) {
             return $this->sortingAllowedVirtual;
         }
+        // Need to detect whether admin explicitly saved an 'allowed' key (even if empty),
+        // otherwise fall back to listing admin option keys.
+        // Read raw settings to determine whether 'allowed' was explicitly saved.
+        $rawSettings = $this->settings;
+        $settingsArr = [];
+        if (is_string($rawSettings)) {
+            $decoded = json_decode($rawSettings, true);
+            if (is_array($decoded)) {
+                $settingsArr = $decoded;
+            }
+        } elseif (is_array($rawSettings)) {
+            $settingsArr = $rawSettings;
+        }
 
-        $settings = CatalogSorting::getSortingSettings($this);
+        $explicitAllowedExists = array_key_exists('sorting', $settingsArr)
+            && is_array($settingsArr['sorting'])
+            && array_key_exists('allowed', $settingsArr['sorting']);
 
-        return isset($settings['allowed']) && is_array($settings['allowed'])
-            ? $settings['allowed']
-            : [];
+        $allowed = $explicitAllowedExists && is_array($settingsArr['sorting']['allowed'])
+            ? $settingsArr['sorting']['allowed']
+            : null;
+
+        if ($allowed === null) {
+            // No explicit saved allowed -> fallback to admin option keys
+            return array_keys(CatalogSorting::adminOptions($this));
+        }
+
+        // Map concrete saved codes back to admin option keys (group keys when applicable)
+        $result = [];
+        foreach ($allowed as $code) {
+            if (!is_string($code) || $code === '') {
+                continue;
+            }
+            $group = CatalogSorting::findAdminKeyForCode($this, $code);
+            if ($group !== null) {
+                $result[] = $group;
+                continue;
+            }
+            $result[] = $code;
+        }
+
+        // Deduplicate and preserve keys as list
+        $result = array_values(array_unique($result));
+
+        return $result;
     }
 
     public function setSortingAllowedAttribute($value): void
@@ -274,26 +408,8 @@ class Catalog extends Model
             ? array_values($value)
             : (is_string($value) ? [$value] : []);
     }
-
-    public function setSettingsAttribute($value): void
-    {
-        if (is_string($value)) {
-            $value = trim($value);
-        }
-
-        if ($value === '' || $value === null) {
-            $this->attributes['settings'] = null;
-            return;
-        }
-
-        $this->attributes['settings'] = is_array($value)
-            ? json_encode($value)
-            : $value;
-    }
-
     public function createDefaultItemFields(?string $sessionKey = null): array
     {
-        // If the catalog is already saved, avoid deferred binding to ensure rows persist immediately.
         $effectiveSessionKey = $this->exists ? null : $sessionKey;
 
         $defaultFields = [
@@ -418,5 +534,131 @@ class Catalog extends Model
         }
 
         return $created;
+    }
+
+
+    public function getTrackUpdatesEnabledAttribute(): bool
+    {
+        if ($this->trackUpdatesEnabledVirtual !== null) {
+            return (bool) $this->trackUpdatesEnabledVirtual;
+        }
+
+        $settings = CatalogSorting::getTrackUpdatesSettings($this);
+
+        return isset($settings['enabled']) ? (bool) $settings['enabled'] : false;
+    }
+
+    public function setTrackUpdatesEnabledAttribute($value): void
+    {
+        $this->trackUpdatesEnabledVirtual = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false;
+    }
+
+    public function getTrackUpdatesFieldAttribute(): ?string
+    {
+        if ($this->trackUpdatesFieldVirtual !== null) {
+            return $this->trackUpdatesFieldVirtual;
+        }
+
+        $settings = CatalogSorting::getTrackUpdatesSettings($this);
+
+        return isset($settings['field']) && is_string($settings['field'])
+            ? $settings['field']
+            : null;
+    }
+
+    public function setTrackUpdatesFieldAttribute($value): void
+    {
+        $this->trackUpdatesFieldVirtual = is_string($value) && $value !== '' ? $value : null;
+    }
+
+    public function getTrackUpdatesLogFieldAttribute(): ?string
+    {
+        if ($this->trackUpdatesLogFieldVirtual !== null) {
+            return $this->trackUpdatesLogFieldVirtual;
+        }
+
+        $settings = CatalogSorting::getTrackUpdatesSettings($this);
+
+        return isset($settings['log_field']) && is_string($settings['log_field']) && $settings['log_field'] !== ''
+            ? $settings['log_field']
+            : null;
+    }
+
+    public function setTrackUpdatesLogFieldAttribute($value): void
+    {
+        $this->trackUpdatesLogFieldVirtual = is_string($value) && $value !== '' ? $value : null;
+    }
+
+    public function getTrackUpdatesFieldOptions(): array
+    {
+        $options = [
+            'updated_at'    => 'Дата обновления',
+            'published_at'  => 'Дата публикации',
+            'version'       => 'Версия материала',
+        ];
+
+        $fieldsQuery = $this->fields();
+        if (!$this->exists && $this->sessionKey ?? false) {
+            $fieldsQuery = $fieldsQuery->withDeferred($this->sessionKey);
+        }
+
+        $fieldsQuery->get()->each(function (Field $field) use (&$options) {
+            $options[$field->code] = $field->name;
+        });
+
+        return $options;
+    }
+
+    public function getTrackUpdatesLogFieldOptions(): array
+    {
+        $options = [];
+
+        $fieldsQuery = $this->fields();
+        if (!$this->exists && $this->sessionKey ?? false) {
+            $fieldsQuery = $fieldsQuery->withDeferred($this->sessionKey);
+        }
+
+        $fieldsQuery->get()->each(function (Field $field) use (&$options) {
+            $options[$field->code] = $field->name;
+        });
+
+        return $options;
+    }
+
+    private function resolveTrackUpdatesLogField(): ?string
+    {
+        $selection = $this->trackUpdatesLogFieldVirtual;
+
+        if (is_string($selection) && $selection !== '') {
+            return $selection;
+        }
+
+        $existing = CatalogSorting::getTrackUpdatesSettings($this);
+        return isset($existing['log_field']) && is_string($existing['log_field']) && $existing['log_field'] !== ''
+            ? $existing['log_field']
+            : null;
+    }
+
+    private function ensureLogFieldExists(string $code): void
+    {
+        $fieldsQuery = $this->fields();
+        $sessionKey = $this->sessionKey ?? null;
+        if (!$this->exists && $sessionKey) {
+            $fieldsQuery = $fieldsQuery->withDeferred($sessionKey);
+        }
+
+        if ($fieldsQuery->where('code', $code)->first()) {
+            return;
+        }
+
+        $field = new Field();
+        $field->name = 'История обновлений';
+        $field->code = $code;
+        $field->type = 'textarea';
+        $field->is_required = false;
+        $field->is_enabled = false; // скрываем в формах, лог пишется автоматически
+        $field->sort_order = 999;
+        $field->save(null, $sessionKey);
+        $this->fields()->add($field, $sessionKey);
     }
 }

@@ -1,0 +1,61 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
+
+.logo {
+    font-family: $fontLogo;
+    font-size: fn.rem(18px);
+    font-weight: 300;
+
+    b {
+        font-weight: bold;
+    }
+}
+
+.dropdown {
+    padding: 4px;
+    background-color: $bg-box;
+    border: 1px solid $border;
+    border-radius: $radius-nm;
+    box-shadow: $box-light-shadow;
+}
+
+.box--light {
+    background-color: $bg-box;
+    box-shadow: $box-light-shadow;
+    border-radius: $radius-lg;
+}
+
+.d-none {
+    display: none;
+}
+
+.link {
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+
+    &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        height: 2px;
+        width: 100%;
+        background: currentColor;
+        border-radius: 2px;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform var(--transition), transform-origin 0s;
+    }
+
+    &.link:hover::before,
+    .link:focus::before {
+        transform: scaleX(1);
+        transform-origin: left;
+    }
+
+    &.link:not(:hover)::before {
+        transform: scaleX(0);
+        transform-origin: right;
+    }
+}

@@ -2,103 +2,13 @@ title = "Home"
 url = "/"
 layout = "default"
 
-
-[catalogsList]
 ==
 
-<section class="ui-core-demo">
-    <h1 class="ui-core-demo__title">UiCore Playground</h1>
-    <p class="ui-core-demo__subtitle">Проверяем toast, modal, loader и Snowboard AJAX из CoreBridge.</p>
-
-    <div class="ui-core-demo__actions">
-        {# Кнопка демонстрирует стек тостов (success/error/info) #}
-        <button id="ui-demo-toast" class="ui-core-demo__button" type="button">
-            Показать Toast
-        </button>
-
-        {# Кнопка открывает модалку через UI.modal.open #}
-        <button id="ui-demo-modal" class="ui-core-demo__button" type="button">
-            Открыть Modal
-        </button>
-
-        {# Кнопка вызывает Snowboard AJAX handler uiCore::onPing и показывает loader + toast #}
-        <button id="ui-demo-request" class="ui-core-demo__button" type="button">
-            Проверить Loader + AJAX
-        </button>
-    </div>
-
-    <a href="{{ 'catalog/catalog'|page({'catalogCode': 'design'}) }}">Дизайн</a>
-
-    {# Все активные каталоги через компонент catalogsList #}
-    <div class="home-catalogs">
-        <h2>Каталоги</h2>
-        {% component 'catalogsList' %}
-    </div>
-
-    <pre id="ui-demo-output" class="ui-core-demo__output">Ожидаем ответ от CoreBridge…</pre>
-</section>
+{#
+    //TODO: Исправить историю обновлений в деталке элемента каталога:
+    //TODO:  - каждое обновления своя дата (сколько обновлений - столько дат)
+    //TODO:  - дата последнего изменения тоже нужна для вывода
+    //TODO:  - каждое изменение своя дата
+#}
 
 
-{% put scripts %}
-<script>
-// Утилита ожидает, пока window.UI инициализируется (ассеты подключаются компонентом uiCore)
-function uiCoreReady(callback) {
-    if (window.UI && UI.request) {
-        callback(UI);
-        return;
-    }
-
-    const timer = window.setInterval(function () {
-        if (window.UI && UI.request) {
-            window.clearInterval(timer);
-            callback(UI);
-        }
-    }, 50);
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    uiCoreReady(function (UI) {
-        const toastButton = document.getElementById('ui-demo-toast');
-        const modalButton = document.getElementById('ui-demo-modal');
-        const requestButton = document.getElementById('ui-demo-request');
-        const output = document.getElementById('ui-demo-output');
-
-        // Показ тостов (success / error / info) одной кнопкой
-        toastButton.addEventListener('click', function () {
-            UI.toast.success('✅ Операция прошла успешно.', { position: 'bottom-right', timeout: 4000 });
-            UI.toast.error('⚠️ Ошибка для демонстрации.', { position: 'top-center', timeout: 10000 });
-            UI.toast.info('ℹ️ Информационное сообщение.');
-        });
-
-        // Открытие модального окна с кастомными action-кнопками UiCore
-        modalButton.addEventListener('click', function () {
-            UI.modal.open('<p>UiCore modal: любой HTML здесь.</p>', {
-                title: 'UiCore Modal',
-                actions: [
-                    {
-                        label: 'Закрыть',
-                        variant: 'ghost',
-                        onClick: function () {
-                            UI.toast.info('Модалка закрыта.');
-                        },
-                    },
-                ],
-            });
-        });
-
-        // Демонстрация loader + Snowboard AJAX через UI.request
-        requestButton.addEventListener('click', function () {
-            UI.request(requestButton, 'uiCore::onPing', {
-                success: function (response) {
-                    output.textContent = JSON.stringify(response.data, null, 2);
-                    UI.toast.success('Сервер ответил: ' + response.data.timestamp);
-                },
-                error: function () {
-                    UI.toast.error('CoreBridge недоступен.');
-                },
-            });
-        });
-    });
-});
-</script>
-{% endput %}

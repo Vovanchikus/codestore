@@ -1,0 +1,91 @@
+@use "../../abstracts/variables" as *;
+@use "../../abstracts/functions" as fn;
+
+.catalog__categories {
+    width: 100%;
+    &-list {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+.catalog__category {
+    &-link {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        gap: 12px;
+
+        &:hover {
+            .catalog__category-icon {
+                color: $text-light;
+                background-color: $bg-brand;
+                box-shadow: $button-brand-shadow-default;
+            }
+
+            .catalog__category-title {
+                color: $text-title;
+                span {
+                    color: $text-info;
+                    background-color: $bg-info;
+                }
+            }
+        }
+
+        &:active {
+            .catalog__category-icon {
+                box-shadow: none;
+            }
+        }
+    }
+
+    &-icon {
+        display: flex;
+        padding: 12px;
+        color: $text-body;
+        background-color: $neutral-200;
+        border-radius: $radius-full;
+        transition: all $transition;
+    }
+
+    &-info {
+        flex: 1;
+    }
+
+    &-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: fn.rem(14px);
+        line-height: fn.rem(16px);
+        font-weight: 500;
+        color: $text-body;
+        transition: all $transition;
+
+        span {
+            font-size: fn.rem(13px);
+            line-height: 1;
+            padding: fn.rem(4px) fn.rem(10px);
+            background-color: $neutral-200;
+            border-radius: $radius-sm;
+            transition: all $transition;
+        }
+    }
+
+    &-subtitle {
+        margin-top: fn.rem(4px);
+        font-size: fn.rem(12px);
+        line-height: 1;
+        font-weight: 500;
+        color: $text-subtitle;
+    }
+
+    &-count {
+        background: $neutral-300;
+        padding: fn.rem(4px) fn.rem(8px);
+        border-radius: $radius-sm;
+        font-weight: 600;
+        color: $text-body;
+    }
+}

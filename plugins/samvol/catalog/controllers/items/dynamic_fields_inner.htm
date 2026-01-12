@@ -1,0 +1,21 @@
+<?php
+    $message = $catalogDynamicFieldMessage ?? null;
+    $messageType = $catalogDynamicFieldMessageType ?? 'info';
+    $fieldNames = $catalogDynamicFieldNames ?? [];
+?>
+
+<?php if ($message): ?>
+<p class="flash-message static <?= e($messageType) ?>">
+    <?= e($message) ?>
+</p>
+<?php elseif ($formWidget && $fieldNames): ?>
+<?php foreach ($fieldNames as $fieldName): ?>
+<?php if ($formFieldObject = $formWidget->getField($fieldName)): ?>
+<?= $formWidget->renderField($formFieldObject) ?>
+<?php endif; ?>
+<?php endforeach; ?>
+<?php else: ?>
+<p class="flash-message static warning">
+    Выберите каталог, чтобы загрузить связанные динамические поля.
+</p>
+<?php endif; ?>

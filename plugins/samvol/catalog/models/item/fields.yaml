@@ -31,9 +31,17 @@ tabs:
             useTimezone: true
             tab: Основное
             span: right
+        
+        manual_raise:
+            label: Поднять материал
+            comment: Обновляет дату публикации и добавляет запись в историю.
+            type: checkbox
+            tab: Основное
+            span: left
         dynamic_fields_placeholder:
             label: Dynamic fields
             type: partial
             path: $/samvol/catalog/controllers/items/_dynamic_fields_placeholder.htm
             dependsOn: catalog_id
             tab: Dynamic Fields
+        

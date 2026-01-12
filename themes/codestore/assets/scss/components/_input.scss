@@ -1,0 +1,29 @@
+@use "../abstracts/variables" as *;
+
+/* Поиск в шапке */
+
+form.header-search__form {
+    position: relative;
+}
+
+input.header-search__input {
+    width: 100%;
+    padding: 16px 16px 16px 56px;
+    color: $text-body;
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: 24px center;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 1px solid var(--bg-brand);
+    border-radius: 0px;
+}
+
+.header-search__input-icon {
+    position: absolute;
+    display: flex;
+    top: 15px;
+    left: 24px;
+    color: $text-brand;
+}

@@ -1,3 +1,7 @@
+<?php
+use Samvol\Catalog\Models\Catalog;
+$catalogs = Catalog::orderBy('name')->get();
+?>
 <div class="toolbar">
     <div class="btn-group">
         <a

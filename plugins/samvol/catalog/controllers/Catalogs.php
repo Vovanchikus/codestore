@@ -89,4 +89,41 @@ class Catalogs extends Controller
         return $this->relationRefresh('fields');
     }
 
+    public function onRefreshTrackDropdowns()
+    {
+        $formWidget = $this->formGetWidget();
+        $model = $formWidget ? $formWidget->model : null;
+
+        if ($model instanceof Catalog) {
+            // propagate session key for unsaved models to allow deferred fields
+            if (!$model->exists && $formWidget->getSessionKey()) {
+                $model->sessionKey = $formWidget->getSessionKey();
+            }
+
+            return [
+                'options' => [
+                    'track' => $model->getTrackUpdatesFieldOptions(),
+                    'log'   => $model->getTrackUpdatesLogFieldOptions(),
+                ],
+            ];
+        }
+
+        return ['options' => ['track' => [], 'log' => []]];
+    }
+
+    /**
+     * AJAX handler: set selected catalog id into session for other controllers to read
+     */
+    public function onSetSelectedCatalog()
+    {
+        $id = (int) post('id');
+        if ($id > 0) {
+            request()->session()->put('samvol_selected_catalog', $id);
+            return ['status' => 'ok', 'catalog_id' => $id];
+        }
+
+        request()->session()->forget('samvol_selected_catalog');
+        return ['status' => 'cleared'];
+    }
+
 }

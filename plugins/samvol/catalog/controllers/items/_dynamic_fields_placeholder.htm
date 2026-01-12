@@ -4,6 +4,7 @@
     $fieldNames = $catalogDynamicFieldNames ?? [];
 ?>
 
+<div id="sv-dynamic-fields-container">
 <?php if ($message): ?>
 <p class="flash-message static <?= e($messageType) ?>">
     <?= e($message) ?>
@@ -19,3 +20,83 @@
     Выберите каталог слева, чтобы загрузить связанные динамические поля.
 </p>
 <?php endif; ?>
+</div>
+
+<style>
+    /* Ensure fileupload controls inserted into dynamic fields receive clicks */
+    #sv-dynamic-fields-container [data-control="fileupload"] {
+        position: relative;
+        z-index: 20;
+        pointer-events: auto;
+    }
+</style>
+
+<script>
+    (function(){
+        function findCatalogSelect(){
+            // try several common selectors used by backend widgets
+            return document.querySelector(
+                'select[name="Item[catalog_id]"], select[name="catalog_id"], select[data-field-name="catalog_id"], select[id$="_catalog_id"], select[name$="[catalog_id]"]'
+            );
+        }
+
+        var sv_lastCatalogValue = null;
+        function refreshDynamicFields(value){
+            console.debug('sv:refreshDynamicFields', value);
+            if (sv_lastCatalogValue !== null && String(sv_lastCatalogValue) === String(value)) {
+                console.debug('sv:skip duplicate catalog value', value);
+                return;
+            }
+            sv_lastCatalogValue = value;
+            var sessionEl = document.querySelector('input[name="_session_key"]');
+            var sessionKey = sessionEl ? sessionEl.value : null;
+            var data = {
+                'catalog_id': value,
+                'Item[catalog_id]': value
+            };
+            if (sessionKey) data._session_key = sessionKey;
+
+            $.request('onLoadDynamicFields', {
+                data: data,
+                success: function(data){
+                    console.debug('sv:onLoadDynamicFields success', data);
+                    if (data && data.html) {
+                        var container = document.getElementById('sv-dynamic-fields-container');
+                        if (container) {
+                            container.innerHTML = data.html;
+                            try {
+                                // Re-initialize fileupload widgets inside the injected html
+                                var $c = $(container);
+                                if ($c.find('[data-control="fileupload"]').length) {
+                                    $c.find('[data-control="fileupload"]').fileUploader();
+                                }
+                            } catch (e) {
+                                console.warn('sv:reinit widgets failed', e);
+                            }
+                        }
+                    }
+                },
+                error: function(err){
+                    console.error('sv:onLoadDynamicFields error', err);
+                }
+            });
+        }
+
+        // Delegate change events so we catch the catalog select even if the form renders later
+        // Use jQuery delegated handler and broad name selector to catch hidden inputs/selects
+        $(document).on('change input', '[name*="catalog_id"], [data-field-name="catalog_id"]', function(e){
+            var val = $(this).val();
+            console.debug('sv:catalog change detected', this, val);
+            refreshDynamicFields(val);
+        });
+
+        // Try immediate initialization if select is already present
+        (function tryInit(){
+            var sel = findCatalogSelect();
+            if (sel && sel.value) {
+                refreshDynamicFields(sel.value);
+            }
+            if (!sel) setTimeout(tryInit, 120);
+        })();
+    })();
+</script>

@@ -357,6 +357,34 @@ Choose either an uploaded icon or SVG code, not both.
 -   `fields` — схема динамических полей.
 -   `features` — функции каталога.
 
+**Пример скачивания файла с правильным именем:**
+
+```twig
+{% if item.archive %}
+    <a href="{{ item.archive.path }}"
+       class="btn btn-link"
+       download="{{ item.archive.file_name }}"
+       data-request="catalogItem::onDownload"
+       data-request-success="if (data && data.link) { window.location = data.link; } else { window.location = this.href; }"
+       data-request-error="window.location = this.href">
+       Скачать файл
+    </a>
+{% endif %}
+```
+
+-   `download` задаёт имя файла для браузера — берём `item.archive.file_name`.
+-   `data-request` вызывает `catalogItem::onDownload`, который считает загрузку и может вернуть прямую ссылку.
+-   При ошибке или отсутствии JS ссылка остаётся рабочей.
+
+**Пример вывода истории обновлений (partial):**
+
+```twig
+{# замените log_field на ваш код #}
+{% partial 'catalog/update_history' history=item.data['update_log'] %}
+```
+
+Партиал `partials/catalog/update_history.htm` выводит дату и текст каждого изменения.
+
 Пример:
 
 ```twig
@@ -469,6 +497,15 @@ AJAX-ответ содержит `item` и стандартные сообщен
 
 Плагин поддерживает конфигурируемую сортировку списков элементов через компонент `catalogList` и сервис `services/CatalogSorting`.
 
+### Коды сортировки (code → объяснение)
+
+-   `date_desc` — по дате публикации, новые выше.
+-   `date_asc` — по дате публикации, старые выше.
+-   `title_asc` — по названию (JSON `data.title`) A–Z.
+-   `title_desc` — по названию (JSON `data.title`) Z–A.
+-   `downloads_desc` — по количеству загрузок, популярные выше.
+-   `views_desc` — по количеству просмотров, популярные выше.
+
 ### Настройка сортировки в бэкенде
 
 Во вкладке **Настройки** каталога:
@@ -483,6 +520,16 @@ AJAX-ответ содержит `item` и стандартные сообщен
 -   валидирует коды сортировок и их метки;
 -   хранит список разрешённых вариантов;
 -   применяет сортировку к запросу элементов.
+
+### Отслеживание обновлений
+
+-   Включается в каталоге: **Настройки → Отслеживание обновлений → Включить**.
+-   Поле для отслеживания (`track_updates_field`) — стандартное (`updated_at`, `published_at`, `version`) или любое динамическое.
+-   Поле для истории (`track_updates_log_field`) — код в `data`, который вы задаёте сами. Его можно выбрать среди существующих полей на вкладке **Поля** или создать через кнопку «Создать поле» рядом; код вводится вручную в модалке при создании.
+-   При изменении отслеживаемого поля в `Item::beforeSave` добавляется запись `{ date: 'YYYY-MM-DD HH:MM:SS', text: 'Изменено поле: ...' }` в лог и материал автоматически поднимается (обновляется `published_at`).
+-   Если отслеживание выключено и чекбокс «Поднять материал» не выбран — элемент остаётся на месте.
+-   В форме элемента есть чекбокс «Поднять материал» — он сразу обновляет `published_at` и добавляет запись с `manual: true` в историю даже без изменения поля.
+-   Формат `data._update_history`: массив объектов вида `{ ts: 'YYYY-MM-DD HH:MM:SS', field: 'code'|null, manual: true|false }`. Старые строковые значения тоже поддерживаются.
 
 ### Использование во фронтенде
 
@@ -558,6 +605,47 @@ categorySlug = "{{ :slug }}"
     -   `CatalogSorting::resolveSortCode()` — нормализация и проверка кода;
     -   `CatalogSorting::applySorting()` — применение сортировки к запросу.
 -   JavaScript не обязателен: форма работает как обычный GET-запрос, URL обновляется автоматически.
+
+#### Пример вывода даты обновления и истории обновлений
+
+```twig
+{# В списке: показываем последнюю дату обновления и количество правок #}
+{% for record in items %}
+    <article>
+        <h3>{{ record.display_name }}</h3>
+        <p>Опубликовано: {{ record.published_at|date('d.m.Y H:i') }}</p>
+        <p>Последнее обновление: {{ record.updated_at|date('d.m.Y H:i') }}</p>
+
+        {% set history = record.data['_update_history'] ?? [] %}
+        {% if history|length %}
+            {% set last = history|last %}
+            {% set lastTs = last.ts is defined ? last.ts : last %}
+            <p>Правок: {{ history|length }}, последние: {{ lastTs|date('d.m.Y H:i') }}</p>
+        {% endif %}
+    </article>
+{% endfor %}
+
+{# На детальной странице: выводим полную историю #}
+{% set itemHistory = item.data['_update_history'] ?? [] %}
+{% if itemHistory|length %}
+    <h4>История обновлений</h4>
+    <ul>
+        {% for entry in itemHistory %}
+            {% set ts = entry.ts is defined ? entry.ts : entry %}
+            {% set field = entry.field is defined ? entry.field : null %}
+            {% set manual = entry.manual is defined ? entry.manual : false %}
+            <li>
+                {{ ts|date('d.m.Y H:i') }}
+                {% if manual %}
+                    — ручной подъём
+                {% elseif field %}
+                    — изменено поле {{ field }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+```
 
 ---
 

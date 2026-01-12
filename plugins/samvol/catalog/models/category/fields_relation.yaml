@@ -61,6 +61,6 @@ fields:
     data:
         label: Data (JSON)
         type: codeeditor
-        language: json
+        language: javascript
         size: huge
         span: full

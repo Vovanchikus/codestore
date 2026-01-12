@@ -1,0 +1,14 @@
+{% set entries = history ?? [] %}
+{% if entries|length %}
+<div class="catalog-update-history">
+    <h4>История обновлений</h4>
+    <ul>
+        {% for entry in entries %}
+            <li>
+                <span class="update-date">{{ entry.date|date('d.m.Y H:i') }}</span>
+                <span class="update-text">{{ entry.text }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}

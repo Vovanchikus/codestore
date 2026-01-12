@@ -1,0 +1,205 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+    width: 100%;
+
+    &__left {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex: 10;
+        padding: fn.rem(8px) fn.rem(8px) fn.rem(8px) fn.rem(24px);
+        background-color: $bg-box;
+        border-radius: $radius-full;
+        box-shadow: $box-light-shadow;
+    }
+
+    &__right {
+        display: flex;
+        justify-content: end;
+        align-items: center;
+        gap: 12px;
+        padding: fn.rem(8px);
+        background-color: $bg-box;
+        border-radius: $radius-full;
+        box-shadow: $box-light-shadow;
+    }
+}
+
+.header-nav {
+    font-size: fn.rem(14px);
+    font-weight: 500;
+
+    &__list {
+        display: flex;
+        align-items: center;
+    }
+
+    &__item {
+    }
+
+    &__link {
+        display: block;
+        color: $text-body;
+        padding: fn.rem(16px) fn.rem(24px);
+        transition: background-color $transition, transform $transition;
+        border-radius: $radius-full;
+
+        &:hover {
+            color: $text-body;
+            background-color: $neutral-200;
+        }
+
+        &:active {
+            transform: $scale;
+            background-color: $neutral-300;
+        }
+    }
+}
+
+.header-search {
+    &__button {
+        display: flex;
+        color: $text-subtitle;
+        padding: fn.rem(12px);
+        border: 1px solid $border;
+        border-radius: $radius-full;
+        transition: all $transition;
+        cursor: pointer;
+
+        &:hover {
+            color: $text-body;
+        }
+
+        &:active {
+            background-color: $neutral-300;
+        }
+    }
+}
+
+.header-notification {
+    position: relative;
+
+    &__button {
+        display: flex;
+        color: $text-subtitle;
+        padding: fn.rem(12px);
+        border-radius: $radius-full;
+        transition: all $transition;
+        cursor: not-allowed;
+
+        &:hover {
+            color: $text-body;
+        }
+
+        &.active {
+            color: $text-light;
+            background-color: $bg-brand;
+            box-shadow: $button-brand-shadow-default;
+        }
+    }
+
+    &__dropdown {
+        position: absolute;
+    }
+}
+
+.header-profile {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &__avatar {
+        height: 48px;
+        cursor: pointer;
+        img {
+            width: 48px;
+            height: 48px;
+            border-radius: $radius-full;
+        }
+    }
+
+    &__dropdown {
+        position: absolute;
+        top: calc(100% + 20px);
+        right: 0;
+        width: 244px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-12px);
+        transition: all $transition;
+    }
+
+    &__item {
+        margin-bottom: fn.rem(4px);
+        transform: translateY(-8px);
+        transition: all $transition;
+    }
+
+    &__link {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        gap: 12px;
+        font-size: fn.rem(14px);
+        line-height: fn.rem(16px);
+        font-weight: 500;
+        color: $text-body;
+        padding: fn.rem(12px) fn.rem(8px);
+        border-radius: $radius-sm;
+        transition: all $transition;
+        &:hover {
+            color: $text-title;
+            background-color: $neutral-200;
+        }
+        &:active {
+            transform: scale(0.97);
+        }
+        span {
+            font-size: fn.rem(12px);
+            line-height: 1;
+            color: $text-subtitle;
+        }
+
+        &--right {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        &--icon {
+            margin: 0 fn.rem(8px);
+        }
+    }
+}
+
+.header-profile__avatar.active .header-profile__dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0px);
+}
+
+.header-profile__dropdown.active .header-profile__item {
+    &:nth-child(1) {
+        transform: translateX(0);
+    }
+    &:nth-child(2) {
+        transform: translateX(0);
+        transition-delay: 0.12s;
+    }
+    &:nth-child(3) {
+        transform: translateX(0);
+        transition-delay: 0.24s;
+    }
+    &:nth-child(4) {
+        transform: translateX(0);
+        transition-delay: 0.36s;
+    }
+}

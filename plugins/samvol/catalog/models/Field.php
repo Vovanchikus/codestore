@@ -37,7 +37,10 @@ class Field extends Model
     public function beforeValidate(): void
     {
         if ($this->code) {
-            $this->code = Str::slug($this->code, '_');
+            // Preserve leading underscore (e.g. for internal fields like _update_log)
+            $leadingUnderscore = str_starts_with($this->code, '_');
+            $slug = Str::slug(ltrim($this->code, '_'), '_');
+            $this->code = $leadingUnderscore ? '_' . $slug : $slug;
         }
 
         $catalogId = $this->catalog_id ?: ($this->catalog ? $this->catalog->id : null);

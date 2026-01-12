@@ -1,0 +1,30 @@
+{# Вывод категорий каталога с ссылками на фильтр по categorySlug #}
+{% if categories|length %}
+  <div class="catalog__categories">
+    <ul class="catalog__categories-list">
+      {% for cat in categories %}
+
+      <li class="catalog__category">
+        <a href="{{ 'catalog/catalog-category'|page({ catalogCode: catalog.code, categorySlug: cat.slug }) }}" class="catalog__category-link">
+
+          <div class="catalog__category-icon">
+            {% if cat.icon %}
+                <img src="{{ cat.icon.path }}" alt="{{ cat.name }} ">
+            {% elseif cat.icon_svg %}
+                {{ cat.icon_svg|raw }}
+            {% endif %}
+          </div>
+
+          <div class="catalog__category-info">
+            <div class="catalog__category-title">{{ cat.name }} <span class="catalog__category-count">{{ cat.items_count|default(0) }}</span></div>
+            <div class="catalog__category-subtitle">{{ cat.description }}</div>
+          </div>
+
+        </a>
+      </li>
+
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+

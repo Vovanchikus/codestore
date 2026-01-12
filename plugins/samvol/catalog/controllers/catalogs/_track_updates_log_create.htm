@@ -1,0 +1,470 @@
+<div style="display: flex; align-items: flex-end; gap: 8px; margin-top: 24px">
+    <button type="button" class="btn btn-secondary" data-track-log-create>
+        Создать поле
+    </button>
+</div>
+<p class="help-block">
+    Доступно после сохранения каталога (как и на вкладке «Поля»).
+</p>
+<script>
+    (function () {
+        var btn = document.querySelector("[data-track-log-create]");
+        if (!btn) return;
+
+        console.info("track-log-create: script init");
+
+        // TEMP DEBUG: global ajaxSuccess logger to trace relation AJAX calls
+        $(document).ajaxSuccess(function (event, xhr, settings) {
+            try {
+                console.info("track-log-create: global ajaxSuccess", {
+                    url: settings.url || settings,
+                    settings: settings,
+                });
+
+                // If the AJAX response contains relation partials for fields, refresh dropdowns
+                var keys = null;
+                if (
+                    settings &&
+                    settings.url &&
+                    typeof settings.url === "object"
+                ) {
+                    keys = Object.keys(settings.url);
+                }
+
+                var shouldRefresh = false;
+                if (keys) {
+                    keys.forEach(function (k) {
+                        if (
+                            k.indexOf("RelationController-fields") !== -1 ||
+                            k.indexOf("fields-view") !== -1
+                        ) {
+                            shouldRefresh = true;
+                        }
+                    });
+                }
+
+                // Also check settings.data payload for relation indicators
+                if (!shouldRefresh && settings && settings.data) {
+                    var dataStr = "";
+                    try {
+                        dataStr =
+                            typeof settings.data === "string"
+                                ? settings.data
+                                : JSON.stringify(settings.data);
+                    } catch (e) {}
+                    if (
+                        dataStr.indexOf("_relation_field") !== -1 ||
+                        dataStr.indexOf("RelationController") !== -1
+                    ) {
+                        shouldRefresh = true;
+                    }
+                }
+
+                if (shouldRefresh) {
+                    console.info(
+                        "track-log-create: detected relation fields ajax, refreshing dropdowns"
+                    );
+                    refreshDropdowns();
+                }
+            } catch (e) {
+                console.warn("track-log-create: global ajaxSuccess error", e);
+            }
+        });
+
+        // TEMP DEBUG: listen to relationBehavior change events on fields container
+        $(document).on(
+            "change.oc.formwidget",
+            '[data-field-name="fields"]',
+            function (ev, data) {
+                console.info(
+                    "track-log-create: relation change.oc.formwidget fired",
+                    data
+                );
+            }
+        );
+
+        var LOG_CODE = "update_log";
+        var LOG_NAME = "История обновлений";
+        var autofillTimer = null;
+        var logCreateActive = false;
+        var logCreateResetTimer = null;
+
+        function selectLogOption(nameOverride) {
+            var dropdown = document.querySelector(
+                'select[name$="[track_updates_log_field]"]'
+            );
+            if (!dropdown) return;
+
+            var code = LOG_CODE;
+            var name = nameOverride || LOG_NAME || code;
+
+            var exists = dropdown.querySelector('option[value="' + code + '"]');
+            if (!exists) {
+                var opt = document.createElement("option");
+                opt.value = code;
+                opt.textContent = name;
+                dropdown.appendChild(opt);
+            }
+
+            dropdown.value = code;
+            $(dropdown).trigger("change");
+            console.info(
+                "track-log-create: selected log field in dropdown",
+                code
+            );
+        }
+
+        function startAutofill() {
+            if (autofillTimer) {
+                clearInterval(autofillTimer);
+            }
+
+            var deadline = Date.now() + 5000;
+
+            autofillTimer = setInterval(function () {
+                if (Date.now() > deadline) {
+                    clearInterval(autofillTimer);
+                    return;
+                }
+
+                var popup = document.querySelector(
+                    ".control-popup.modal.in, .control-popup.modal.show, .control-popup.modal.fade.in"
+                );
+                if (!popup) return;
+
+                var relationField = popup.querySelector(
+                    'input[name="_relation_field"][value="fields"]'
+                );
+                if (!relationField) return;
+
+                // Attach once to the popup form to catch its ajaxSuccess directly
+                var popupForm = popup.querySelector("form");
+                if (popupForm && !popupForm.dataset.logCreateHooked) {
+                    popupForm.dataset.logCreateHooked = "1";
+                    $(popupForm).on(
+                        "ajaxSuccess.trackLogCreateForm",
+                        function () {
+                            selectLogOption(
+                                popupForm
+                                    .querySelector('input[name$="[name]"]')
+                                    ?.value?.trim()
+                            );
+                            logCreateActive = false;
+                            if (logCreateResetTimer) {
+                                clearTimeout(logCreateResetTimer);
+                            }
+                        }
+                    );
+                }
+
+                var codeValue = LOG_CODE;
+
+                var nameInput = popup.querySelector('input[name$="[name]"]');
+                var codeInput = popup.querySelector('input[name$="[code]"]');
+                var typeSelect = popup.querySelector('select[name$="[type]"]');
+                var requiredSwitch = popup.querySelector(
+                    'input[type="checkbox"][name$="[is_required]"]'
+                );
+                var enabledSwitch = popup.querySelector(
+                    'input[type="checkbox"][name$="[is_enabled]"]'
+                );
+                var enabledHidden = popup.querySelector(
+                    'input[type="hidden"][name$="[is_enabled]"]'
+                );
+                var sortInput = popup.querySelector(
+                    'input[name$="[sort_order]"]'
+                );
+
+                if (nameInput && !nameInput.value) nameInput.value = LOG_NAME;
+                if (codeInput) {
+                    if (codeInput.value !== codeValue) {
+                        codeInput.value = codeValue;
+                        codeInput.dispatchEvent(
+                            new Event("input", { bubbles: true })
+                        );
+                    }
+                    codeInput.readOnly = true;
+                }
+                if (typeSelect && typeSelect.value !== "textarea") {
+                    typeSelect.value = "textarea";
+                    $(typeSelect).trigger("change");
+                }
+                if (requiredSwitch) {
+                    requiredSwitch.checked = false;
+                    requiredSwitch.dispatchEvent(
+                        new Event("change", { bubbles: true })
+                    );
+                }
+                if (enabledSwitch) {
+                    enabledSwitch.checked = true;
+                    enabledSwitch.dispatchEvent(
+                        new Event("change", { bubbles: true })
+                    );
+                }
+                if (enabledHidden) {
+                    enabledHidden.value = 1;
+                }
+                if (sortInput && !sortInput.value) sortInput.value = 999;
+
+                clearInterval(autofillTimer);
+                console.info("track-log-create: modal prefilled for log field");
+            }, 200);
+        }
+
+        function markCreateActive() {
+            logCreateActive = true;
+            if (logCreateResetTimer) {
+                clearTimeout(logCreateResetTimer);
+            }
+            logCreateResetTimer = setTimeout(function () {
+                logCreateActive = false;
+            }, 8000);
+        }
+
+        function refreshDropdowns(callback) {
+            var form = $(btn).closest("form");
+            if (!form.length) {
+                console.warn("track-log-create: no form found for refresh");
+                return;
+            }
+
+            form.request("onRefreshTrackDropdowns", {
+                success: function (data) {
+                    console.info(
+                        "track-log-create: refreshed dropdown options",
+                        data
+                    );
+                    if (data && data.options) {
+                        var track = data.options.track || {};
+                        var log = data.options.log || {};
+                        applyOptions(
+                            document.querySelector(
+                                'select[name$="[track_updates_field]"]'
+                            ),
+                            track
+                        );
+                        applyOptions(
+                            document.querySelector(
+                                'select[name$="[track_updates_log_field]"]'
+                            ),
+                            log
+                        );
+                    }
+                    if (typeof callback === "function") callback();
+                },
+                error: function () {
+                    console.warn(
+                        "track-log-create: refresh dropdowns error",
+                        arguments
+                    );
+                    if (typeof callback === "function") callback();
+                },
+            });
+        }
+
+        function applyOptions(select, optionsMap) {
+            if (!select) return;
+            var current = select.value;
+            var placeholder =
+                select.getAttribute("data-placeholder") ||
+                select.getAttribute("placeholder") ||
+                "";
+
+            while (select.options.length) {
+                select.remove(0);
+            }
+
+            if (placeholder !== null) {
+                var ph = document.createElement("option");
+                ph.value = "";
+                ph.textContent = placeholder || "—";
+                select.appendChild(ph);
+            }
+
+            Object.keys(optionsMap || {}).forEach(function (key) {
+                var opt = document.createElement("option");
+                opt.value = key;
+                opt.textContent = optionsMap[key];
+                select.appendChild(opt);
+            });
+
+            if (current && optionsMap && optionsMap[current]) {
+                select.value = current;
+            } else {
+                select.value = "";
+            }
+
+            $(select).trigger("change");
+            console.info("track-log-create: applyOptions", select.name, {
+                current: current,
+                newValue: select.value,
+                options: optionsMap,
+            });
+        }
+
+        function handleAjaxSuccess(event, context, data) {
+            if (!context) return;
+
+            var handler = context.handler;
+            var rqData =
+                context.options && context.options.data
+                    ? context.options.data
+                    : {};
+            var relField = rqData._relation_field || rqData.relation || null;
+            if (relField !== "fields") return;
+
+            var isCreate = handler === "onRelationManageCreate";
+            var isDelete =
+                handler === "onRelationManageDelete" ||
+                handler === "onRelationManageRemove" ||
+                handler === "onRelationButtonDelete" ||
+                handler === "onRelationButtonRemove";
+            var isUpdate =
+                handler === "onRelationManageUpdate" ||
+                handler === "onRelationButtonUpdate";
+
+            console.info("track-log-create: ajaxSuccess", {
+                handler: handler,
+                relField: relField,
+                isCreate: isCreate,
+                isDelete: isDelete,
+                isUpdate: isUpdate,
+                rqData: rqData,
+            });
+
+            // Always refresh on any change handler
+            refreshDropdowns(function () {
+                if (isCreate) {
+                    var formEl = context.element
+                        ? context.element.closest("form")
+                        : null;
+                    var nameInput = formEl
+                        ? formEl.querySelector('input[name$="[name]"]')
+                        : null;
+                    var name = nameInput ? nameInput.value.trim() : "";
+                    selectLogOption(name || LOG_NAME);
+                    logCreateActive = false;
+                    if (logCreateResetTimer) {
+                        clearTimeout(logCreateResetTimer);
+                    }
+                    console.info(
+                        "track-log-create: selected newly created log field (ajaxSuccess)",
+                        LOG_CODE
+                    );
+                }
+            });
+
+            if (isDelete) {
+                console.info(
+                    "track-log-create: relation delete detected, dropdowns refreshed"
+                );
+            }
+            if (isUpdate) {
+                console.info(
+                    "track-log-create: relation update detected, dropdowns refreshed"
+                );
+            }
+        }
+
+        // Listen to relation AJAX successes to sync dropdowns and select on create
+        $(document).on("ajaxSuccess.oc.trackLogCreate", handleAjaxSuccess);
+        $(document).on("ajaxSuccess.trackLogCreateFallback", handleAjaxSuccess);
+
+        // Also listen to relation change events to debug
+        $(document).on(
+            "change.oc.formwidget.trackLogCreateDebug",
+            '[data-field-name="fields"]',
+            function (ev, data) {
+                console.info(
+                    "track-log-create: change.oc.formwidget event",
+                    data
+                );
+            }
+        );
+
+        // Listen to relation widget change events (created/removed/deleted) to sync dropdown
+        $(document).on(
+            "change.oc.formwidget.trackLogCreate",
+            '[data-field-name="fields"]',
+            function (ev, data) {
+                if (!data) return;
+
+                if (logCreateActive && data.event === "created") {
+                    refreshDropdowns(function () {
+                        selectLogOption(LOG_NAME);
+                        logCreateActive = false;
+                        if (logCreateResetTimer) {
+                            clearTimeout(logCreateResetTimer);
+                        }
+                        console.info(
+                            "track-log-create: selected newly created log field via relation change",
+                            LOG_CODE
+                        );
+                    });
+                    return;
+                }
+
+                if (data.event === "removed" || data.event === "deleted") {
+                    refreshDropdowns(function () {
+                        var dropdown = document.querySelector(
+                            'select[name$="[track_updates_log_field]"]'
+                        );
+                        if (dropdown && dropdown.value === LOG_CODE) {
+                            dropdown.value = "";
+                            $(dropdown).trigger("change");
+                            console.info(
+                                "track-log-create: cleared log dropdown after field removal"
+                            );
+                        }
+                    });
+                }
+            }
+        );
+
+        btn.addEventListener("click", function (ev) {
+            ev.preventDefault();
+
+            var containers = document.querySelectorAll("div.relation-behavior");
+            var target = null;
+
+            containers.forEach(function (el) {
+                var data = el.getAttribute("data-request-data") || "";
+                if (
+                    data.indexOf('_relation_field: "fields"') !== -1 ||
+                    data.indexOf("_relation_field: 'fields'") !== -1
+                ) {
+                    target = el;
+                }
+            });
+
+            if (!target) {
+                $.wn.flashMsg({
+                    text: "Сохраните каталог, чтобы создавать поле (relation fields не найден).",
+                    class: "error",
+                });
+                console.warn("track-log-create: relation container not found");
+                return false;
+            }
+
+            var createBtn = target.querySelector(
+                'a[data-handler="onRelationButtonCreate"]'
+            );
+            if (createBtn) {
+                console.info("track-log-create: opening relation create popup");
+                startAutofill();
+                markCreateActive();
+                createBtn.click();
+                return false;
+            }
+
+            $.wn.flashMsg({
+                text: "Не удалось найти кнопку создания поля.",
+                class: "error",
+            });
+            console.warn(
+                "track-log-create: create button not found inside relation container"
+            );
+            return false;
+        });
+    })();
+</script>

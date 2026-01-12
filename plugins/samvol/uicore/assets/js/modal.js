@@ -1,211 +1,175 @@
 (function (root, factory) {
     root.SamvolUiCoreModules = root.SamvolUiCoreModules || {};
-    root.SamvolUiCoreModules.modal = factory;
+    root.SamvolUiCoreModules.modal = factory(root.SamvolUiCoreModules);
 })(window, function (UI) {
     "use strict";
 
-    let activeModal = null;
+    // ===============================
+    // DOM
+    // ===============================
 
-    const buildMarkup = (options) => {
-        const overlay = document.createElement("div");
-        overlay.className = "ui-core-modal";
-        overlay.setAttribute("role", "dialog");
-        overlay.setAttribute("aria-modal", "true");
+    const modal = document.querySelector("modal");
+    if (!modal) {
+        console.warn("[UiCore Modal] #modal-container not found");
+        return {};
+    }
 
-        const dialog = document.createElement("div");
-        dialog.className = "ui-core-modal__dialog";
+    const windowEl = modal.querySelector(".modal-window");
+    const headerEl = modal.querySelector(".modal-header");
+    const titleEl = modal.querySelector(".modal-title");
+    const contentEl = modal.querySelector(".modal-content");
+    const footerEl = modal.querySelector(".modal-footer");
+    const closeBtn = modal.querySelector(".modal-close");
 
-        if (options && options.title) {
-            const title = document.createElement("div");
-            title.className = "ui-core-modal__title";
-            title.textContent = options.title;
-            dialog.appendChild(title);
-        }
+    let isOpen = false;
 
-        const body = document.createElement("div");
-        body.className = "ui-core-modal__body";
-        dialog.appendChild(body);
+    // ===============================
+    // Helpers
+    // ===============================
 
-        const footer = document.createElement("div");
-        footer.className = "ui-core-modal__footer";
-        dialog.appendChild(footer);
-
-        overlay.appendChild(dialog);
-        return { overlay, body, footer };
-    };
-
-    const mountContent = (body, content) => {
-        if (!content) {
-            body.textContent = "";
+    const setTitle = (title) => {
+        if (!title) {
+            headerEl.hidden = true;
+            titleEl.textContent = "";
             return;
         }
 
+        titleEl.textContent = title;
+        headerEl.hidden = false;
+    };
+
+    const setContent = (content) => {
+        contentEl.innerHTML = "";
+
+        if (!content) return;
+
         if (typeof content === "string") {
-            body.textContent = content;
+            contentEl.textContent = content;
             return;
         }
 
         if (content instanceof Node) {
-            body.innerHTML = "";
-            body.appendChild(content);
+            contentEl.appendChild(content);
             return;
         }
 
-        body.textContent = String(content);
+        contentEl.textContent = String(content);
     };
 
-    const renderActions = (footer, actions) => {
-        footer.innerHTML = "";
+    const renderActions = (actions) => {
+        footerEl.innerHTML = "";
 
         if (!Array.isArray(actions) || actions.length === 0) {
-            footer.style.display = "none";
+            footerEl.hidden = true;
             return;
         }
 
-        footer.style.display = "";
+        footerEl.hidden = false;
 
         actions.forEach((action) => {
-            const button = document.createElement("button");
-            button.type = "button";
-            button.className = `ui-core-button is-${
-                action.variant || "primary"
-            }`;
-            button.textContent = action.label || "Action";
-            button.addEventListener("click", () => {
+            const btn = document.createElement("button");
+
+            btn.type = "button";
+            btn.className = `ui-core-button is-${action.variant || "primary"}`;
+            btn.textContent = action.label || "Action";
+
+            btn.addEventListener("click", () => {
                 if (typeof action.onClick === "function") {
                     action.onClick();
                 }
+
                 if (action.dismiss !== false) {
-                    closeModal();
+                    close();
                 }
             });
-            footer.appendChild(button);
+
+            footerEl.appendChild(btn);
         });
     };
 
-    const trapFocus = (overlay) => {
-        const focusable = overlay.querySelectorAll(
-            "button, [href], input, select, textarea"
-        );
-        if (focusable.length === 0) {
-            return;
-        }
+    // ===============================
+    // Open / Close
+    // ===============================
 
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
+    const open = (content, options = {}) => {
+        if (isOpen) close();
 
-        const handleTab = (event) => {
-            if (event.key !== "Tab") {
-                return;
-            }
+        setTitle(options.title);
+        setContent(content);
+        renderActions(options.actions);
 
-            if (event.shiftKey && document.activeElement === first) {
-                event.preventDefault();
-                last.focus();
-            } else if (!event.shiftKey && document.activeElement === last) {
-                event.preventDefault();
-                first.focus();
-            }
+        modal.hidden = false;
+        document.body.classList.add("ui-core-modal-open");
+
+        isOpen = true;
+    };
+
+    const close = () => {
+        if (!isOpen) return;
+
+        modal.classList.add("is-closing");
+
+        const cleanup = () => {
+            modal.classList.remove("is-closing");
+            modal.hidden = true;
+
+            contentEl.innerHTML = "";
+            footerEl.innerHTML = "";
+            footerEl.hidden = true;
+
+            document.body.classList.remove("ui-core-modal-open");
+            isOpen = false;
         };
 
-        overlay.addEventListener("keydown", handleTab);
+        modal.addEventListener("transitionend", cleanup, { once: true });
+
+        setTimeout(cleanup, 300);
     };
 
-    const openModal = (content, options = {}) => {
-        closeModal();
+    // ===============================
+    // Events
+    // ===============================
 
-        const markup = buildMarkup(options);
-        mountContent(markup.body, content);
-        renderActions(markup.footer, options.actions);
+    closeBtn.addEventListener("click", close);
 
-        if (options.dismissible !== false) {
-            markup.overlay.addEventListener("click", (event) => {
-                if (event.target === markup.overlay) {
-                    closeModal();
-                }
-            });
-        }
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) close();
+    });
 
-        document.body.classList.add("ui-core-modal-open");
-        document.body.appendChild(markup.overlay);
-        trapFocus(markup.overlay);
+    window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") close();
+    });
 
-        activeModal = markup.overlay;
-
-        window.addEventListener("keydown", escListener);
-
-        return markup.overlay;
-    };
-
-    const escListener = (event) => {
-        if (event.key === "Escape") {
-            closeModal();
-        }
-    };
-
-    const closeModal = () => {
-        if (!activeModal) {
-            return;
-        }
-
-        window.removeEventListener("keydown", escListener);
-        activeModal.classList.add("is-closing");
-
-        const modalToRemove = activeModal;
-        activeModal = null;
-
-        modalToRemove.addEventListener(
-            "transitionend",
-            () => {
-                if (modalToRemove.parentNode) {
-                    modalToRemove.parentNode.removeChild(modalToRemove);
-                }
-                if (!document.querySelector(".ui-core-modal")) {
-                    document.body.classList.remove("ui-core-modal-open");
-                }
-            },
-            { once: true }
-        );
-
-        window.setTimeout(() => {
-            if (modalToRemove.parentNode) {
-                modalToRemove.parentNode.removeChild(modalToRemove);
-                if (!document.querySelector(".ui-core-modal")) {
-                    document.body.classList.remove("ui-core-modal-open");
-                }
-            }
-        }, 300);
-    };
+    // ===============================
+    // Public API
+    // ===============================
 
     const api = {
-        open(content, options) {
-            return openModal(content, options);
-        },
-        close() {
-            closeModal();
-        },
+        open,
+        close,
     };
+
+    // ===============================
+    // confirm()
+    // ===============================
 
     if (UI) {
         UI.confirm = (message, callback) => {
-            const onResolve = (result) => {
-                if (typeof callback === "function") {
-                    callback(result);
-                }
-            };
+            const wrapper = document.createElement("div");
+            wrapper.textContent = message;
 
-            api.open(message, {
+            api.open(wrapper, {
                 title: "Confirm",
                 actions: [
                     {
                         label: "Cancel",
                         variant: "ghost",
-                        onClick: () => onResolve(false),
+                        onClick: () => callback(false),
                     },
                     {
                         label: "Confirm",
                         variant: "primary",
-                        onClick: () => onResolve(true),
+                        onClick: () => callback(true),
                     },
                 ],
             });

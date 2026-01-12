@@ -1,0 +1,64 @@
+/*
+  data-tooltip="text"  - вставка в html для отображения текста
+  data-tooltip-pos="left" - выбор позиции (left,right,bottom и top - по умолчанию)
+ */
+
+@use "../abstracts/variables" as *;
+
+.tooltip {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.64);
+    color: $text-light;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: $box-light-shadow;
+    transition: opacity 0.15s;
+
+    &::after {
+        content: "";
+        position: absolute;
+        border: 6px solid transparent;
+    }
+
+    &[data-tooltip-pos="top"] {
+        &::after {
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-top-color: rgba(0, 0, 0, 0.64);
+        }
+    }
+
+    &[data-tooltip-pos="bottom"] {
+        &::after {
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-bottom-color: rgba(0, 0, 0, 0.64);
+        }
+    }
+
+    &[data-tooltip-pos="left"] {
+        &::after {
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-left-color: rgba(0, 0, 0, 0.64);
+        }
+    }
+
+    &[data-tooltip-pos="right"] {
+        &::after {
+            left: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-right-color: rgba(0, 0, 0, 0.64);
+        }
+    }
+}

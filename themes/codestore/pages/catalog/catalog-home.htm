@@ -1,56 +1,37 @@
 title = "Каталог"
 url = "/:catalogCode"
+layout = "default"
 
 [catalogList]
 catalogCode = "{{ :catalogCode }}"
 [catalogsList]
 ==
-{# Заголовок каталога #}
-<h1>{{ catalog.name }}</h1>
+{# Универсальные хлебные крошки (catalog only) #}
 
-{# Все активные каталоги для навигации #}
-{% component 'catalogsList' %}
+<div class="catalog">
 
-{# Вывод категорий каталога с ссылками на фильтр по categorySlug #}
-{% if categories|length %}
-  <div class="catalog-categories">
-    <h2>Категории</h2>
-    <ul>
-      {% for cat in categories %}
-        <li>
-          {# Ссылка на страницу категории #}
-          <a href="{{ 'catalog/catalog-category'|page({ catalogCode: catalog.code, categorySlug: cat.slug }) }}">
-            {% if cat.icon %}
-                <img src="{{ cat.icon.path }}" alt="{{ cat.name }} ">
-            {% elseif cat.icon_svg %}
-                {{ cat.icon_svg|raw }}
-            {% endif %}
-            {{ cat.name }} <br>
-            {{ cat.description }}
-          </a>
-        </li>
-      {% endfor %}
-    </ul>
+  <div class="catalog__controls box--light">
+
+    <div class="catalog__controls-top">
+      {% partial 'catalog/breadcrumbs' catalog=catalog %}
+      <div class="catalog__controls-count">Всего:<span>{{ items.total() }}</span></div>
+    </div>{# catalog__controls-top #}
+
+    <div class="catalog__controls-middle">
+      {% partial 'catalog/categories' %}
+    </div>{# catalog-controls-middle #}
+
+    <div class="catalog__controls-bottom">
+      {% partial "catalog/sorting" %}
+    </div>{# catalog__controls-bottom #}
+
   </div>
-{% endif %}
 
-{# Сортировка через GET ?sort=... #}
-{% if availableSorts|length %}
-<form method="get" class="catalog-sorting">
-  <label for="catalog-sort">Сортировать:</label>
-  <select id="catalog-sort" name="sort" onchange="this.form.submit()">
-    {% for code, label in availableSorts %}
-      <option value="{{ code }}" {% if code == currentSort %}selected{% endif %}>{{ label }}</option>
-    {% endfor %}
-  </select>
-  {# сохраняем прочие параметры страницы #}
-  {% for name, value in this.request.get %}
-    {% if name != 'sort' %}
-      <input type="hidden" name="{{ name }}" value="{{ value }}">
-    {% endif %}
-  {% endfor %}
-</form>
-{% endif %}
+</div>{# catalog #}
+
+
+
+
 
 {# Цикл по элементам каталога #}
 <div id="catalog-list">

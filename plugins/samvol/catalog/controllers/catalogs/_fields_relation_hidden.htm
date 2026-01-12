@@ -1,0 +1,19 @@
+<?php
+// Hidden render of fields relation to make relation handlers available on this tab.
+// Only works for saved catalogs.
+$formWidget = $this->formGetWidget(); $sessionKey = $formWidget ?
+$formWidget->getSessionKey() : null; $model = $formWidget ? $formWidget->model :
+null; ?>
+<?php if ($model && $model->exists): ?>
+<div style="display: none"><?= $this->relationRender('fields') ?></div>
+<?php else: ?>
+<div class="callout fade in callout-warning">
+    <div class="header">
+        <i class="wn-icon-warning"></i>
+        <h3>Сохраните каталог, чтобы создавать поле истории</h3>
+    </div>
+    <div class="content">
+        Кнопка «Создать поле» станет доступна после сохранения каталога.
+    </div>
+</div>
+<?php endif; ?>
