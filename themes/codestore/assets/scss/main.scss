@@ -12,7 +12,10 @@
 
 @use "pages/catalog/index" as *;
 
+@use "components/badge" as *;
 @use "components/breadcrumbs" as *;
 @use "components/input" as *;
 @use "components/modal" as *;
+@use "components/label" as *;
 @use "components/tooltip" as *;
+@use "components/button" as *;

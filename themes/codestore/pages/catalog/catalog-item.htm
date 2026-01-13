@@ -18,26 +18,10 @@ itemSlug = "{{ :itemSlug }}"
                 <h2>Категория: {{ item.category.name }}</h2>
         {% endif %}
 
+        {% if item.data.message %}
+            Текст материала: {{ item.data.message|raw }}
+        {% endif %}
     {# Все динамические поля по схеме fields #}
-    <dl>
-    {% for field in fields %}
-        <dt>{{ field.name }}</dt>
-        {% set val = item.data[field.code] ?? '' %}
-        <dd>
-            {% if val is iterable %}
-                {% for v in val %}
-                    {% if v is iterable %}
-                        {{ v|json_encode }}{% if not loop.last %}, {% endif %}
-                    {% else %}
-                        {{ v }}{% if not loop.last %}, {% endif %}
-                    {% endif %}
-                {% endfor %}
-            {% else %}
-                {{ val }}
-            {% endif %}
-        </dd>
-    {% endfor %}
-    </dl>
 
     {# История обновлений через partial #}
     {% partial 'catalog/update_history' history=item.getNormalizedHistory() %}

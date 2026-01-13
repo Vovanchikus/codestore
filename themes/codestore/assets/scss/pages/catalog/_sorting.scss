@@ -20,12 +20,12 @@
 
         &-icon {
             height: 20px;
-            margin-right: 12px;
+            margin-right: fn.rem(12px);
         }
 
         &-arrow {
             height: 16px;
-            margin-left: 4px;
+            margin-left: fn.rem(4px);
             transition: transform $transition;
             transform: rotate(0deg);
         }

@@ -25,6 +25,10 @@ catalogCode = "{{ :catalogCode }}"
       {% partial "catalog/sorting" %}
     </div>{# catalog__controls-bottom #}
 
+  </div>{# catalog__controls box--light #}
+
+  <div class="catalog-products">
+    {% partial 'catalog/product-card' %}
   </div>
 
 </div>{# catalog #}
@@ -33,54 +37,7 @@ catalogCode = "{{ :catalogCode }}"
 
 
 
-{# Цикл по элементам каталога #}
-<div id="catalog-list">
-{% for record in items %}
-  <article class="catalog-item">
-    {# Название элемента #}
-    <h2>{{ record.display_name }}</h2>
 
-    {# Название категории элемента (если есть) #}
-    {% if record.category %}
-      <h3>Категория: {{ record.category.name }}</h3>
-    {% endif %}
-
-    {# Динамические поля: title, brief, message #}
-    <p><strong>Title:</strong> {{ record.data.title }}</p>
-    <p><strong>Brief:</strong> {{ record.data.brief }}</p>
-    <div><strong>Message:</strong> {{ record.data.message|raw }}</div>
-
-    {# Скриншоты (attachMany) #}
-    {% if record.screenshot|length %}
-      <div class="screens">
-        <strong>Скриншоты:</strong>
-        {% for image in record.screenshot %}
-          <img src="{{ image.path }}" alt="{{ record.display_name }}">
-        {% endfor %}
-      </div>
-    {% endif %}
-
-    {# Архив (attachOne) #}
-    {% if record.archive %}
-      <p><a href="{{ record.archive.path }}">Скачать архив</a></p>
-    {% endif %}
-
-    {# Ссылка на страницу элемента #}
-    {% if record.category %}
-      <p>
-        <a href="{{ 'catalog/catalog-item'|page({
-          catalogCode: catalog.code,
-          categorySlug: record.category.slug,
-          itemSlug: record.data.slug
-        }) }}">
-          Подробнее
-        </a>
-      </p>
-    {% endif %}
-  </article>
-{% else %}
-  <p>Элементы отсутствуют.</p>
-{% endfor %}
 
 {# Пагинация #}
 {% if items.lastPage() > 1 %}

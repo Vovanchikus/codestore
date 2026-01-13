@@ -1,0 +1,39 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
+
+.label {
+    display: inline-block;
+    font-size: fn.rem(14px);
+    font-weight: 500;
+    line-height: 1;
+
+    &--sm {
+        padding: fn.rem(4px) fn.rem(8px);
+        border-radius: $radius-sm;
+    }
+
+    &--brand {
+        color: $label-brand-text;
+        background-color: $label-brand-bg;
+    }
+
+    &--success {
+        color: $label-success-text;
+        background-color: $label-success-bg;
+    }
+
+    &--error {
+        color: $label-error-text;
+        background-color: $label-error-bg;
+    }
+
+    &--warning {
+        color: $label-warning-text;
+        background-color: $label-warning-bg;
+    }
+
+    &--info {
+        color: $label-info-text;
+        background-color: $label-info-bg;
+    }
+}

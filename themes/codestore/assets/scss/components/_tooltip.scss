@@ -4,6 +4,7 @@
  */
 
 @use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
 
 .tooltip {
     position: fixed;

@@ -1,9 +1,18 @@
 @use "../../abstracts/variables" as *;
 @use "../../abstracts/functions" as fn;
 
+.catalog {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+}
+
 .catalog__controls {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    background-color: $bg-box;
 
     &-top,
     &-middle {
@@ -33,4 +42,10 @@
             border-radius: $radius-md;
         }
     }
+}
+
+.catalog-products {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(272px, 1fr));
+    gap: 16px;
 }

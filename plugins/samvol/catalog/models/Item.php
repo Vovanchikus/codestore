@@ -50,22 +50,29 @@ class Item extends Model
         'status' => 'required'
     ];
 
+    /**
+     * Scope для опубликованных элементов
+     */
     public function scopePublished($query)
     {
         return $query->where('status', self::STATUS_PUBLISHED);
     }
 
+    /**
+     * Перед валидацией применяем динамические правила
+     */
     public function beforeValidate(): void
     {
         $this->applyDynamicRules();
     }
 
+    /**
+     * Динамическая валидация полей каталога
+     */
     public function applyDynamicRules(): void
     {
         $catalog = $this->catalog ?: Catalog::find($this->catalog_id);
-        if (!$catalog) {
-            return;
-        }
+        if (!$catalog) return;
 
         $rules = [
             'catalog_id' => 'required',
@@ -73,6 +80,7 @@ class Item extends Model
             'category_id' => 'nullable|exists:samvol_catalog_categories,id'
         ];
 
+        // Добавляем правила для обязательных полей
         $catalog->fields()->ordered()->get()->each(function (Field $field) use (&$rules) {
             if ($field->is_required) {
                 $rules[$this->getValidationAttributeForField($field)] = 'required';
@@ -107,39 +115,60 @@ class Item extends Model
 
     public function beforeSave(): void
     {
-        // Фиксируем изменения для логов
+        // Логируем изменения
         if ($this->isDirty('data')) {
             Log::info('Catalog Item data updated', [
                 'id' => $this->id,
                 'data' => $this->data,
             ]);
         }
+
         $currentData = $this->normalizeDataArray($this->data);
         $originalData = $this->normalizeDataArray($this->getOriginal('data'));
-        $history = $this->normalizeHistory($currentData['_update_history'] ?? []);
+
+        // При сохранении истории изменений используем оригинальную (сырую) историю
+        // из базы, чтобы не потерять предыдущие записи, если форма админки не
+        // передаёт служебные ключи `_update_history`/`update_log`.
+        $history = $this->normalizeHistory($originalData['_update_history'] ?? $originalData['update_log'] ?? []);
 
         $catalog = $this->catalog ?: Catalog::find($this->catalog_id);
         $now = Carbon::now();
 
-        // Отслеживание обновлений: фиксируем изменение конкретного поля в отдельном журнале
+        // NOTE: не принудительно устанавливаем `published_at` при создании, чтобы
+        // сохранить прежнее поведение: поднимаем материал только при ручном raise
+        // или когда изменилось отслеживаемое поле (см. $shouldRaise).
+
         $trackedChanged = false;
         $trackedFieldUsed = null;
 
         if ($catalog) {
+            // Получаем настройки трекинга изменений для каталога
             $tracking = CatalogSorting::getTrackUpdatesSettings($catalog);
             $trackEnabled = !empty($tracking['enabled']);
             $trackField = $tracking['field'] ?? null;
             $logField = $tracking['log_field'] ?? null;
 
-            if ($trackEnabled && is_string($trackField) && $trackField !== '') {
+            // ВАЖНО: при создании нового элемента мы НЕ считаем изменение отслеживаемого поля
+            // — требование: бейдж и автоматическое поднятие должны срабатывать только при редактировании.
+            if ($trackEnabled && is_string($trackField) && $trackField !== '' && $this->exists) {
+                // Определяем, изменилось ли отслеживаемое поле (сравнение старых/новых значений)
                 $trackedChanged = $this->didFieldChange($trackField, $currentData, $originalData);
                 $trackedFieldUsed = $trackedChanged ? $trackField : null;
 
+
+
+                // Если поле изменилось и задано поле для лога — добавляем запись в лог внутри данных
                 if ($trackedChanged && $logField) {
-                    $log = $this->normalizeTrackLog($currentData[$logField] ?? []);
+                    // Берём существующий лог из оригинальных данных, чтобы не потерять
+                    // предыдущие записи, и добавляем новую запись.
+                    $log = $this->normalizeTrackLog($originalData[$logField] ?? []);
+                    // Также учитываем возможный лог, пришедший из формы
+                    $log = array_merge($log, $this->normalizeTrackLog($currentData[$logField] ?? []));
                     $log[] = [
                         'date' => $now->toDateTimeString(),
                         'text' => $this->buildTrackUpdateText($catalog, $trackField),
+                        'field' => $trackField,
+                        'manual' => false,
                     ];
                     $currentData[$logField] = $log;
                 }
@@ -147,7 +176,6 @@ class Item extends Model
         }
 
         $manualRaise = $this->manualRaiseFlag;
-        // Поднимаем: ручной флаг или изменение отслеживаемого поля (tracking).
         $shouldRaise = $manualRaise || $trackedChanged;
 
         if ($shouldRaise) {
@@ -156,14 +184,19 @@ class Item extends Model
             $currentData['_update_history'] = $history;
         }
 
-        $this->data = $currentData;
+        // При создании нового материала по умолчанию устанавливаем версию, если пользователь не задал
+        if (!$this->exists) {
+            if (!isset($currentData['version']) || $currentData['version'] === '' || $currentData['version'] === null) {
+                $currentData['version'] = '1.0.0';
+            }
+        }
 
+        $this->data = $currentData;
         $this->manualRaiseFlag = false;
     }
 
     public function afterSave(): void
     {
-        // Чекбокс «Поднять материал» всегда сбрасывается после сохранения
         $this->manualRaiseFlag = false;
         unset($this->attributes['manual_raise']);
     }
@@ -176,15 +209,132 @@ class Item extends Model
     public function getDisplayNameAttribute(): string
     {
         if (is_array($this->data)) {
-            if (!empty($this->data['title'])) {
-                return $this->data['title'];
-            }
-            if (!empty($this->data['name'])) {
-                return $this->data['name'];
-            }
+            if (!empty($this->data['title'])) return $this->data['title'];
+            if (!empty($this->data['name'])) return $this->data['name'];
         }
 
         return 'Item #' . $this->id;
+    }
+
+    /**
+     * Возвращает, должен ли отображаться бейдж "Обновлено" для данного элемента.
+     * Логика: бейдж показывается только если для каталога включён флаг бейджей,
+     * и элемент был обновлён в пределах последних N дней (настраивается в каталоге).
+     */
+    public function getIsRecentlyUpdatedAttribute(): bool
+    {
+        // Получаем каталог (если доступен)
+        $catalog = $this->catalog ?: (isset($this->catalog_id) ? Catalog::find($this->catalog_id) : null);
+        if (!$catalog) {
+            return false;
+        }
+
+        // Если в каталоге фича бейджа отключена — не показываем
+        if (!method_exists($catalog, 'getTrackUpdatesBadgeEnabledAttribute') || !$catalog->getTrackUpdatesBadgeEnabledAttribute()) {
+            return false;
+        }
+
+        $days = method_exists($catalog, 'getTrackUpdatesBadgeDaysAttribute') ? (int) $catalog->getTrackUpdatesBadgeDaysAttribute() : 0;
+        if ($days <= 0) {
+            return false;
+        }
+
+        $trackedField = method_exists($catalog, 'getTrackUpdatesFieldAttribute') ? $catalog->getTrackUpdatesFieldAttribute() : null;
+        if (!$trackedField) {
+            return false;
+        }
+
+        // Бейдж показывается ТОЛЬКО для отредактированных записей
+        if (!$this->exists) {
+            return false;
+        }
+
+        $cutoff = Carbon::now()->subDays($days);
+
+        // Если отслеживаемое поле — стандартный timestamp столбец, используем сравнение created_at/updated_at
+        if (in_array($trackedField, ['updated_at', 'published_at', 'created_at'], true)) {
+            $ts = $this->{$trackedField} ?? null;
+            if (!$ts) {
+                return false;
+            }
+
+            // Если обновление не отличалось от создания — считаем, что поле не редактировалось
+            if ($this->created_at && $ts == $this->created_at) {
+                return false;
+            }
+
+            try {
+                $dt = $ts instanceof \DateTime ? Carbon::instance($ts) : new Carbon($ts);
+            } catch (\Throwable $e) {
+                return false;
+            }
+
+            return $dt->greaterThanOrEqualTo($cutoff);
+        }
+
+        // Читаем необработанные данные из колонки `data`, чтобы не полагаться на отфильтрованный
+        // массив `$this->data`, который может быть очищен в `afterFetch()` и не содержать
+        // служебные ключи вроде `_update_history`.
+        $rawData = $this->normalizeDataArray($this->getOriginal('data') ?? $this->attributes['data'] ?? $this->data);
+
+        // Для прочих полей — ищем в истории обновлений (`_update_history`) последнюю запись по этому полю
+        $history = $this->normalizeHistory($rawData['_update_history'] ?? $rawData['update_log'] ?? []);
+        if (!empty($history)) {
+            // идём с конца, чтобы взять последнее изменение
+            for ($i = count($history) - 1; $i >= 0; $i--) {
+                $entry = $history[$i];
+                if (!isset($entry['field'])) continue;
+                if ($entry['field'] !== $trackedField) continue;
+
+                $dateStr = $entry['date'] ?? null;
+                if (!$dateStr) continue;
+
+                try {
+                    $dt = new Carbon($dateStr);
+                } catch (\Throwable $e) {
+                    continue;
+                }
+
+                return $dt->greaterThanOrEqualTo($cutoff);
+            }
+        }
+
+        // Ничего не найдено — бейдж не показываем (строго: только при реальном изменении отслеживаемого поля)
+        return false;
+    }
+
+    /**
+     * Возвращает true, если элемент когда-либо поднимался/обновлялся в рамках механизма трекинга.
+     * Используется для показа версии только после того, как материал был обновлён хотя бы однажды.
+     */
+    public function getHasEverBeenUpdatedAttribute(): bool
+    {
+        // Читаем сырые данные из колонки `data` — там хранится служебный `_update_history`.
+        $rawData = $this->normalizeDataArray($this->getOriginal('data') ?? $this->attributes['data'] ?? $this->data);
+
+        $historyRaw = $rawData['_update_history'] ?? $rawData['update_log'] ?? [];
+        $history = $this->normalizeHistory($historyRaw);
+
+        // Строго: версия считается существующей только если в истории есть запись
+        // по конкретному отслеживаемому полю каталога. Игнорируем записи только
+        // от ручного поднятия (когда поле `field` равно null).
+        $catalog = $this->catalog ?: (isset($this->catalog_id) ? Catalog::find($this->catalog_id) : null);
+        if (!$catalog) {
+            return false;
+        }
+
+        $trackedField = method_exists($catalog, 'getTrackUpdatesFieldAttribute') ? $catalog->getTrackUpdatesFieldAttribute() : null;
+        if (!$trackedField) {
+            return false;
+        }
+
+        foreach ($history as $entry) {
+            if (isset($entry['field']) && $entry['field'] === $trackedField) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected function getValidationAttributeForField(Field $field): string
@@ -194,6 +344,27 @@ class Item extends Model
         }
 
         return 'data.' . $field->code;
+    }
+
+    /**
+     * ------------------------------
+     * ФИЛЬТР АКТИВНЫХ ПОЛЕЙ
+     * ------------------------------
+     * После загрузки элемента (afterFetch) оставляем в data только активные поля каталога
+     * Таким образом в Twig item.data.FIELD будет содержать только активные поля
+     */
+    public function afterFetch(): void
+    {
+        $catalog = $this->catalog ?: Catalog::find($this->catalog_id);
+        if (!$catalog || !is_array($this->data)) return;
+
+        // Список активных полей
+        $activeFields = $catalog->fields()->where('is_enabled', true)->pluck('code')->all();
+
+        // Фильтруем data, оставляем только активные поля
+        $this->data = array_filter($this->data, function($key) use ($activeFields) {
+            return in_array($key, $activeFields, true);
+        }, ARRAY_FILTER_USE_KEY);
     }
 
     private function normalizeDataArray($value): array

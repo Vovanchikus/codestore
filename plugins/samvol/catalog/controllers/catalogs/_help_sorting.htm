@@ -1,0 +1,40 @@
+<div class="sv-help-wrapper">
+  <button type="button" class="btn btn-default sv-help-open" data-target="sv-help-sorting">Как это работает?</button>
+
+  <div id="sv-help-sorting" class="sv-help-modal" aria-hidden="true">
+    <div class="sv-help-mask"></div>
+    <div class="sv-help-dialog" role="dialog" aria-modal="true">
+      <div class="sv-help-header">
+        <h4>Сортировка</h4>
+        <button type="button" class="close" data-sv-help-close>&times;</button>
+      </div>
+      <div class="sv-help-body">
+        <p><strong>Описание:</strong> Управляет вариантами сортировки на фронтенде и поведением по умолчанию.</p>
+
+        <h5>Логика работы</h5>
+        <ul>
+          <li>Если сортировка выключена — на фронте выбор сортировки скрыт и применяется сортировка по умолчанию.</li>
+          <li>Если включена — посетитель может выбрать доступные варианты, указанные в настройках.</li>
+          <li>Параметр URL <code>?sort=</code> переопределяет значение по умолчанию.</li>
+        </ul>
+
+        <h5>Доступные Twig-флаги</h5>
+        <ul>
+          <li><code>sortingItems</code> — массив элементов сортировки (label, href, isActive, icon)</li>
++          <li><code>catalog.sorting_enabled</code> — включена ли сортировка</li>
+        </ul>
+
+        <h5>Пример Twig</h5>
+        <div class="sv-help-pre">{% raw %}
++{% for item in sortingItems %}
++  <a href="{{ item.href }}" class="sort-item {{ item.class }}">{{ item.label }}</a>
++{% endfor %}
++{% endraw %}</div>
+
+      </div>
+      <div class="sv-help-footer" style="text-align:right;margin-top:12px;">
+        <button type="button" class="btn btn-primary" data-sv-help-close>Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>

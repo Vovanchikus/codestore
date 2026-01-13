@@ -127,94 +127,32 @@ class CatalogList extends ComponentBase
         }
         $this->page['defaultIsRendered'] = $defaultIsRendered;
 
-        // Prepare minimal structure for template rendering to keep Twig simple.
-        $sortingItems = [];
-        $used = [];
 
-        // label normalizer: remove leading "По " and uppercase first letter (multibyte-safe)
-        $normalizeLabel = function ($label) {
-            if (!is_string($label) || $label === '') {
-                return $label;
-            }
-            // remove leading "По " (case-insensitive, unicode)
-            $label = preg_replace('/^По\s+/u', '', $label);
-            $first = mb_substr($label, 0, 1, 'UTF-8');
-            $rest = mb_substr($label, 1, null, 'UTF-8');
-            return mb_strtoupper($first, 'UTF-8') . $rest;
-        };
-
-        // Groups
-        // Use UI sort (requested if present) to determine active state so toggling asc/desc stays highlighted
-        $uiSort = $requestedSort ?: $resolvedSort;
-        if (isset($gs['groups']) && is_array($gs['groups'])) {
-            foreach ($gs['groups'] as $g) {
-                $label = $g['label'] ?? ($g['key'] ?? '');
-                $item = [
-                    'type' => 'group',
-                    'key' => $g['key'] ?? null,
-                    'label' => $normalizeLabel($label),
-                    'asc' => $g['asc'] ?? null,
-                    'desc' => $g['desc'] ?? null,
-                    'isActive' => ($uiSort && ($uiSort === ($g['asc'] ?? '') || $uiSort === ($g['desc'] ?? ''))),
-                    'isDefault' => ($uiSort && ($uiSort === ($g['asc'] ?? '') || $uiSort === ($g['desc'] ?? '')))
-                ];
-                $sortingItems[] = $item;
-                if (!empty($g['asc'])) $used[] = $g['asc'];
-                if (!empty($g['desc'])) $used[] = $g['desc'];
-            }
-        }
-
-        // Others from groupedSorts
-        if (isset($gs['others']) && is_array($gs['others'])) {
-            foreach ($gs['others'] as $code => $label) {
-                if (in_array($code, $used, true)) continue;
-                $sortingItems[] = [
-                    'type' => 'single',
-                    'code' => $code,
-                    'label' => $normalizeLabel($label),
-                    'isActive' => $uiSort && $uiSort === $code,
-                    'isDefault' => $uiSort && $uiSort === $code,
-                ];
-                $used[] = $code;
-            }
-        }
-            $this->page['currentSort'] = $resolvedSort; // resolved sort applied to query
-            $this->page['requestedSort'] = $requestedSort; // raw requested sort from URL or component
-
-        // Fallback: availableSorts
-        if (is_array($this->page['availableSorts'])) {
-            foreach ($this->page['availableSorts'] as $code => $label) {
-                if (in_array($code, $used, true)) continue;
-                $sortingItems[] = [
-                    'type' => 'single',
-                    'code' => $code,
-                    'label' => $normalizeLabel($label),
-                    'isActive' => $uiSort && $uiSort === $code,
-                    'isDefault' => $uiSort && $uiSort === $code,
-                ];
-                $used[] = $code;
-            }
-        }
-
-        $this->page['sortingItems'] = $sortingItems;
-
-        // Expose simple sortItems and currentDir for legacy/simple theme partials
+        // Prepare sorting items for Twig using centralised service method.
         $currentDir = request()->query('direction', 'desc');
         $this->page['currentDir'] = is_string($currentDir) ? $currentDir : 'desc';
+        $this->page['sortingItems'] = ($this->catalog && CatalogSorting::isEnabled($this->catalog))
+            ? CatalogSorting::prepareSortingItems($this->catalog, $requestedSort, $resolvedSort, $this->page['currentDir'])
+            : [];
+
+        // Expose simple sortItems for legacy/simple theme partials
 
         $simpleItems = [];
-        // Prefer a logical order: groups first, then others, then available
-        if (isset($gs['groups']) && is_array($gs['groups'])) {
-            foreach ($gs['groups'] as $g) {
-                $label = $g['label'] ?? ($g['key'] ?? '');
-                // push a group marker using desc code by default
-                $simpleItems[] = ['label' => $normalizeLabel($label), 'field' => $g['desc'] ?? ($g['asc'] ?? null)];
-            }
-        }
-
-        if (isset($gs['others']) && is_array($gs['others'])) {
-            foreach ($gs['others'] as $code => $label) {
-                $simpleItems[] = ['label' => $label, 'field' => $code];
+        // Build simpleItems from prepared sortingItems (service returns normalized labels)
+        $prepared = $this->page['sortingItems'] ?? [];
+        if (is_array($prepared)) {
+            foreach ($prepared as $it) {
+                if (isset($it['type']) && $it['type'] === 'group') {
+                    $simpleItems[] = [
+                        'label' => $it['label'] ?? ($it['key'] ?? ''),
+                        'field' => $it['desc'] ?? ($it['asc'] ?? null),
+                    ];
+                } else {
+                    $simpleItems[] = [
+                        'label' => $it['label'] ?? ($it['code'] ?? ''),
+                        'field' => $it['target'] ?? ($it['code'] ?? null),
+                    ];
+                }
             }
         }
 

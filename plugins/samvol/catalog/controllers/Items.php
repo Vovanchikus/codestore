@@ -301,8 +301,8 @@ class Items extends Controller
         // Render inner partial and return HTML. Use direct file path lookup in controller folder
         $controllerDir = __DIR__ . DIRECTORY_SEPARATOR . 'items' . DIRECTORY_SEPARATOR;
         $candidates = [
-            $controllerDir . 'dynamic_fields_inner.htm',
-            $controllerDir . '_dynamic_fields_inner.htm',
+            // $controllerDir . 'dynamic_fields_placeholder.htm',
+            $controllerDir . '_dynamic_fields_placeholder.htm',
         ];
 
         $html = '';
@@ -319,7 +319,7 @@ class Items extends Controller
 
         if ($html === '') {
             // fallback to makePartial which will throw a clear exception if not found
-            $html = $this->makePartial('items/dynamic_fields_inner', [], false) ?: '<p class="flash-message static warning">Не удалось загрузить динамические поля.</p>';
+            $html = $this->makePartial('items/dynamic_fields_placeholder', [], false) ?: '<p class="flash-message static warning">Не удалось загрузить динамические поля.</p>';
         }
 
         return ['html' => $html];

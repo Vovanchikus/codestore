@@ -1,0 +1,40 @@
+<div class="sv-help-wrapper">
+  <button type="button" class="btn btn-default sv-help-open" data-target="sv-help-flags">Как это работает?</button>
+
+  <div id="sv-help-flags" class="sv-help-modal" aria-hidden="true">
+    <div class="sv-help-mask"></div>
+    <div class="sv-help-dialog" role="dialog" aria-modal="true">
+      <div class="sv-help-header">
+        <h4>Флаги и опции</h4>
+        <button type="button" class="close" data-sv-help-close>&times;</button>
+      </div>
+      <div class="sv-help-body">
+        <p><strong>Описание:</strong> Флаги включают/выключают различные функции каталога, например рейтинг, комментарии и модерацию.</p>
+
+        <h5>Логика работы</h5>
+        <ul>
+          <li>Каждый флаг включает соответствующий функционал в плагине (UI + логика).</li>
+          <li>Флаги влияют на вывод в Twig — проверяйте `catalog.feature_*` при формировании шаблонов.</li>
+        </ul>
+
+        <h5>Доступные Twig-флаги</h5>
+        <ul>
+          <li><code>catalog.feature_comments</code></li>
++          <li><code>catalog.feature_rating</code></li>
++          <li><code>catalog.feature_moderation</code></li>
+        </ul>
+
+        <h5>Пример Twig</h5>
+        <div class="sv-help-pre">{% raw %}
++{% if catalog.feature_comments %}
++  {% include 'partials/comments' %}
++{% endif %}
++{% endraw %}</div>
+
+      </div>
+      <div class="sv-help-footer" style="text-align:right;margin-top:12px;">
+        <button type="button" class="btn btn-primary" data-sv-help-close>Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>

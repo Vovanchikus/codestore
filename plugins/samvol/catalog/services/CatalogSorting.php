@@ -601,13 +601,15 @@ class CatalogSorting
             'log_field' => isset($tracking['log_field']) && is_string($tracking['log_field']) && $tracking['log_field'] !== ''
                 ? $tracking['log_field']
                 : null,
+            'badge_enabled' => isset($tracking['badge_enabled']) ? (bool) $tracking['badge_enabled'] : false,
+            'badge_days' => isset($tracking['badge_days']) ? (int) $tracking['badge_days'] : 7,
         ];
     }
 
     /**
      * Объединяет настройки трекинга обновлений с текущим settings каталога.
      */
-    public static function mergeTrackUpdatesSettings(Catalog $catalog, $settings, ?bool $enabled, ?string $field, ?string $logField): array
+    public static function mergeTrackUpdatesSettings(Catalog $catalog, $settings, ?bool $enabled, ?string $field, ?string $logField, ?bool $badgeEnabled = null, ?int $badgeDays = null): array
     {
         $settingsArray = self::normalizeArray($settings);
 
@@ -617,6 +619,8 @@ class CatalogSorting
             'enabled' => $enabled !== null ? (bool) $enabled : ($existing['enabled'] ?? false),
             'field' => $field !== null ? $field : ($existing['field'] ?? null),
             'log_field' => $logField !== null && $logField !== '' ? $logField : ($existing['log_field'] ?? null),
+            'badge_enabled' => $badgeEnabled !== null ? (bool) $badgeEnabled : ($existing['badge_enabled'] ?? false),
+            'badge_days' => $badgeDays !== null ? (int) $badgeDays : (isset($existing['badge_days']) ? (int)$existing['badge_days'] : 7),
         ];
 
         $settingsArray['track_updates'] = $merged;
@@ -638,5 +642,167 @@ class CatalogSorting
         }
 
         return [];
+    }
+
+    /**
+     * Подготавливает массив элементов сортировки для фронтенда.
+     * Возвращает уже готовые поля для прямого рендеринга в Twig:
+     * [ ['label'=>..., 'target'=>..., 'href'=>..., 'isActive'=>bool, 'dirClass'=>'asc'|'desc', 'class'=>string, 'iconHtml'=>string, 'arrowHtml'=>string, ...], ... ]
+     */
+    public static function prepareSortingItems(Catalog $catalog, ?string $requestedSort, ?string $currentSort, string $currentDir = 'desc'): array
+    {
+        if (!self::isEnabled($catalog)) {
+            return [];
+        }
+
+        $gs = self::getGroupedSorts($catalog);
+        $available = self::getAvailableSorts($catalog);
+        $definitions = self::enabledDefinitions($catalog);
+
+        $uiSort = $requestedSort ?: $currentSort;
+
+        $normalizeLabel = function ($label) {
+            if (!is_string($label) || $label === '') return $label;
+            $label = preg_replace('/^По\s+/u', '', $label);
+            $first = mb_substr($label, 0, 1, 'UTF-8');
+            $rest = mb_substr($label, 1, null, 'UTF-8');
+            return mb_strtoupper($first, 'UTF-8') . $rest;
+        };
+
+        $iconMap = [
+            'date'      => '<svg width="8" height="8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 11.75C22.5 17.6871 17.6871 22.5 11.75 22.5C5.81294 22.5 1 17.6871 1 11.75C1 5.81294 5.81294 1 11.75 1C17.6871 1 22.5 5.81294 22.5 11.75Z" fill="currentColor"/></svg>',
+            'name'      => '<svg width="8" height="8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 11.75C22.5 17.6871 17.6871 22.5 11.75 22.5C5.81294 22.5 1 17.6871 1 11.75C1 5.81294 5.81294 1 11.75 1C17.6871 1 22.5 5.81294 22.5 11.75Z" fill="currentColor"/></svg>',
+            'downloads' => '<svg width="8" height="8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 11.75C22.5 17.6871 17.6871 22.5 11.75 22.5C5.81294 22.5 1 17.6871 1 11.75C1 5.81294 5.81294 1 11.75 1C17.6871 1 22.5 5.81294 22.5 11.75Z" fill="currentColor"/></svg>',
+            'view'      => '<svg width="8" height="8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 11.75C22.5 17.6871 17.6871 22.5 11.75 22.5C5.81294 22.5 1 17.6871 1 11.75C1 5.81294 5.81294 1 11.75 1C17.6871 1 22.5 5.81294 22.5 11.75Z" fill="currentColor"/></svg>',
+        ];
+
+        // map logical keys to simple icon names used in Twig conditionals
+        $iconKeyMap = [
+            'date'      => 'calendar',
+            'name'      => 'font-case',
+            'downloads' => 'download-arc',
+            'views'     => 'eye',
+        ];
+
+        $arrowHtml = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.28033 15.2197C6.98744 14.9268 6.51256 14.9268 6.21967 15.2197C5.92678 15.5126 5.92678 15.9874 6.21967 16.2803L11.2197 21.2803C11.5126 21.5732 11.9874 21.5732 12.2803 21.2803L17.2803 16.2803C17.5732 15.9874 17.5732 15.5126 17.2803 15.2197C16.9874 14.9268 16.5126 14.9268 16.2197 15.2197L12.5 18.9393V2.75C12.5 2.33579 12.1642 2 11.75 2C11.3358 2 11 2.33579 11 2.75V18.9393L7.28033 15.2197Z" fill="currentColor"/></svg>';
+
+        $result = [];
+        $used = [];
+
+        // Groups first
+        if (isset($gs['groups']) && is_array($gs['groups'])) {
+            foreach ($gs['groups'] as $g) {
+                $asc = $g['asc'] ?? null;
+                $desc = $g['desc'] ?? null;
+                $label = $normalizeLabel($g['label'] ?? ($g['key'] ?? ''));
+                $isActive = $uiSort && ($uiSort === ($asc ?? '') || $uiSort === ($desc ?? ''));
+
+                // determine target and dirClass
+                if ($isActive) {
+                    if (preg_match('/_desc$/', $uiSort)) {
+                        $target = preg_replace('/_desc$/', '_asc', $uiSort);
+                        $dirClass = 'desc';
+                    } elseif (preg_match('/_asc$/', $uiSort)) {
+                        $target = preg_replace('/_asc$/', '_desc', $uiSort);
+                        $dirClass = 'asc';
+                    } else {
+                        $target = $desc ?: $asc;
+                        $dirClass = in_array($currentDir, ['asc','desc'], true) ? $currentDir : 'desc';
+                    }
+                } else {
+                    $target = $desc ?: $asc;
+                    $dirClass = 'desc';
+                    if ($asc && preg_match('/_asc$/', $asc)) $dirClass = 'asc';
+                    if ($desc && preg_match('/_desc$/', $desc)) $dirClass = 'desc';
+                }
+
+                $iconHtml = $iconMap[$g['key']] ?? '';
+                $iconKey = $iconKeyMap[$g['key']] ?? null;
+                $class = trim(($isActive ? 'active' : '') . ' ' . $dirClass);
+
+                $result[] = [
+                    'type' => 'group',
+                    'key' => $g['key'] ?? null,
+                    'label' => $label,
+                    'asc' => $asc,
+                    'desc' => $desc,
+                    'target' => $target,
+                    'href' => '?sort=' . ($target ?? ''),
+                    'isActive' => (bool) $isActive,
+                    'dirClass' => $dirClass,
+                    'class' => $class,
+                    'iconHtml' => $iconHtml,
+                    'icon' => $iconKey,
+                    'arrowHtml' => $arrowHtml,
+                ];
+
+                if (!empty($asc)) $used[] = $asc;
+                if (!empty($desc)) $used[] = $desc;
+            }
+        }
+
+        // Others from groupedSorts
+        if (isset($gs['others']) && is_array($gs['others'])) {
+            foreach ($gs['others'] as $code => $labelRaw) {
+                if (in_array($code, $used, true)) continue;
+                $label = $normalizeLabel($labelRaw);
+                $isActive = $uiSort && $uiSort === $code;
+                $dirClass = preg_match('/_asc$/', $code) ? 'asc' : (preg_match('/_desc$/', $code) ? 'desc' : $currentDir);
+                $class = trim(($isActive ? 'active' : '') . ' ' . $dirClass);
+                $iconKey = null;
+                if (strpos($code, 'date') !== false) $iconKey = 'calendar';
+                elseif (strpos($code, 'title') !== false || strpos($code, 'name') !== false) $iconKey = 'star';
+                elseif (strpos($code, 'download') !== false) $iconKey = 'download';
+                elseif (strpos($code, 'view') !== false) $iconKey = 'eye';
+
+                $result[] = [
+                    'type' => 'single',
+                    'code' => $code,
+                    'label' => $label,
+                    'target' => $code,
+                    'href' => '?sort=' . $code,
+                    'isActive' => (bool)$isActive,
+                    'dirClass' => $dirClass,
+                    'class' => $class,
+                    'iconHtml' => '',
+                    'icon' => $iconKey,
+                    'arrowHtml' => $arrowHtml,
+                ];
+                $used[] = $code;
+            }
+        }
+
+        // Fallback: availableSorts
+        if (is_array($available)) {
+            foreach ($available as $code => $labelRaw) {
+                if (in_array($code, $used, true)) continue;
+                $label = $normalizeLabel($labelRaw);
+                $isActive = $uiSort && $uiSort === $code;
+                $dirClass = preg_match('/_asc$/', $code) ? 'asc' : (preg_match('/_desc$/', $code) ? 'desc' : $currentDir);
+                $class = trim(($isActive ? 'active' : '') . ' ' . $dirClass);
+                $iconKey = null;
+                if (strpos($code, 'date') !== false) $iconKey = 'calendar';
+                elseif (strpos($code, 'title') !== false || strpos($code, 'name') !== false) $iconKey = 'star';
+                elseif (strpos($code, 'download') !== false) $iconKey = 'download';
+                elseif (strpos($code, 'view') !== false) $iconKey = 'eye';
+
+                $result[] = [
+                    'type' => 'single',
+                    'code' => $code,
+                    'label' => $label,
+                    'target' => $code,
+                    'href' => '?sort=' . $code,
+                    'isActive' => (bool)$isActive,
+                    'dirClass' => $dirClass,
+                    'class' => $class,
+                    'iconHtml' => '',
+                    'icon' => $iconKey,
+                    'arrowHtml' => $arrowHtml,
+                ];
+                $used[] = $code;
+            }
+        }
+
+        return $result;
     }
 }

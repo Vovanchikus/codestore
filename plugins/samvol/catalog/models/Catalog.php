@@ -18,6 +18,8 @@ class Catalog extends Model
     protected ?bool $trackUpdatesEnabledVirtual = null;
     protected ?string $trackUpdatesFieldVirtual = null;
     protected ?string $trackUpdatesLogFieldVirtual = null;
+    protected ?bool $trackUpdatesBadgeEnabledVirtual = null;
+    protected ?int $trackUpdatesBadgeDaysVirtual = null;
 
     protected $table = 'samvol_catalogs';
 
@@ -153,7 +155,9 @@ class Catalog extends Model
             $settings,
             $this->trackUpdatesEnabledVirtual,
             $this->trackUpdatesFieldVirtual,
-            $logField
+            $logField,
+            $this->trackUpdatesBadgeEnabledVirtual,
+            $this->trackUpdatesBadgeDaysVirtual
         );
     }
 
@@ -607,6 +611,38 @@ class Catalog extends Model
         });
 
         return $options;
+    }
+
+    public function getTrackUpdatesBadgeEnabledAttribute(): bool
+    {
+        if ($this->trackUpdatesBadgeEnabledVirtual !== null) {
+            return (bool) $this->trackUpdatesBadgeEnabledVirtual;
+        }
+
+        $settings = CatalogSorting::getTrackUpdatesSettings($this);
+
+        return isset($settings['badge_enabled']) ? (bool) $settings['badge_enabled'] : false;
+    }
+
+    public function setTrackUpdatesBadgeEnabledAttribute($value): void
+    {
+        $this->trackUpdatesBadgeEnabledVirtual = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false;
+    }
+
+    public function getTrackUpdatesBadgeDaysAttribute(): int
+    {
+        if ($this->trackUpdatesBadgeDaysVirtual !== null) {
+            return (int) $this->trackUpdatesBadgeDaysVirtual;
+        }
+
+        $settings = CatalogSorting::getTrackUpdatesSettings($this);
+
+        return isset($settings['badge_days']) ? (int) $settings['badge_days'] : 7;
+    }
+
+    public function setTrackUpdatesBadgeDaysAttribute($value): void
+    {
+        $this->trackUpdatesBadgeDaysVirtual = is_numeric($value) ? (int) $value : null;
     }
 
     public function getTrackUpdatesLogFieldOptions(): array

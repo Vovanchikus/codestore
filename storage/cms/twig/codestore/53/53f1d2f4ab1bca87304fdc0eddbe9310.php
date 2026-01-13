@@ -72,149 +72,70 @@ class __TwigTemplate_294bbf68ce8c0e36a4fd041db39637aa extends Template
             }
             // line 12
             yield "
-    ";
-            // line 14
-            yield "    <dl>
-    ";
-            // line 15
-            $context['_parent'] = $context;
-            $context['_seq'] = CoreExtension::ensureTraversable(($context["fields"] ?? null));
-            foreach ($context['_seq'] as $context["_key"] => $context["field"]) {
-                // line 16
-                yield "        <dt>";
-                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, $context["field"], "name", [], "any", false, false, true, 16), 16, $this->source), "html", null, true);
-                yield "</dt>
         ";
-                // line 17
-                $context["val"] = (((CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "data", [], "any", false, true, true, 17), CoreExtension::getAttribute($this->env, $this->source, $context["field"], "code", [], "any", false, false, true, 17), [], "array", true, true, true, 17) &&  !(null === (($_v0 = CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "data", [], "any", false, false, true, 17)) && is_array($_v0) || $_v0 instanceof ArrayAccess && in_array($_v0::class, CoreExtension::ARRAY_LIKE_CLASSES, true) ? ($_v0[CoreExtension::getAttribute($this->env, $this->source, $context["field"], "code", [], "any", false, false, true, 17)] ?? null) : CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "data", [], "any", false, false, true, 17), CoreExtension::getAttribute($this->env, $this->source, $context["field"], "code", [], "any", false, false, true, 17), [], "array", false, false, true, 17))))) ? ((($_v1 = CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "data", [], "any", false, false, true, 17)) && is_array($_v1) || $_v1 instanceof ArrayAccess && in_array($_v1::class, CoreExtension::ARRAY_LIKE_CLASSES, true) ? ($_v1[CoreExtension::getAttribute($this->env, $this->source, $context["field"], "code", [], "any", false, false, true, 17)] ?? null) : CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "data", [], "any", false, false, true, 17), CoreExtension::getAttribute($this->env, $this->source, $context["field"], "code", [], "any", false, false, true, 17), [], "array", false, false, true, 17))) : (""));
-                // line 18
-                yield "        <dd>
-            ";
-                // line 19
-                if (is_iterable(($context["val"] ?? null))) {
-                    // line 20
-                    yield "                ";
-                    $context['_parent'] = $context;
-                    $context['_seq'] = CoreExtension::ensureTraversable(($context["val"] ?? null));
-                    $context['loop'] = [
-                      'parent' => $context['_parent'],
-                      'index0' => 0,
-                      'index'  => 1,
-                      'first'  => true,
-                    ];
-                    if (is_array($context['_seq']) || (is_object($context['_seq']) && $context['_seq'] instanceof \Countable)) {
-                        $length = count($context['_seq']);
-                        $context['loop']['revindex0'] = $length - 1;
-                        $context['loop']['revindex'] = $length;
-                        $context['loop']['length'] = $length;
-                        $context['loop']['last'] = 1 === $length;
-                    }
-                    foreach ($context['_seq'] as $context["_key"] => $context["v"]) {
-                        // line 21
-                        yield "                    ";
-                        if (is_iterable($context["v"])) {
-                            // line 22
-                            yield "                        ";
-                            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(json_encode($this->sandbox->ensureToStringAllowed($context["v"], 22, $this->source)), "html", null, true);
-                            if ((($tmp =  !CoreExtension::getAttribute($this->env, $this->source, $context["loop"], "last", [], "any", false, false, true, 22)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
-                                yield ", ";
-                            }
-                            // line 23
-                            yield "                    ";
-                        } else {
-                            // line 24
-                            yield "                        ";
-                            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed($context["v"], 24, $this->source), "html", null, true);
-                            if ((($tmp =  !CoreExtension::getAttribute($this->env, $this->source, $context["loop"], "last", [], "any", false, false, true, 24)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
-                                yield ", ";
-                            }
-                            // line 25
-                            yield "                    ";
-                        }
-                        // line 26
-                        yield "                ";
-                        ++$context['loop']['index0'];
-                        ++$context['loop']['index'];
-                        $context['loop']['first'] = false;
-                        if (isset($context['loop']['revindex0'], $context['loop']['revindex'])) {
-                            --$context['loop']['revindex0'];
-                            --$context['loop']['revindex'];
-                            $context['loop']['last'] = 0 === $context['loop']['revindex0'];
-                        }
-                    }
-                    $_parent = $context['_parent'];
-                    unset($context['_seq'], $context['_key'], $context['v'], $context['_parent'], $context['loop']);
-                    $context = array_intersect_key($context, $_parent) + $_parent;
-                    // line 27
-                    yield "            ";
-                } else {
-                    // line 28
-                    yield "                ";
-                    yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(($context["val"] ?? null), 28, $this->source), "html", null, true);
-                    yield "
-            ";
-                }
-                // line 30
-                yield "        </dd>
-    ";
+            // line 13
+            if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "data", [], "any", false, false, true, 13), "message", [], "any", false, false, true, 13)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                // line 14
+                yield "            Текст материала: ";
+                yield $this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "data", [], "any", false, false, true, 14), "message", [], "any", false, false, true, 14), 14, $this->source);
+                yield "
+        ";
             }
-            $_parent = $context['_parent'];
-            unset($context['_seq'], $context['_key'], $context['field'], $context['_parent']);
-            $context = array_intersect_key($context, $_parent) + $_parent;
-            // line 32
-            yield "    </dl>
-
-    ";
-            // line 35
+            // line 16
             yield "    ";
-            $context['__cms_partial_params'] = [];
-            $context['__cms_partial_params']['history'] = CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "getNormalizedHistory", [], "method", false, false, true, 35)            ;
-            echo $this->env->getExtension('Cms\Twig\Extension')->partialFunction("catalog/update_history"            , $context['__cms_partial_params']            , true            );
-            unset($context['__cms_partial_params']);
-            // line 36
+            // line 17
             yield "
     ";
-            // line 38
+            // line 19
             yield "    ";
-            if ((($tmp = Twig\Extension\CoreExtension::length($this->env->getCharset(), CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "screenshot", [], "any", false, false, true, 38))) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
-                // line 39
+            $context['__cms_partial_params'] = [];
+            $context['__cms_partial_params']['history'] = CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "getNormalizedHistory", [], "method", false, false, true, 19)            ;
+            echo $this->env->getExtension('Cms\Twig\Extension')->partialFunction("catalog/update_history"            , $context['__cms_partial_params']            , true            );
+            unset($context['__cms_partial_params']);
+            // line 20
+            yield "
+    ";
+            // line 22
+            yield "    ";
+            if ((($tmp = Twig\Extension\CoreExtension::length($this->env->getCharset(), CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "screenshot", [], "any", false, false, true, 22))) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                // line 23
                 yield "        <div class=\"screens\">
             <strong>Скриншоты:</strong>
             ";
-                // line 41
+                // line 25
                 $context['_parent'] = $context;
-                $context['_seq'] = CoreExtension::ensureTraversable(CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "screenshot", [], "any", false, false, true, 41));
+                $context['_seq'] = CoreExtension::ensureTraversable(CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "screenshot", [], "any", false, false, true, 25));
                 foreach ($context['_seq'] as $context["_key"] => $context["image"]) {
-                    // line 42
+                    // line 26
                     yield "                <img src=\"";
-                    yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, $context["image"], "path", [], "any", false, false, true, 42), 42, $this->source), "html", null, true);
+                    yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, $context["image"], "path", [], "any", false, false, true, 26), 26, $this->source), "html", null, true);
                     yield "\" alt=\"";
-                    yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "display_name", [], "any", false, false, true, 42), 42, $this->source), "html", null, true);
+                    yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "display_name", [], "any", false, false, true, 26), 26, $this->source), "html", null, true);
                     yield "\">
             ";
                 }
                 $_parent = $context['_parent'];
                 unset($context['_seq'], $context['_key'], $context['image'], $context['_parent']);
                 $context = array_intersect_key($context, $_parent) + $_parent;
-                // line 44
+                // line 28
                 yield "        </div>
     ";
             }
-            // line 46
+            // line 30
             yield "
     ";
-            // line 48
+            // line 32
             yield "    ";
-            if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "archive", [], "any", false, false, true, 48)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
-                // line 49
+            if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "archive", [], "any", false, false, true, 32)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                // line 33
                 yield "        <a href=\"";
-                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "archive", [], "any", false, false, true, 49), "path", [], "any", false, false, true, 49), 49, $this->source), "html", null, true);
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "archive", [], "any", false, false, true, 33), "path", [], "any", false, false, true, 33), 33, $this->source), "html", null, true);
                 yield "\"
            id=\"download-btn\"
            class=\"btn btn-link\"
            download=\"";
-                // line 52
-                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "archive", [], "any", false, false, true, 52), "file_name", [], "any", false, false, true, 52), 52, $this->source), "html", null, true);
+                // line 36
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "archive", [], "any", false, false, true, 36), "file_name", [], "any", false, false, true, 36), 36, $this->source), "html", null, true);
                 yield "\"
            data-request=\"catalogItem::onDownload\"
            data-request-loading
@@ -223,68 +144,68 @@ class __TwigTemplate_294bbf68ce8c0e36a4fd041db39637aa extends Template
            Скачать файл
         </a>
         <div class=\"text-muted\">Загрузок: ";
-                // line 59
-                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(((CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "downloads_count", [], "any", true, true, true, 59)) ? (Twig\Extension\CoreExtension::default($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "downloads_count", [], "any", false, false, true, 59), 59, $this->source), 0)) : (0)), "html", null, true);
+                // line 43
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(((CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "downloads_count", [], "any", true, true, true, 43)) ? (Twig\Extension\CoreExtension::default($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "downloads_count", [], "any", false, false, true, 43), 43, $this->source), 0)) : (0)), "html", null, true);
                 yield "</div>
     ";
             }
-            // line 61
+            // line 45
             yield "
     <p class=\"text-muted\">Просмотров: ";
-            // line 62
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(((CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "views_count", [], "any", true, true, true, 62)) ? (Twig\Extension\CoreExtension::default($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "views_count", [], "any", false, false, true, 62), 62, $this->source), 0)) : (0)), "html", null, true);
+            // line 46
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(((CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "views_count", [], "any", true, true, true, 46)) ? (Twig\Extension\CoreExtension::default($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "views_count", [], "any", false, false, true, 46), 46, $this->source), 0)) : (0)), "html", null, true);
             yield "</p>
 
     ";
-            // line 65
+            // line 49
             yield "    <button
         class=\"btn btn-primary\"
         data-request=\"catalogItem::onRaise\"
         data-request-data=\"item_id: ";
-            // line 68
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "id", [], "any", false, false, true, 68), 68, $this->source), "html", null, true);
+            // line 52
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "id", [], "any", false, false, true, 52), 52, $this->source), "html", null, true);
             yield "\">
         Поднять материал
     </button>
 
     ";
-            // line 73
+            // line 57
             yield "    <p class=\"mt-3\">
         ";
-            // line 74
-            if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "category", [], "any", false, false, true, 74)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
-                // line 75
+            // line 58
+            if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, ($context["item"] ?? null), "category", [], "any", false, false, true, 58)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                // line 59
                 yield "            <a href=\"";
-                yield $this->extensions['Cms\Twig\Extension']->pageFilter("catalog/catalog-category", ["catalogCode" => $this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source,                 // line 76
-($context["catalog"] ?? null), "code", [], "any", false, false, true, 76), 76, $this->source), "categorySlug" => $this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source,                 // line 77
-($context["item"] ?? null), "category", [], "any", false, false, true, 77), "slug", [], "any", false, false, true, 77), 77, $this->source)]);
-                // line 78
+                yield $this->extensions['Cms\Twig\Extension']->pageFilter("catalog/catalog-category", ["catalogCode" => $this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source,                 // line 60
+($context["catalog"] ?? null), "code", [], "any", false, false, true, 60), 60, $this->source), "categorySlug" => $this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source,                 // line 61
+($context["item"] ?? null), "category", [], "any", false, false, true, 61), "slug", [], "any", false, false, true, 61), 61, $this->source)]);
+                // line 62
                 yield "\">
                 Вернуться к категории
             </a>
         ";
             } else {
-                // line 82
+                // line 66
                 yield "            <a href=\"";
-                yield $this->extensions['Cms\Twig\Extension']->pageFilter("catalog/catalog", ["catalogCode" => $this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, ($context["catalog"] ?? null), "code", [], "any", false, false, true, 82), 82, $this->source)]);
+                yield $this->extensions['Cms\Twig\Extension']->pageFilter("catalog/catalog", ["catalogCode" => $this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, ($context["catalog"] ?? null), "code", [], "any", false, false, true, 66), 66, $this->source)]);
                 yield "\">
                 Вернуться в каталог
             </a>
         ";
             }
-            // line 86
+            // line 70
             yield "    </p>
 
 ";
         } else {
-            // line 89
+            // line 73
             yield "    <p>Элемент не найден.</p>
 ";
         }
-        // line 91
+        // line 75
         yield "
 ";
-        // line 93
+        // line 77
         yield "<style>
 .update-history ul { padding-left: 1em; }
 .update-history li { margin-bottom: 0.5em; }
@@ -316,7 +237,7 @@ class __TwigTemplate_294bbf68ce8c0e36a4fd041db39637aa extends Template
      */
     public function getDebugInfo(): array
     {
-        return array (  288 => 93,  285 => 91,  281 => 89,  276 => 86,  268 => 82,  262 => 78,  260 => 77,  259 => 76,  257 => 75,  255 => 74,  252 => 73,  245 => 68,  240 => 65,  235 => 62,  232 => 61,  227 => 59,  217 => 52,  210 => 49,  207 => 48,  204 => 46,  200 => 44,  189 => 42,  185 => 41,  181 => 39,  178 => 38,  175 => 36,  169 => 35,  165 => 32,  158 => 30,  152 => 28,  149 => 27,  135 => 26,  132 => 25,  126 => 24,  123 => 23,  117 => 22,  114 => 21,  96 => 20,  94 => 19,  91 => 18,  89 => 17,  84 => 16,  80 => 15,  77 => 14,  74 => 12,  68 => 10,  65 => 9,  59 => 6,  56 => 4,  48 => 3,  46 => 2,  44 => 1,);
+        return array (  209 => 77,  206 => 75,  202 => 73,  197 => 70,  189 => 66,  183 => 62,  181 => 61,  180 => 60,  178 => 59,  176 => 58,  173 => 57,  166 => 52,  161 => 49,  156 => 46,  153 => 45,  148 => 43,  138 => 36,  131 => 33,  128 => 32,  125 => 30,  121 => 28,  110 => 26,  106 => 25,  102 => 23,  99 => 22,  96 => 20,  90 => 19,  87 => 17,  85 => 16,  79 => 14,  77 => 13,  74 => 12,  68 => 10,  65 => 9,  59 => 6,  56 => 4,  48 => 3,  46 => 2,  44 => 1,);
     }
 
     public function getSourceContext(): Source
@@ -333,26 +254,10 @@ class __TwigTemplate_294bbf68ce8c0e36a4fd041db39637aa extends Template
                 <h2>Категория: {{ item.category.name }}</h2>
         {% endif %}
 
+        {% if item.data.message %}
+            Текст материала: {{ item.data.message|raw }}
+        {% endif %}
     {# Все динамические поля по схеме fields #}
-    <dl>
-    {% for field in fields %}
-        <dt>{{ field.name }}</dt>
-        {% set val = item.data[field.code] ?? '' %}
-        <dd>
-            {% if val is iterable %}
-                {% for v in val %}
-                    {% if v is iterable %}
-                        {{ v|json_encode }}{% if not loop.last %}, {% endif %}
-                    {% else %}
-                        {{ v }}{% if not loop.last %}, {% endif %}
-                    {% endif %}
-                {% endfor %}
-            {% else %}
-                {{ val }}
-            {% endif %}
-        </dd>
-    {% endfor %}
-    </dl>
 
     {# История обновлений через partial #}
     {% partial 'catalog/update_history' history=item.getNormalizedHistory() %}
@@ -424,14 +329,14 @@ class __TwigTemplate_294bbf68ce8c0e36a4fd041db39637aa extends Template
     
     public function checkSecurity()
     {
-        static $tags = ["if" => 1, "partial" => 3, "for" => 15, "set" => 17];
-        static $filters = ["escape" => 6, "json_encode" => 22, "length" => 38, "default" => 59, "page" => 75];
+        static $tags = ["if" => 1, "partial" => 3, "for" => 25];
+        static $filters = ["escape" => 6, "raw" => 14, "length" => 22, "default" => 43, "page" => 59];
         static $functions = [];
 
         try {
             $this->sandbox->checkSecurity(
-                ['if', 'partial', 'for', 'set'],
-                ['escape', 'json_encode', 'length', 'default', 'page'],
+                ['if', 'partial', 'for'],
+                ['escape', 'raw', 'length', 'default', 'page'],
                 [],
                 $this->source
             );

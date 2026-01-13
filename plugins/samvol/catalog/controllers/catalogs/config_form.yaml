@@ -9,6 +9,11 @@ form:
                 span: left
                 tab: Основное
                 required: true
+            help_assets:
+                label: ""
+                type: partial
+                path: $/samvol/catalog/controllers/catalogs/_help_assets.htm
+                span: full
             code:
                 label: Code
                 span: right
@@ -34,6 +39,12 @@ form:
                 type: partial
                 path: $/samvol/catalog/controllers/catalogs/_fields_relation.htm
                 tab: Поля
+            dynamic_fields_help:
+                label: ""
+                type: partial
+                tab: Поля
+                path: $/samvol/catalog/controllers/catalogs/_help_dynamic_fields.htm
+                span: right
             categories_block:
                 label: Категории
                 type: partial
@@ -44,6 +55,18 @@ form:
                 type: section
                 tab: Настройки
                 comment: Управляет видимостью и вариантом сортировки на фронтенде.
+            sorting_help:
+                label: ""
+                type: partial
+                tab: Настройки
+                path: $/samvol/catalog/controllers/catalogs/_help_sorting.htm
+                span: right
+                dependsOn:
+                    - sorting_enabled
+                trigger:
+                    action: show
+                    field: sorting_enabled
+                    condition: checked
             sorting_enabled:
                 label: Включить сортировку
                 type: switch
@@ -125,6 +148,18 @@ form:
                     action: show
                     field: track_updates_enabled
                     condition: checked
+            track_updates_help:
+                label: ""
+                type: partial
+                tab: Настройки
+                path: $/samvol/catalog/controllers/catalogs/_track_updates_help.htm
+                span: full
+                dependsOn:
+                    - track_updates_enabled
+                trigger:
+                    action: show
+                    field: track_updates_enabled
+                    condition: checked
             track_updates_fields_init:
                 type: partial
                 tab: Настройки
@@ -132,6 +167,32 @@ form:
                 trigger:
                     action: show
                     field: track_updates_enabled
+                    condition: checked
+            track_updates_badge_enabled:
+                label: Показывать бейдж «Обновлено»
+                type: switch
+                span: left
+                tab: Настройки
+                default: false
+                dependsOn:
+                    - track_updates_enabled
+                trigger:
+                    action: show
+                    field: track_updates_enabled
+                    condition: checked
+            track_updates_badge_days:
+                label: Период (дней)
+                type: number
+                span: right
+                tab: Настройки
+                default: 7
+                comment: Количество дней, в течение которых показывается бейдж.
+                dependsOn:
+                    - track_updates_enabled
+                    - track_updates_badge_enabled
+                trigger:
+                    action: show
+                    field: track_updates_badge_enabled
                     condition: checked
             comments_section:
                 label: Комментарии
@@ -160,6 +221,12 @@ form:
                 type: section
                 tab: Настройки
                 comment: Добавляет очередь модерации для материалов.
+            flags_help:
+                label: ""
+                type: partial
+                tab: Настройки
+                path: $/samvol/catalog/controllers/catalogs/_help_flags.htm
+                span: right
             feature_moderation:
                 label: Включить модерацию
                 type: switch

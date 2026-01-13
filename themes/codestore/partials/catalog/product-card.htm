@@ -1,0 +1,66 @@
+{% for product in items %}
+
+  <div class="product-card">
+    <div class="product-card__img">
+
+      {% if product.screenshot|length %}
+        <img src="{{ product.screenshot[0].path }}" alt="{{ product.display_name }}">
+      {% else %}
+        <img src="https://via.placeholder.com/150" alt="No image available">
+      {% endif %}
+
+      {% if catalog.track_updates_badge_enabled %}
+        {% if product.isRecentlyUpdated %}
+          <span class="product-card__badge badge badge--lg badge--success">Обновлено</span>
+        {% elseif product.hasEverBeenUpdated %}
+          <span class="product-card__badge badge badge--lg badge--brand">v{{ product.data.version ?? '1.0.0' }}</span>
+        {% endif %}
+      {% endif %}
+
+    </div>{# product-card__img #}
+
+    <div class="product-card__middle">
+
+      <div class="product-card__labels">
+        <div class="product-card__category label label--sm label--success">{{ product.category.name }}</div>
+      </div>{# product-card__labels #}
+
+
+
+      <div class="product-card__title">{{ product.display_name }}</div>
+
+      <div class="product-card__brief">
+        {% if product.data.message %}
+            <p> {{ product.data.message|raw }} </p>
+        {% else %}
+            <p>Описание отсутствует.</p>
+        {% endif %}
+      </div>{# product-card__brief #}
+
+    </div>{# product-card__middle #}
+
+    <div class="product-card__bottom">
+
+      <div class="product-card__price-box">
+
+        {% if product.data.new_price %}
+          <div class="product-card__price product-card__price--old">{{ product.data.price }}</div>
+          <div class="product-card__price product-card__price--new">{{ product.data.new_price }}</div>
+        {% elseif product.data.price %}
+          <div class="product-card__price product-card__price--start">{{ product.data.price }}</div>
+        {% endif %}
+
+      </div>{# product-card__price-box #}
+
+      <a href="{{ 'catalog/catalog-item'|page({
+          catalogCode: catalog.code,
+          categorySlug: product.category.slug,
+          itemSlug: product.data.slug
+        }) }}"
+        class="product-card__button button button--sm button--brand">Подробнее</a>
+
+    </div>{# product-card__bottom #}
+
+  </div>{# product-card #}
+
+{% endfor %}

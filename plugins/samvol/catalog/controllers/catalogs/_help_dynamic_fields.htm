@@ -1,0 +1,39 @@
+<div class="sv-help-wrapper">
+  <button type="button" class="btn btn-default sv-help-open" data-target="sv-help-dynamic-fields">Как это работает?</button>
+
+  <div id="sv-help-dynamic-fields" class="sv-help-modal" aria-hidden="true">
+    <div class="sv-help-mask"></div>
+    <div class="sv-help-dialog" role="dialog" aria-modal="true">
+      <div class="sv-help-header">
+        <h4>Динамические поля</h4>
+        <button type="button" class="close" data-sv-help-close>&times;</button>
+      </div>
+      <div class="sv-help-body">
+        <p><strong>Описание:</strong> Динамические поля позволяют добавлять наборы полей для материалов в каталоге без изменения кода.</p>
+
+        <h5>Логика работы</h5>
+        <ul>
+          <li>Добавленные поля сохраняются в схеме каталога и доступны в данных материала.</li>
+          <li>Для вывода используйте `item.data.FIELD_NAME` в Twig.</li>
+        </ul>
+
+        <h5>Доступные Twig-флаги</h5>
+        <ul>
+          <li><code>item.data.FIELD_NAME</code> — значение поля</li>
+          <li><code>item.getField('FIELD_NAME')</code> — (если доступно) вспомогательный метод модели</li>
+        </ul>
+
+        <h5>Пример Twig</h5>
+        <div class="sv-help-pre">{% raw %}
++{% if item.data.custom_text %}
++  <p>{{ item.data.custom_text }}</p>
++{% endif %}
++{% endraw %}</div>
+
+      </div>
+      <div class="sv-help-footer" style="text-align:right;margin-top:12px;">
+        <button type="button" class="btn btn-primary" data-sv-help-close>Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
