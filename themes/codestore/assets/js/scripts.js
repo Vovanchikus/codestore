@@ -204,4 +204,23 @@ document.addEventListener("DOMContentLoaded", () => {
             tooltip.style.opacity = "0";
         });
     });
+
+    // Инициализация всех Swiper карточек
+    document.querySelectorAll(".swiper").forEach(function (swiperEl) {
+        new Swiper(swiperEl, {
+            slidesPerView: 1,
+            spaceBetween: 5,
+            loop: false,
+            pagination: {
+                el: swiperEl.querySelector(".swiper-pagination"),
+                clickable: true,
+            },
+        });
+    });
+
+    // Инициализация GLightbox
+    const lightbox = GLightbox({
+        selector: ".glightbox",
+        loop: true,
+    });
 });

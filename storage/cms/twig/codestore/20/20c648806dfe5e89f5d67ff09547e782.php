@@ -92,45 +92,14 @@ class __TwigTemplate_70cbe561002389ce57904e7e5b6f99f5 extends Template
         // line 24
         yield "  </div>
 
-</div>";
+  ";
+        // line 26
+        $context['__cms_partial_params'] = [];
+        echo $this->env->getExtension('Cms\Twig\Extension')->partialFunction("pagination"        , $context['__cms_partial_params']        , true        );
+        unset($context['__cms_partial_params']);
         // line 27
         yield "
-
-
-
-
-
-
-";
-        // line 35
-        if ((CoreExtension::getAttribute($this->env, $this->source, ($context["items"] ?? null), "lastPage", [], "method", false, false, true, 35) > 1)) {
-            // line 36
-            yield "  <nav class=\"pagination\">
-    ";
-            // line 37
-            $context['_parent'] = $context;
-            $context['_seq'] = CoreExtension::ensureTraversable(range(1, CoreExtension::getAttribute($this->env, $this->source, ($context["items"] ?? null), "lastPage", [], "method", false, false, true, 37)));
-            foreach ($context['_seq'] as $context["_key"] => $context["pageNumber"]) {
-                // line 38
-                yield "      <a href=\"";
-                yield $this->extensions['Cms\Twig\Extension']->pageFilter($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, ($context["this"] ?? null), "page", [], "any", false, false, true, 38), "baseFileName", [], "any", false, false, true, 38), 38, $this->source), ["page" => $this->sandbox->ensureToStringAllowed(                // line 39
-$context["pageNumber"], 39, $this->source), "catalogCode" => $this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source,                 // line 40
-($context["catalog"] ?? null), "code", [], "any", false, false, true, 40), 40, $this->source)]);
-                // line 41
-                yield "\">";
-                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed($context["pageNumber"], 41, $this->source), "html", null, true);
-                yield "</a>
-    ";
-            }
-            $_parent = $context['_parent'];
-            unset($context['_seq'], $context['_key'], $context['pageNumber'], $context['_parent']);
-            $context = array_intersect_key($context, $_parent) + $_parent;
-            // line 43
-            yield "  </nav>
-";
-        }
-        // line 45
-        yield "</div>";
+</div>";
         yield from [];
     }
 
@@ -155,7 +124,7 @@ $context["pageNumber"], 39, $this->source), "catalogCode" => $this->sandbox->ens
      */
     public function getDebugInfo(): array
     {
-        return array (  133 => 45,  129 => 43,  120 => 41,  118 => 40,  117 => 39,  115 => 38,  111 => 37,  108 => 36,  106 => 35,  97 => 27,  93 => 24,  89 => 23,  85 => 21,  82 => 19,  80 => 18,  76 => 17,  72 => 15,  70 => 14,  66 => 13,  62 => 11,  57 => 9,  52 => 8,  44 => 2,);
+        return array (  101 => 27,  97 => 26,  93 => 24,  89 => 23,  85 => 21,  82 => 19,  80 => 18,  76 => 17,  72 => 15,  70 => 14,  66 => 13,  62 => 11,  57 => 9,  52 => 8,  44 => 2,);
     }
 
     public function getSourceContext(): Source
@@ -185,39 +154,22 @@ $context["pageNumber"], 39, $this->source), "catalogCode" => $this->sandbox->ens
     {% partial 'catalog/product-card' %}
   </div>
 
-</div>{# catalog #}
+  {% partial \"pagination\" %}
 
-
-
-
-
-
-
-{# Пагинация #}
-{% if items.lastPage() > 1 %}
-  <nav class=\"pagination\">
-    {% for pageNumber in 1..items.lastPage() %}
-      <a href=\"{{ this.page.baseFileName|page({
-        ('page'): pageNumber,
-        catalogCode: catalog.code
-      }) }}\">{{ pageNumber }}</a>
-    {% endfor %}
-  </nav>
-{% endif %}
-</div>", "C:\\OSPanel\\domains\\codestore-new\\themes\\codestore\\pages\\catalog\\catalog-home.htm", "");
+</div>{# catalog #}", "C:\\OSPanel\\domains\\codestore-new\\themes\\codestore\\pages\\catalog\\catalog-home.htm", "");
     }
     
     public function checkSecurity()
     {
-        static $tags = ["partial" => 8, "if" => 35, "for" => 37];
-        static $filters = ["escape" => 9, "page" => 38];
-        static $functions = ["range" => 37];
+        static $tags = ["partial" => 8];
+        static $filters = ["escape" => 9];
+        static $functions = [];
 
         try {
             $this->sandbox->checkSecurity(
-                ['partial', 'if', 'for'],
-                ['escape', 'page'],
-                ['range'],
+                ['partial'],
+                ['escape'],
+                [],
                 $this->source
             );
         } catch (SecurityError $e) {

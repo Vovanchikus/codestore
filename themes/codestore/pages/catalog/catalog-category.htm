@@ -64,14 +64,6 @@ categorySlug = "{{ :categorySlug }}"
 
 {# Пагинация #}
 {% if items.lastPage() > 1 %}
-  <nav class="pagination">
-    {% for pageNumber in 1..items.lastPage() %}
-      <a href="{{ this.page.baseFileName|page({
-        ('page'): pageNumber,
-        catalogCode: catalog.code,
-        categorySlug: categorySlug
-      }) }}">{{ pageNumber }}</a>
-    {% endfor %}
-  </nav>
+    {% partial 'catalog/pagination' items=items %}
 {% endif %}
 </div>

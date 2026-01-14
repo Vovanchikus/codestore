@@ -50,6 +50,20 @@ form:
                 type: partial
                 path: $/samvol/catalog/controllers/catalogs/_categories_relation.htm
                 tab: Категории
+            main_settings_section:
+                label: Основные настройки
+                type: section
+                tab: Настройки
+                comment: Общие параметры, не относящиеся к другим секциям.
+
+            "settings[items_per_page]":
+                label: Элементов на странице
+                type: number
+                span: right
+                tab: Настройки
+                default: 12
+                comment: Количество материалов, выводимых на одной странице на фронтенде. Значение хранится в настройках каталога.
+
             sorting_section:
                 label: Сортировка
                 type: section
@@ -233,6 +247,7 @@ form:
                 span: left
                 tab: Настройки
                 default: false
+
 create:
     title: Create catalog
     redirect: samvol/catalog/catalogs/update/:id

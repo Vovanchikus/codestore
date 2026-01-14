@@ -1,0 +1,61 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
+
+.pagination {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    font-weight: 600;
+    padding: fn.rem(8px);
+    background-color: $bg-box;
+    border-radius: $radius-lg;
+    box-shadow: $box-light-shadow;
+
+    &__pages {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    &__page,
+    &__prev,
+    &__next {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 48px;
+        min-width: 48px;
+        font-size: fn.rem(16px);
+        color: $text-title;
+        border-radius: $radius-nm;
+        transition: all $transition;
+
+        &:hover {
+            color: $text-title;
+            background-color: $neutral-300;
+        }
+
+        &:active {
+            transform: $scale;
+        }
+
+        &.is-active {
+            color: $text-brand;
+            background-color: transparent;
+            border: 2px solid $bg-brand;
+        }
+    }
+
+    &__prev {
+        transform: rotate(90deg);
+
+        &:active {
+            transform: rotate(90deg);
+        }
+    }
+
+    &__next {
+        transform: rotate(-90deg);
+    }
+}

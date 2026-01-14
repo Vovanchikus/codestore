@@ -53,126 +53,172 @@ class __TwigTemplate_9cfe2d4da93279a76b5a292b39b8aee4 extends Template
             // line 6
             if ((($tmp = Twig\Extension\CoreExtension::length($this->env->getCharset(), CoreExtension::getAttribute($this->env, $this->source, $context["product"], "screenshot", [], "any", false, false, true, 6))) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
                 // line 7
-                yield "        <img src=\"";
-                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, (($_v0 = CoreExtension::getAttribute($this->env, $this->source, $context["product"], "screenshot", [], "any", false, false, true, 7)) && is_array($_v0) || $_v0 instanceof ArrayAccess && in_array($_v0::class, CoreExtension::ARRAY_LIKE_CLASSES, true) ? ($_v0[0] ?? null) : CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "screenshot", [], "any", false, false, true, 7), 0, [], "array", false, false, true, 7)), "path", [], "any", false, false, true, 7), 7, $this->source), "html", null, true);
-                yield "\" alt=\"";
-                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, $context["product"], "display_name", [], "any", false, false, true, 7), 7, $this->source), "html", null, true);
+                yield "
+        <a href=\"";
+                // line 8
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, (($_v0 = CoreExtension::getAttribute($this->env, $this->source, $context["product"], "screenshot", [], "any", false, false, true, 8)) && is_array($_v0) || $_v0 instanceof ArrayAccess && in_array($_v0::class, CoreExtension::ARRAY_LIKE_CLASSES, true) ? ($_v0[0] ?? null) : CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "screenshot", [], "any", false, false, true, 8), 0, [], "array", false, false, true, 8)), "path", [], "any", false, false, true, 8), 8, $this->source), "html", null, true);
+                yield "\" class=\"product-card__img-link glightbox\" data-gallery=\"product-";
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, $context["product"], "id", [], "any", false, false, true, 8), 8, $this->source), "html", null, true);
                 yield "\">
-      ";
+
+          <img src=\"";
+                // line 10
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, (($_v1 = CoreExtension::getAttribute($this->env, $this->source, $context["product"], "screenshot", [], "any", false, false, true, 10)) && is_array($_v1) || $_v1 instanceof ArrayAccess && in_array($_v1::class, CoreExtension::ARRAY_LIKE_CLASSES, true) ? ($_v1[0] ?? null) : CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "screenshot", [], "any", false, false, true, 10), 0, [], "array", false, false, true, 10)), "path", [], "any", false, false, true, 10), 10, $this->source), "html", null, true);
+                yield "\" alt=\"";
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, $context["product"], "display_name", [], "any", false, false, true, 10), 10, $this->source), "html", null, true);
+                yield "\">
+
+          <div class=\"img-zoom\">
+            <div class=\"img-zoom__icon\">
+
+            <svg width=\"56\" height=\"56\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">
+            <path opacity=\"1\" d=\"M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z\" fill=\"#fff\"></path>
+            <path d=\"M16 11.25H12.75V8C12.75 7.59 12.41 7.25 12 7.25C11.59 7.25 11.25 7.59 11.25 8V11.25H8C7.59 11.25 7.25 11.59 7.25 12C7.25 12.41 7.59 12.75 8 12.75H11.25V16C11.25 16.41 11.59 16.75 12 16.75C12.41 16.75 12.75 16.41 12.75 16V12.75H16C16.41 12.75 16.75 12.41 16.75 12C16.75 11.59 16.41 11.25 16 11.25Z\" fill=\"#4a4a7d\"></path>
+            </svg>
+
+            </div><!-- img-zomm__icon -->
+          </div>";
+                // line 22
+                yield "
+        </a>";
+                // line 24
+                yield "      ";
             } else {
-                // line 9
+                // line 25
                 yield "        <img src=\"https://via.placeholder.com/150\" alt=\"No image available\">
       ";
             }
-            // line 11
+            // line 27
             yield "
       ";
-            // line 12
-            if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, ($context["catalog"] ?? null), "track_updates_badge_enabled", [], "any", false, false, true, 12)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
-                // line 13
+            // line 28
+            if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, ($context["catalog"] ?? null), "track_updates_badge_enabled", [], "any", false, false, true, 28)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                // line 29
                 yield "        ";
-                if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, $context["product"], "isRecentlyUpdated", [], "any", false, false, true, 13)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
-                    // line 14
+                if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, $context["product"], "isRecentlyUpdated", [], "any", false, false, true, 29)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                    // line 30
                     yield "          <span class=\"product-card__badge badge badge--lg badge--success\">Обновлено</span>
         ";
-                } elseif ((($tmp = CoreExtension::getAttribute($this->env, $this->source,                 // line 15
-$context["product"], "hasEverBeenUpdated", [], "any", false, false, true, 15)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
-                    // line 16
+                } elseif ((($tmp = CoreExtension::getAttribute($this->env, $this->source,                 // line 31
+$context["product"], "hasEverBeenUpdated", [], "any", false, false, true, 31)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                    // line 32
                     yield "          <span class=\"product-card__badge badge badge--lg badge--brand\">v";
-                    yield (((CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "data", [], "any", false, true, true, 16), "version", [], "any", true, true, true, 16) &&  !(null === CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "data", [], "any", false, false, true, 16), "version", [], "any", false, false, true, 16)))) ? ($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "data", [], "any", false, false, true, 16), "version", [], "any", false, false, true, 16), 16, $this->source), "html", null, true)) : ("1.0.0"));
+                    yield (((CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "data", [], "any", false, true, true, 32), "version", [], "any", true, true, true, 32) &&  !(null === CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "data", [], "any", false, false, true, 32), "version", [], "any", false, false, true, 32)))) ? ($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "data", [], "any", false, false, true, 32), "version", [], "any", false, false, true, 32), 32, $this->source), "html", null, true)) : ("1.0.0"));
                     yield "</span>
         ";
                 }
-                // line 18
+                // line 34
                 yield "      ";
             }
-            // line 19
+            // line 35
             yield "
     </div>";
-            // line 21
+            // line 37
             yield "
     <div class=\"product-card__middle\">
 
       <div class=\"product-card__labels\">
-        <div class=\"product-card__category label label--sm label--success\">";
-            // line 25
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "category", [], "any", false, false, true, 25), "name", [], "any", false, false, true, 25), 25, $this->source), "html", null, true);
-            yield "</div>
+
+      ";
+            // line 42
+            if ((CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "category", [], "any", false, false, true, 42), "name", [], "any", false, false, true, 42) == "Макеты")) {
+                // line 43
+                yield "          <div class=\"product-card__category label label--sm label--success\">";
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "category", [], "any", false, false, true, 43), "name", [], "any", false, false, true, 43), 43, $this->source), "html", null, true);
+                yield "</div>
+      ";
+            } elseif ((CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source,             // line 44
+$context["product"], "category", [], "any", false, false, true, 44), "name", [], "any", false, false, true, 44) == "Шаблоны")) {
+                // line 45
+                yield "          <div class=\"product-card__category label label--sm label--brand\">";
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "category", [], "any", false, false, true, 45), "name", [], "any", false, false, true, 45), 45, $this->source), "html", null, true);
+                yield "</div>
+      ";
+            } elseif ((CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source,             // line 46
+$context["product"], "category", [], "any", false, false, true, 46), "name", [], "any", false, false, true, 46) == "Элементы дизайна")) {
+                // line 47
+                yield "          <div class=\"product-card__category label label--sm label--error\">";
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "category", [], "any", false, false, true, 47), "name", [], "any", false, false, true, 47), 47, $this->source), "html", null, true);
+                yield "</div>
+      ";
+            }
+            // line 49
+            yield "
       </div>";
-            // line 27
+            // line 51
             yield "
 
 
       <div class=\"product-card__title\">";
-            // line 30
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, $context["product"], "display_name", [], "any", false, false, true, 30), 30, $this->source), "html", null, true);
+            // line 54
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, $context["product"], "display_name", [], "any", false, false, true, 54), 54, $this->source), "html", null, true);
             yield "</div>
 
       <div class=\"product-card__brief\">
         ";
-            // line 33
-            if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "data", [], "any", false, false, true, 33), "message", [], "any", false, false, true, 33)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
-                // line 34
+            // line 57
+            if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "data", [], "any", false, false, true, 57), "message", [], "any", false, false, true, 57)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                // line 58
                 yield "            <p> ";
-                yield $this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "data", [], "any", false, false, true, 34), "message", [], "any", false, false, true, 34), 34, $this->source);
+                yield $this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "data", [], "any", false, false, true, 58), "message", [], "any", false, false, true, 58), 58, $this->source);
                 yield " </p>
         ";
             } else {
-                // line 36
+                // line 60
                 yield "            <p>Описание отсутствует.</p>
         ";
             }
-            // line 38
+            // line 62
             yield "      </div>";
-            // line 39
+            // line 63
             yield "
     </div>";
-            // line 41
+            // line 65
             yield "
     <div class=\"product-card__bottom\">
 
       <div class=\"product-card__price-box\">
 
         ";
-            // line 46
-            if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "data", [], "any", false, false, true, 46), "new_price", [], "any", false, false, true, 46)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
-                // line 47
+            // line 70
+            if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "data", [], "any", false, false, true, 70), "new_price", [], "any", false, false, true, 70)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                // line 71
                 yield "          <div class=\"product-card__price product-card__price--old\">";
-                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "data", [], "any", false, false, true, 47), "price", [], "any", false, false, true, 47), 47, $this->source), "html", null, true);
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "data", [], "any", false, false, true, 71), "price", [], "any", false, false, true, 71), 71, $this->source), "html", null, true);
                 yield "</div>
           <div class=\"product-card__price product-card__price--new\">";
-                // line 48
-                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "data", [], "any", false, false, true, 48), "new_price", [], "any", false, false, true, 48), 48, $this->source), "html", null, true);
+                // line 72
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "data", [], "any", false, false, true, 72), "new_price", [], "any", false, false, true, 72), 72, $this->source), "html", null, true);
                 yield "</div>
         ";
-            } elseif ((($tmp = CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source,             // line 49
-$context["product"], "data", [], "any", false, false, true, 49), "price", [], "any", false, false, true, 49)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
-                // line 50
+            } elseif ((($tmp = CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source,             // line 73
+$context["product"], "data", [], "any", false, false, true, 73), "price", [], "any", false, false, true, 73)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                // line 74
                 yield "          <div class=\"product-card__price product-card__price--start\">";
-                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "data", [], "any", false, false, true, 50), "price", [], "any", false, false, true, 50), 50, $this->source), "html", null, true);
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["product"], "data", [], "any", false, false, true, 74), "price", [], "any", false, false, true, 74), 74, $this->source), "html", null, true);
                 yield "</div>
         ";
             }
-            // line 52
+            // line 76
             yield "
       </div>";
-            // line 54
+            // line 78
             yield "
       <a href=\"";
-            // line 55
-            yield $this->extensions['Cms\Twig\Extension']->pageFilter("catalog/catalog-item", ["catalogCode" => $this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source,             // line 56
-($context["catalog"] ?? null), "code", [], "any", false, false, true, 56), 56, $this->source), "categorySlug" => $this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source,             // line 57
-$context["product"], "category", [], "any", false, false, true, 57), "slug", [], "any", false, false, true, 57), 57, $this->source), "itemSlug" => $this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source,             // line 58
-$context["product"], "data", [], "any", false, false, true, 58), "slug", [], "any", false, false, true, 58), 58, $this->source)]);
-            // line 59
+            // line 79
+            yield $this->extensions['Cms\Twig\Extension']->pageFilter("catalog/catalog-item", ["catalogCode" => $this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source,             // line 80
+($context["catalog"] ?? null), "code", [], "any", false, false, true, 80), 80, $this->source), "categorySlug" => $this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source,             // line 81
+$context["product"], "category", [], "any", false, false, true, 81), "slug", [], "any", false, false, true, 81), 81, $this->source), "itemSlug" => $this->sandbox->ensureToStringAllowed(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source,             // line 82
+$context["product"], "data", [], "any", false, false, true, 82), "slug", [], "any", false, false, true, 82), 82, $this->source)]);
+            // line 83
             yield "\"
         class=\"product-card__button button button--sm button--brand\">Подробнее</a>
 
     </div>";
-            // line 63
+            // line 87
             yield "
   </div>";
-            // line 65
+            // line 89
             yield "
 ";
         }
@@ -203,7 +249,7 @@ $context["product"], "data", [], "any", false, false, true, 58), "slug", [], "an
      */
     public function getDebugInfo(): array
     {
-        return array (  176 => 65,  173 => 63,  168 => 59,  166 => 58,  165 => 57,  164 => 56,  163 => 55,  160 => 54,  157 => 52,  151 => 50,  149 => 49,  145 => 48,  140 => 47,  138 => 46,  131 => 41,  128 => 39,  126 => 38,  122 => 36,  116 => 34,  114 => 33,  108 => 30,  103 => 27,  99 => 25,  93 => 21,  90 => 19,  87 => 18,  81 => 16,  79 => 15,  76 => 14,  73 => 13,  71 => 12,  68 => 11,  64 => 9,  56 => 7,  54 => 6,  48 => 2,  44 => 1,);
+        return array (  222 => 89,  219 => 87,  214 => 83,  212 => 82,  211 => 81,  210 => 80,  209 => 79,  206 => 78,  203 => 76,  197 => 74,  195 => 73,  191 => 72,  186 => 71,  184 => 70,  177 => 65,  174 => 63,  172 => 62,  168 => 60,  162 => 58,  160 => 57,  154 => 54,  149 => 51,  146 => 49,  140 => 47,  138 => 46,  133 => 45,  131 => 44,  126 => 43,  124 => 42,  117 => 37,  114 => 35,  111 => 34,  105 => 32,  103 => 31,  100 => 30,  97 => 29,  95 => 28,  92 => 27,  88 => 25,  85 => 24,  82 => 22,  66 => 10,  59 => 8,  56 => 7,  54 => 6,  48 => 2,  44 => 1,);
     }
 
     public function getSourceContext(): Source
@@ -214,7 +260,23 @@ $context["product"], "data", [], "any", false, false, true, 58), "slug", [], "an
     <div class=\"product-card__img\">
 
       {% if product.screenshot|length %}
-        <img src=\"{{ product.screenshot[0].path }}\" alt=\"{{ product.display_name }}\">
+
+        <a href=\"{{ product.screenshot[0].path }}\" class=\"product-card__img-link glightbox\" data-gallery=\"product-{{ product.id }}\">
+
+          <img src=\"{{ product.screenshot[0].path }}\" alt=\"{{ product.display_name }}\">
+
+          <div class=\"img-zoom\">
+            <div class=\"img-zoom__icon\">
+
+            <svg width=\"56\" height=\"56\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">
+            <path opacity=\"1\" d=\"M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z\" fill=\"#fff\"></path>
+            <path d=\"M16 11.25H12.75V8C12.75 7.59 12.41 7.25 12 7.25C11.59 7.25 11.25 7.59 11.25 8V11.25H8C7.59 11.25 7.25 11.59 7.25 12C7.25 12.41 7.59 12.75 8 12.75H11.25V16C11.25 16.41 11.59 16.75 12 16.75C12.41 16.75 12.75 16.41 12.75 16V12.75H16C16.41 12.75 16.75 12.41 16.75 12C16.75 11.59 16.41 11.25 16 11.25Z\" fill=\"#4a4a7d\"></path>
+            </svg>
+
+            </div><!-- img-zomm__icon -->
+          </div>{# img-zoom #}
+
+        </a>{# glightbox #}
       {% else %}
         <img src=\"https://via.placeholder.com/150\" alt=\"No image available\">
       {% endif %}
@@ -232,7 +294,15 @@ $context["product"], "data", [], "any", false, false, true, 58), "slug", [], "an
     <div class=\"product-card__middle\">
 
       <div class=\"product-card__labels\">
-        <div class=\"product-card__category label label--sm label--success\">{{ product.category.name }}</div>
+
+      {% if product.category.name == 'Макеты' %}
+          <div class=\"product-card__category label label--sm label--success\">{{ product.category.name }}</div>
+      {% elseif product.category.name == 'Шаблоны' %}
+          <div class=\"product-card__category label label--sm label--brand\">{{ product.category.name }}</div>
+      {% elseif product.category.name == 'Элементы дизайна' %}
+          <div class=\"product-card__category label label--sm label--error\">{{ product.category.name }}</div>
+      {% endif %}
+
       </div>{# product-card__labels #}
 
 
@@ -279,7 +349,7 @@ $context["product"], "data", [], "any", false, false, true, 58), "slug", [], "an
     public function checkSecurity()
     {
         static $tags = ["for" => 1, "if" => 6];
-        static $filters = ["length" => 6, "escape" => 7, "raw" => 34, "page" => 55];
+        static $filters = ["length" => 6, "escape" => 8, "raw" => 58, "page" => 79];
         static $functions = [];
 
         try {

@@ -66,46 +66,58 @@ class __TwigTemplate_201998bba6bac1e006a59d891ffa1f43 extends Template
         yield "\">
         <link href=\"";
         // line 12
-        yield $this->extensions['Cms\Twig\Extension']->themeFilter("assets/css/variables.css");
+        yield $this->extensions['Cms\Twig\Extension']->themeFilter("assets/vendor/swiper/swiper-bundle.min.css");
         yield "\" rel=\"stylesheet\">
         <link href=\"";
         // line 13
+        yield $this->extensions['Cms\Twig\Extension']->themeFilter("assets/vendor/glightbox/glightbox.min.css");
+        yield "\" rel=\"stylesheet\">
+        <link href=\"";
+        // line 14
+        yield $this->extensions['Cms\Twig\Extension']->themeFilter("assets/css/variables.css");
+        yield "\" rel=\"stylesheet\">
+        <link href=\"";
+        // line 15
         yield $this->extensions['Cms\Twig\Extension']->themeFilter("assets/css/main.css");
         yield "\" rel=\"stylesheet\">
+        <link href=\"";
+        // line 16
+        yield $this->extensions['Cms\Twig\Extension']->themeFilter("assets/css/media.css");
+        yield "\" rel=\"stylesheet\">
         ";
-        // line 14
+        // line 17
         echo $this->env->getExtension('Cms\Twig\Extension')->assetsFunction('css');
         echo $this->env->getExtension('Cms\Twig\Extension')->displayBlock('styles');
-        // line 15
+        // line 18
         yield "    </head>
     <body>
 
         <div class=\"container\">
 
             ";
-        // line 20
+        // line 23
         $context['__cms_partial_params'] = [];
         echo $this->env->getExtension('Cms\Twig\Extension')->partialFunction("global/header"        , $context['__cms_partial_params']        , true        );
         unset($context['__cms_partial_params']);
-        // line 21
+        // line 24
         yield "
             <main>";
-        // line 22
+        // line 25
         echo $this->env->getExtension('Cms\Twig\Extension')->pageFunction();
         yield "</main>
 
             ";
-        // line 25
+        // line 28
         yield "
             ";
-        // line 26
+        // line 29
         $context['__cms_partial_params'] = [];
         echo $this->env->getExtension('Cms\Twig\Extension')->partialFunction("global/scripts"        , $context['__cms_partial_params']        , true        );
         unset($context['__cms_partial_params']);
-        // line 27
+        // line 30
         yield "
         </div>";
-        // line 29
+        // line 32
         yield "
 
     </body>
@@ -134,7 +146,7 @@ class __TwigTemplate_201998bba6bac1e006a59d891ffa1f43 extends Template
      */
     public function getDebugInfo(): array
     {
-        return array (  109 => 29,  106 => 27,  102 => 26,  99 => 25,  94 => 22,  91 => 21,  87 => 20,  80 => 15,  77 => 14,  73 => 13,  69 => 12,  65 => 11,  58 => 7,  54 => 6,  50 => 5,  44 => 1,);
+        return array (  121 => 32,  118 => 30,  114 => 29,  111 => 28,  106 => 25,  103 => 24,  99 => 23,  92 => 18,  89 => 17,  85 => 16,  81 => 15,  77 => 14,  73 => 13,  69 => 12,  65 => 11,  58 => 7,  54 => 6,  50 => 5,  44 => 1,);
     }
 
     public function getSourceContext(): Source
@@ -150,8 +162,11 @@ class __TwigTemplate_201998bba6bac1e006a59d891ffa1f43 extends Template
         <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
         <meta name=\"generator\" content=\"Winter CMS\">
         <link rel=\"icon\" type=\"image/png\" href=\"{{ 'assets/images/winter.png'|theme }}\">
+        <link href=\"{{ 'assets/vendor/swiper/swiper-bundle.min.css'|theme }}\" rel=\"stylesheet\">
+        <link href=\"{{ 'assets/vendor/glightbox/glightbox.min.css'|theme }}\" rel=\"stylesheet\">
         <link href=\"{{ 'assets/css/variables.css'|theme }}\" rel=\"stylesheet\">
         <link href=\"{{ 'assets/css/main.css'|theme }}\" rel=\"stylesheet\">
+        <link href=\"{{ 'assets/css/media.css'|theme }}\" rel=\"stylesheet\">
         {% styles %}
     </head>
     <body>
@@ -175,7 +190,7 @@ class __TwigTemplate_201998bba6bac1e006a59d891ffa1f43 extends Template
     
     public function checkSecurity()
     {
-        static $tags = ["styles" => 14, "partial" => 20, "page" => 22];
+        static $tags = ["styles" => 17, "partial" => 23, "page" => 25];
         static $filters = ["escape" => 5, "theme" => 11];
         static $functions = [];
 

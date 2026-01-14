@@ -34,6 +34,10 @@ class Catalog extends Model
 
     protected $jsonable = ['settings'];
 
+    protected $casts = [
+
+    ];
+
     public $rules = [
         'name' => 'required',
         'code' => 'required|unique:samvol_catalogs'
@@ -347,6 +351,22 @@ class Catalog extends Model
         }
 
         return CatalogSorting::resolveSortCode($this, null);
+    }
+
+    public function getItemsPerPageAttribute(): int
+    {
+        // Read from settings JSON
+        $settings = $this->settings;
+        if (is_string($settings)) {
+            $decoded = json_decode($settings, true);
+            $settings = is_array($decoded) ? $decoded : [];
+        }
+
+        if (is_array($settings) && isset($settings['items_per_page']) && is_numeric($settings['items_per_page'])) {
+            return (int) $settings['items_per_page'];
+        }
+
+        return 12;
     }
 
     public function setSortingDefaultAttribute($value): void

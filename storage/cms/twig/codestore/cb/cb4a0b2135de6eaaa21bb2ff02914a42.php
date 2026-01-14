@@ -69,10 +69,18 @@ class __TwigTemplate_b9b85f8b1183597842553a8a8f59733e extends Template
         echo $this->env->getExtension('Cms\Twig\Extension')->displayBlock('scripts');
         // line 8
         yield "<script src=\"";
-        yield $this->extensions['Cms\Twig\Extension']->themeFilter("assets/js/modal.js");
+        yield $this->extensions['Cms\Twig\Extension']->themeFilter("assets/vendor/swiper/swiper-bundle.min.js");
         yield "\"></script>
 <script src=\"";
         // line 9
+        yield $this->extensions['Cms\Twig\Extension']->themeFilter("assets/vendor/glightbox/glightbox.min.js");
+        yield "\"></script>
+<script src=\"";
+        // line 10
+        yield $this->extensions['Cms\Twig\Extension']->themeFilter("assets/js/modal.js");
+        yield "\"></script>
+<script src=\"";
+        // line 11
         yield $this->extensions['Cms\Twig\Extension']->themeFilter("assets/js/scripts.js");
         yield "\"></script>";
         yield from [];
@@ -99,7 +107,7 @@ class __TwigTemplate_b9b85f8b1183597842553a8a8f59733e extends Template
      */
     public function getDebugInfo(): array
     {
-        return array (  76 => 9,  71 => 8,  67 => 7,  63 => 5,  59 => 4,  55 => 3,  52 => 2,  44 => 1,);
+        return array (  84 => 11,  80 => 10,  76 => 9,  71 => 8,  67 => 7,  63 => 5,  59 => 4,  55 => 3,  52 => 2,  44 => 1,);
     }
 
     public function getSourceContext(): Source
@@ -111,6 +119,8 @@ class __TwigTemplate_b9b85f8b1183597842553a8a8f59733e extends Template
 
 
 {% scripts %}
+<script src=\"{{ 'assets/vendor/swiper/swiper-bundle.min.js'|theme }}\"></script>
+<script src=\"{{ 'assets/vendor/glightbox/glightbox.min.js'|theme }}\"></script>
 <script src=\"{{ 'assets/js/modal.js'|theme }}\"></script>
 <script src=\"{{ 'assets/js/scripts.js'|theme }}\"></script>", "C:\\OSPanel\\domains\\codestore-new\\themes\\codestore\\partials\\global\\scripts.htm", "");
     }
