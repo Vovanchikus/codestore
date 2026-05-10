@@ -1,0 +1,66 @@
+fields:
+    parent:
+        label: Родительская категория
+        type: relation
+        span: right
+        nameFrom: name
+        emptyOption: -- Родительская категория --
+        scope: forCatalog
+    name:
+        label: Название
+        span: left
+        required: true
+    slug:
+        label: URL
+        span: right
+        preset:
+            field: name
+            type: slug
+        required: true
+    description:
+        label: Описание категории
+        type: textarea
+        size: large
+        span: full
+    icon_mode:
+        label: Источник иконки
+        type: balloon-selector
+        span: left
+        default: file
+        options:
+            file: Upload image
+            svg: SVG code
+        comment: Выберите способ указания иконки.
+    icon_svg:
+        label: Иконка (SVG код)
+        type: codeeditor
+        language: html
+        size: huge
+        span: full
+        comment: Вставьте встроенную разметку SVG. Оставьте пустым, если вы используете загруженную иконку ниже.
+        trigger:
+            action: show
+            field: icon_mode
+            condition: value[svg]
+    icon:
+        label: Загрузить иконку
+        type: fileupload
+        mode: image
+        fileTypes: jpeg,jpg,png,svg,webp
+        span: left
+        imageHeight: 120
+        comment: Загрузите изображение иконки. Оставьте пустым, если вы указали SVG код выше.
+        trigger:
+            action: show
+            field: icon_mode
+            condition: value[file]
+    is_active:
+        label: Активировать категорию
+        type: switch
+        span: left
+    data:
+        label: Data (JSON)
+        type: codeeditor
+        language: javascript
+        size: huge
+        span: full

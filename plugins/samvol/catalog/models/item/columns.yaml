@@ -1,0 +1,16 @@
+columns:
+    display_name:
+        label: Title
+        searchable: false
+        valueFrom: display_name
+    catalog[name]:
+        label: Catalog
+        sortable: false
+    category[name]:
+        label: Category
+        sortable: false
+    status:
+        label: Status
+    updated_at:
+        label: Updated
+        type: datetime

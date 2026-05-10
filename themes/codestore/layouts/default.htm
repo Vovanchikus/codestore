@@ -1,0 +1,40 @@
+description = "Default шаблон"
+
+
+[catalogsList]
+==
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <title>{{ this.page.title }}</title>
+        <meta name="description" content="{{ this.page.meta_description }}">
+        <meta name="title" content="{{ this.page.meta_title }}">
+        <meta name="author" content="Winter CMS">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="generator" content="Winter CMS">
+        <link rel="icon" type="image/png" href="{{ 'assets/images/winter.png'|theme }}">
+        <link href="{{ 'assets/vendor/swiper/swiper-bundle.min.css'|theme }}" rel="stylesheet">
+        <link href="{{ 'assets/vendor/glightbox/glightbox.min.css'|theme }}" rel="stylesheet">
+        <link href="{{ 'assets/css/variables.css'|theme }}" rel="stylesheet">
+        <link href="{{ 'assets/css/main.css'|theme }}" rel="stylesheet">
+        <link href="{{ 'assets/css/media.css'|theme }}" rel="stylesheet">
+        {% styles %}
+    </head>
+    <body>
+
+        <div class="container">
+
+            {% partial 'global/header' %}
+
+            <main>{% page %}</main>
+
+            {# Технический блок #}
+
+            {% partial 'global/scripts' %}
+
+        </div>{# container #}
+
+
+    </body>
+</html>

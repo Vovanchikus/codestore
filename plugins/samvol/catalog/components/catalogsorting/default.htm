@@ -1,0 +1,23 @@
+{% if availableSorts|length %}
+<div
+    class="catalog-sorting"
+    data-control="catalog-sorting"
+    data-refresh-mode="{{ refreshMode }}"
+    data-list-selector="{{ listSelector }}"
+    data-sort-param="{{ sortParam|default('sort') }}"
+>
+    <label class="catalog-sorting__label" for="{{ __SELF__ }}-sort">
+        Сортировать:
+    </label>
+
+    <select
+        id="{{ __SELF__ }}-sort"
+        name="{{ sortParam|default('sort') }}"
+        class="catalog-sorting__select"
+    >
+        {% for sortCode, sortLabel in availableSorts %}
+            <option value="{{ sortCode }}" {% if sortCode == currentSort %}selected{% endif %}>{{ sortLabel }}</option>
+        {% endfor %}
+    </select>
+</div>
+{% endif %}

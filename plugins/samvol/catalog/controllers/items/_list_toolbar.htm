@@ -1,0 +1,13 @@
+<?php
+use Samvol\Catalog\Models\Catalog;
+$catalogs = Catalog::orderBy('name')->get();
+?>
+<div class="toolbar">
+    <div class="btn-group">
+        <a
+            href="<?= Backend::url('samvol/catalog/items/create') ?>"
+            class="btn btn-primary oc-icon-plus"
+            >Create item</a
+        >
+    </div>
+</div>

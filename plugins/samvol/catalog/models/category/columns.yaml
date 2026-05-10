@@ -1,0 +1,12 @@
+columns:
+    name:
+        label: Name
+    catalog[name]:
+        label: Catalog
+        sortable: false
+    parent[name]:
+        label: Parent
+        sortable: false
+    is_active:
+        label: Active
+        type: switch

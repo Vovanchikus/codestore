@@ -1,0 +1,43 @@
+<div class="toolbar" data-control="toolbar">
+    <div class="btn-group">
+        <a
+            href="<?= Backend::url('samvol/catalog/catalogs/create') ?>"
+            class="btn btn-primary wn-icon-plus"
+        >
+            Создать каталог
+        </a>
+    </div>
+
+    <button
+        class="btn btn-danger wn-icon-trash-o"
+        disabled="disabled"
+        onclick="$(this).data('request-data', { checked: $('.control-list').listWidget('getChecked') })"
+        data-request="onDelete"
+        data-request-confirm="Вы действительно хотите удалить выбранные каталоги?"
+        data-trigger-action="enable"
+        data-trigger=".control-list input[type=checkbox]"
+        data-trigger-condition="checked"
+        data-request-success="$(this).prop('disabled', 'disabled')"
+        data-stripe-load-indicator
+    >
+        Удалить выбранные
+    </button>
+</div>
+
+<script>
+    (function(){
+        // attach click handler to list rows to store selected catalog id in session
+        document.addEventListener('DOMContentLoaded', function(){
+            var list = document.querySelector('.control-list');
+            if (!list) return;
+            list.addEventListener('click', function(e){
+                var row = e.target.closest('[data-record-id]');
+                if (!row) return;
+                var id = row.getAttribute('data-record-id');
+                if (!id) return;
+                // call controller AJAX handler to persist selection
+                $.request('onSetSelectedCatalog', {data: {id: id}});
+            });
+        });
+    })();
+</script>

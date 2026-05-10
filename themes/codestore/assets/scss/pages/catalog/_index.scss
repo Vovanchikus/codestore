@@ -1,0 +1,7 @@
+@use "../../abstracts/variables" as *;
+@use "../../abstracts/functions" as fn;
+
+@use "common" as *; // Индивидуальные стили каталога
+@use "categories" as *; // Стили категорий
+@use "sorting" as *; // Стили категорий
+@use "product-card" as *; // Стили карточки товара

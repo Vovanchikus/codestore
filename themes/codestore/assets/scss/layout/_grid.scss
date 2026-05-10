@@ -1,0 +1,17 @@
+@use "../abstracts/_functions" as fn;
+
+.container {
+    position: relative;
+    display: grid;
+    grid-template-areas:
+        "header header"
+        "aside main "
+        "footer footer";
+    grid-template-columns: 300px calc(100% - 300px - 32px);
+    grid-template-rows: 64px auto 128px;
+    gap: fn.rem(48px) fn.rem(32px);
+    max-width: 1244px;
+    width: 100%;
+    margin: fn.rem(32px) auto;
+    padding: 0 32px;
+}

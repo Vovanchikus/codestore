@@ -1,0 +1,11 @@
+{% if catalogs|length %}
+    {% for catalog in catalogs %}
+
+        <li class="header-nav__item">
+            <a href="{{ 'catalog/catalog-home'|page({ catalogCode: catalog.code }) }}" class="header-nav__link">
+                {{ catalog.name }}
+            </a>
+        </li>
+
+    {% endfor %}
+{% endif %}

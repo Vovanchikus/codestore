@@ -1,0 +1,69 @@
+title = "Каталог по категории"
+url = "/:catalogCode/:categorySlug"
+layout = "default"
+
+[catalogList]
+catalogCode = "{{ :catalogCode }}"
+categorySlug = "{{ :categorySlug }}"
+==
+<div class="catalog">
+
+  <div class="catalog__controls box--light">
+
+    <div class="catalog__controls-top">
+      {% partial 'catalog/breadcrumbs' catalog=catalog category=currentCategory %}
+      <div class="catalog__controls-count">Всего:<span>{{ items.total() }}</span></div>
+    </div>{# catalog__controls-top #}
+
+    <div class="catalog__controls-middle">
+        {% partial 'catalog/categories' %}
+    </div>{# catalog-controls-middle #}
+
+    <div class="catalog__sorting"></div>{# catalog-sorting #}
+  </div>
+
+</div>{# catalog #}
+
+{# Заголовок каталога #}
+<h1>{{ catalog.name }}</h1>
+{% if items is defined %}
+  <p class="catalog__count">{{ items.total() }} материалов в категории</p>
+{% endif %}
+
+{# Текущая категория по переданному slug (если не задан slug — покажет все элементы) #}
+{# {% if currentCategory %}
+  <h2>Категория: {{ currentCategory.name }}</h2>
+{% endif %} #}
+
+ {% partial "catalog/sorting" %}
+
+{# Элементы (если categorySlug пуст — все элементы каталога) #}
+<div id="catalog-list">
+{% for record in items %}
+  <article class="catalog-item">
+    <h2>{{ record.display_name }}</h2>
+
+    {# Минимальный набор динамических полей #}
+    <p><strong>Title:</strong> {{ record.data.title }}</p>
+    <p><strong>Brief:</strong> {{ record.data.brief }}</p>
+
+    {# Ссылка на детальную страницу элемента #}
+    {% if record.category %}
+      <a href="{{ 'catalog/catalog-item'|page({
+        catalogCode: catalog.code,
+        categorySlug: record.category.slug,
+        itemSlug: record.data.slug
+      }) }}">
+        Подробнее
+      </a>
+    {% endif %}
+  </article>
+{% else %}
+  <p>Элементы отсутствуют в этой категории.</p>
+{% endfor %}
+
+{# Пагинация #}
+{% if items.lastPage() > 1 %}
+    {% partial 'catalog/pagination' items=items %}
+{% endif %}
+</div>

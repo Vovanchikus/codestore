@@ -1,0 +1,90 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
+
+.button {
+    &--lg {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1em;
+        font-weight: 500;
+        line-height: 24px;
+        padding: 16px 32px;
+        border-radius: $radius-md;
+        svg {
+            margin-right: 8px;
+        }
+        &:has(svg) {
+            padding: 16px 32px 16px 24px;
+        }
+    }
+
+    &--md {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1em;
+        font-weight: 500;
+        line-height: 20px;
+        padding: 14px 24px;
+        border-radius: $radius-md;
+        svg {
+            margin-right: 8px;
+        }
+
+        &:has(svg) {
+            padding: 14px 24px 14px 20px;
+        }
+    }
+
+    &--sm {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        line-height: 16px;
+        font-weight: 500;
+        padding: 10px 24px;
+        border-radius: $radius-md;
+        svg {
+            margin-right: 8px;
+        }
+
+        &:has(svg) {
+            padding: 10px 24px 10px 20px;
+        }
+    }
+
+    &--brand {
+        color: $button-brand-text-default;
+        background-color: $button-brand-bg-default;
+        box-shadow: $button-brand-shadow-default;
+        transition: all $transition;
+        &:hover {
+            color: $button-brand-text-hover;
+            background-color: $button-brand-bg-hover;
+            box-shadow: $button-brand-shadow-hover;
+        }
+        &:active {
+            color: $button-brand-text-active;
+            background-color: $button-brand-bg-active;
+            box-shadow: none;
+            transform: scale(0.98);
+        }
+    }
+
+    &--second {
+        color: $button-second-text-default;
+        background-color: $button-second-bg-default;
+        transition: all $transition;
+        &:hover {
+            color: $button-second-text-hover;
+            background-color: $button-second-bg-hover;
+        }
+        &:active {
+            color: $button-second-text-active;
+            background-color: $button-second-bg-active;
+            transform: scale(0.98);
+        }
+    }
+}

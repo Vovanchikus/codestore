@@ -1,0 +1,258 @@
+name: Catalog
+modelClass: Samvol\Catalog\Models\Catalog
+defaultRedirect: samvol/catalog/catalogs
+form:
+    tabs:
+        fields:
+            name:
+                label: Название каталога
+                span: left
+                tab: Основное
+                required: true
+            help_assets:
+                label: ""
+                type: partial
+                path: $/samvol/catalog/controllers/catalogs/_help_assets.htm
+                span: full
+            code:
+                label: Code
+                span: right
+                tab: Основное
+                comment: Будет отображаться в URL-адресе.
+                preset:
+                    field: name
+                    type: slug
+                required: true
+            description:
+                label: Описание каталога
+                type: textarea
+                size: small
+                span: full
+                tab: Основное
+            is_active:
+                label: Активировать каталог
+                type: switch
+                tab: Основное
+                span: left
+            fields_block:
+                label: Поля
+                type: partial
+                path: $/samvol/catalog/controllers/catalogs/_fields_relation.htm
+                tab: Поля
+            dynamic_fields_help:
+                label: ""
+                type: partial
+                tab: Поля
+                path: $/samvol/catalog/controllers/catalogs/_help_dynamic_fields.htm
+                span: right
+            categories_block:
+                label: Категории
+                type: partial
+                path: $/samvol/catalog/controllers/catalogs/_categories_relation.htm
+                tab: Категории
+            main_settings_section:
+                label: Основные настройки
+                type: section
+                tab: Настройки
+                comment: Общие параметры, не относящиеся к другим секциям.
+
+            "settings[items_per_page]":
+                label: Элементов на странице
+                type: number
+                span: right
+                tab: Настройки
+                default: 12
+                comment: Количество материалов, выводимых на одной странице на фронтенде. Значение хранится в настройках каталога.
+
+            sorting_section:
+                label: Сортировка
+                type: section
+                tab: Настройки
+                comment: Управляет видимостью и вариантом сортировки на фронтенде.
+            sorting_help:
+                label: ""
+                type: partial
+                tab: Настройки
+                path: $/samvol/catalog/controllers/catalogs/_help_sorting.htm
+                span: right
+                dependsOn:
+                    - sorting_enabled
+                trigger:
+                    action: show
+                    field: sorting_enabled
+                    condition: checked
+            sorting_enabled:
+                label: Включить сортировку
+                type: switch
+                span: full
+                tab: Настройки
+                default: true
+                comment: Выключите, чтобы скрыть выбор сортировки на фронте и применять порядок по дате.
+            sorting_default:
+                label: Сортировка по умолчанию
+                type: dropdown
+                span: left
+                tab: Настройки
+                comment: Применяется, если в URL нет параметра ?sort=
+                options: getSortingDefaultOptions
+                default: date_desc
+                dependsOn: sorting_enabled
+                trigger:
+                    action: hide
+                    field: sorting_enabled
+                    condition: unchecked
+            sorting_allowed:
+                label: Разрешённые сортировки
+                type: checkboxlist
+                span: right
+                tab: Настройки
+                options: getSortingAllowedOptions
+                comment: Отметьте коды, которые должны быть доступны посетителям.
+                dependsOn: sorting_enabled
+                trigger:
+                    action: hide
+                    field: sorting_enabled
+                    condition: unchecked
+            track_updates_section:
+                label: Отслеживание обновлений
+                type: section
+                tab: Настройки
+                comment: При включении изменение выбранного поля добавит запись в историю и поднимет материал (обновит published_at).
+            track_updates_enabled:
+                label: Включить отслеживание обновлений
+                type: switch
+                span: left
+                tab: Настройки
+                default: false
+            track_updates_field:
+                label: Поле для отслеживания изменений
+                type: dropdown
+                span: left
+                tab: Настройки
+                placeholder: Выберите поле
+                options: getTrackUpdatesFieldOptions
+                dependsOn:
+                    - track_updates_enabled
+                trigger:
+                    action: show
+                    field: track_updates_enabled
+                    condition: checked
+            track_updates_log_field:
+                label: Поле для истории обновлений
+                type: dropdown
+                span: left
+                tab: Настройки
+                options: getTrackUpdatesLogFieldOptions
+                comment: Поле для записи текста обновления.
+                dependsOn:
+                    - track_updates_enabled
+                trigger:
+                    action: show
+                    field: track_updates_enabled
+                    condition: checked
+            track_updates_log_create_button:
+                label: ""
+                type: partial
+                tab: Настройки
+                path: $/samvol/catalog/controllers/catalogs/_track_updates_log_create.htm
+                span: right
+                dependsOn:
+                    - track_updates_enabled
+                trigger:
+                    action: show
+                    field: track_updates_enabled
+                    condition: checked
+            track_updates_help:
+                label: ""
+                type: partial
+                tab: Настройки
+                path: $/samvol/catalog/controllers/catalogs/_track_updates_help.htm
+                span: full
+                dependsOn:
+                    - track_updates_enabled
+                trigger:
+                    action: show
+                    field: track_updates_enabled
+                    condition: checked
+            track_updates_fields_init:
+                type: partial
+                tab: Настройки
+                path: $/samvol/catalog/controllers/catalogs/_fields_relation_hidden.htm
+                trigger:
+                    action: show
+                    field: track_updates_enabled
+                    condition: checked
+            track_updates_badge_enabled:
+                label: Показывать бейдж «Обновлено»
+                type: switch
+                span: left
+                tab: Настройки
+                default: false
+                dependsOn:
+                    - track_updates_enabled
+                trigger:
+                    action: show
+                    field: track_updates_enabled
+                    condition: checked
+            track_updates_badge_days:
+                label: Период (дней)
+                type: number
+                span: right
+                tab: Настройки
+                default: 7
+                comment: Количество дней, в течение которых показывается бейдж.
+                dependsOn:
+                    - track_updates_enabled
+                    - track_updates_badge_enabled
+                trigger:
+                    action: show
+                    field: track_updates_badge_enabled
+                    condition: checked
+            comments_section:
+                label: Комментарии
+                type: section
+                tab: Настройки
+                comment: Включите, чтобы разрешить посетителям оставлять комментарии.
+            feature_comments:
+                label: Включить комментарии
+                type: switch
+                span: left
+                tab: Настройки
+                default: false
+            rating_section:
+                label: Рейтинг
+                type: section
+                tab: Настройки
+                comment: Управляет отображением рейтинга и голосованием.
+            feature_rating:
+                label: Включить рейтинг
+                type: switch
+                span: left
+                tab: Настройки
+                default: false
+            moderation_section:
+                label: Модерация
+                type: section
+                tab: Настройки
+                comment: Добавляет очередь модерации для материалов.
+            flags_help:
+                label: ""
+                type: partial
+                tab: Настройки
+                path: $/samvol/catalog/controllers/catalogs/_help_flags.htm
+                span: right
+            feature_moderation:
+                label: Включить модерацию
+                type: switch
+                span: left
+                tab: Настройки
+                default: false
+
+create:
+    title: Create catalog
+    redirect: samvol/catalog/catalogs/update/:id
+    redirectClose: samvol/catalog/catalogs
+update:
+    title: Edit catalog
+    redirect: samvol/catalog/catalogs
+    redirectClose: samvol/catalog/catalogs

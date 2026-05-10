@@ -1,0 +1,12 @@
+name: Item
+modelClass: Samvol\Catalog\Models\Item
+defaultRedirect: samvol/catalog/items
+form: $/samvol/catalog/models/item/fields.yaml
+create:
+    title: Create item
+    redirect: samvol/catalog/items/update/:id
+    redirectClose: samvol/catalog/items
+update:
+    title: Edit item
+    redirect: samvol/catalog/items
+    redirectClose: samvol/catalog/items

@@ -1,0 +1,24 @@
+@use "mixins" as *;
+
+@include font(
+    "Gilroy-Code",
+    normal,
+    400,
+    "../fonts/Gilroy/Gilroy-Regular.woff2"
+);
+@include font(
+    "Gilroy-Code",
+    normal,
+    500,
+    "../fonts/Gilroy/Gilroy-Medium.woff2"
+);
+@include font(
+    "Gilroy-Code",
+    normal,
+    600,
+    "../fonts/Gilroy/Gilroy-Semibold.woff2"
+);
+
+@include font("Mont-Code", normal, 300, "../fonts/Mont/Mont-Light.woff2");
+
+@include font("Mont-Code", normal, 700, "../fonts/Mont/Mont-Bold.woff2");

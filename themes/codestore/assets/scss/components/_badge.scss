@@ -1,0 +1,36 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
+
+.badge {
+    display: inline-block;
+    font-size: fn.rem(14px);
+    font-weight: 500;
+    line-height: fn.rem(20px);
+    color: $text-light;
+    backdrop-filter: blur(8px);
+
+    &--lg {
+        padding: fn.rem(8px) fn.rem(16px);
+        border-radius: $radius-full;
+    }
+
+    &--brand {
+        background-color: $violet-300;
+    }
+
+    &--success {
+        background-color: $green-500;
+    }
+
+    &--error {
+        background-color: $red-500;
+    }
+
+    &--warning {
+        background-color: $yellow-500;
+    }
+
+    &--info {
+        background-color: $blue-500;
+    }
+}

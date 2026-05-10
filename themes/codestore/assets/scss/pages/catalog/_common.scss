@@ -1,0 +1,51 @@
+@use "../../abstracts/variables" as *;
+@use "../../abstracts/functions" as fn;
+
+.catalog {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+}
+
+.catalog__controls {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: $bg-box;
+
+    &-top,
+    &-middle {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: fn.rem(20px) fn.rem(32px);
+        border-bottom: 1px solid $border;
+    }
+
+    &-bottom {
+        padding: fn.rem(16px) fn.rem(32px);
+    }
+
+    &-count {
+        font-size: fn.rem(14px);
+        font-weight: 500;
+        line-height: fn.rem(16px);
+        color: $text-subtitle;
+
+        span {
+            font-weight: 600;
+            color: $text-body;
+            padding: fn.rem(6px) fn.rem(12px);
+            margin-left: fn.rem(8px);
+            background-color: $neutral-300;
+            border-radius: $radius-md;
+        }
+    }
+}
+
+.catalog-products {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(272px, 1fr));
+    gap: 16px;
+}

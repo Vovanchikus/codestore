@@ -1,0 +1,8 @@
+plugin:
+    name: "samvol.uicore::lang.plugin.name"
+    description: "samvol.uicore::lang.plugin.description"
+    author: Samvol
+permissions:
+    samvol.uicore.access_core:
+        tab: "samvol.uicore::lang.permissions.tab"
+        label: "samvol.uicore::lang.permissions.access_core"

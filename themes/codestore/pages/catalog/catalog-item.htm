@@ -1,0 +1,91 @@
+title = "Элемент каталога"
+url = "/:catalogCode/:categorySlug/:itemSlug"
+
+[catalogItem]
+catalogCode = "{{ :catalogCode }}"
+itemSlug = "{{ :itemSlug }}"
+==
+
+{% if item %}
+        {# Универсальные хлебные крошки для элемента #}
+        {% partial 'catalog/breadcrumbs' catalog=catalog category=item.category item=item %}
+
+        {# Заголовок элемента #}
+        <h1>{{ item.display_name }}</h1>
+
+        {# Категория элемента #}
+        {% if item.category %}
+                <h2>Категория: {{ item.category.name }}</h2>
+        {% endif %}
+
+        {% if item.data.message %}
+            Текст материала: {{ item.data.message|raw }}
+        {% endif %}
+    {# Все динамические поля по схеме fields #}
+
+    {# История обновлений через partial #}
+    {% partial 'catalog/update_history' history=item.getNormalizedHistory() %}
+
+    {# Скриншоты attachMany #}
+    {% if item.screenshot|length %}
+        <div class="screens">
+            <strong>Скриншоты:</strong>
+            {% for image in item.screenshot %}
+                <img src="{{ image.path }}" alt="{{ item.display_name }}">
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {# Архив attachOne #}
+    {% if item.archive %}
+        <a href="{{ item.archive.path }}"
+           id="download-btn"
+           class="btn btn-link"
+           download="{{ item.archive.file_name }}"
+           data-request="catalogItem::onDownload"
+           data-request-loading
+           data-request-success="if (data && data.link) { window.location = data.link; } else { window.location = this.href; }"
+           data-request-error="window.location = this.href">
+           Скачать файл
+        </a>
+        <div class="text-muted">Загрузок: {{ item.downloads_count|default(0) }}</div>
+    {% endif %}
+
+    <p class="text-muted">Просмотров: {{ item.views_count|default(0) }}</p>
+
+    {# Кнопка "Поднять материал" #}
+    <button
+        class="btn btn-primary"
+        data-request="catalogItem::onRaise"
+        data-request-data="item_id: {{ item.id }}">
+        Поднять материал
+    </button>
+
+    {# Ссылка обратно в каталог (общий список) #}
+    <p class="mt-3">
+        {% if item.category %}
+            <a href="{{ 'catalog/catalog-category'|page({
+                catalogCode: catalog.code,
+                categorySlug: item.category.slug
+            }) }}">
+                Вернуться к категории
+            </a>
+        {% else %}
+            <a href="{{ 'catalog/catalog'|page({ catalogCode: catalog.code }) }}">
+                Вернуться в каталог
+            </a>
+        {% endif %}
+    </p>
+
+{% else %}
+    <p>Элемент не найден.</p>
+{% endif %}
+
+{# Минимальные стили для истории #}
+<style>
+.update-history ul { padding-left: 1em; }
+.update-history li { margin-bottom: 0.5em; }
+.update-history strong { color: #333; }
+.mt-3 { margin-top: 1rem; }
+.mt-4 { margin-top: 1.5rem; }
+</style>

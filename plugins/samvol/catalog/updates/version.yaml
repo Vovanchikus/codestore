@@ -1,0 +1,21 @@
+1.0.1:
+    - First release of Catalog plugin
+    - create_catalogs_table.php
+    - create_catalog_fields_table.php
+    - create_catalog_categories_table.php
+    - create_catalog_items_table.php
+1.0.2:
+    - Allow deferred binding for fields and categories
+    - update_catalog_relations_nullable.php
+1.0.3:
+    - Add ability to enable/disable catalog fields
+    - add_is_enabled_to_fields.php
+1.0.4:
+    - Add SVG code option for category icons
+    - add_icon_svg_to_categories.php
+1.0.5:
+    - Add icon source selector for category icons
+    - add_icon_mode_to_categories.php
+1.0.6:
+    - Add downloads/views counters for sorting
+    - add_counters_to_items.php

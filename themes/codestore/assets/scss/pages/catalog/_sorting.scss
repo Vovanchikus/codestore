@@ -1,0 +1,75 @@
+@use "../../abstracts/variables" as *;
+@use "../../abstracts/functions" as fn;
+
+.catalog__sort {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &-title {
+        font-size: fn.rem(14px);
+        font-weight: 500;
+        color: $text-body;
+    }
+
+    &-menu {
+        display: flex;
+        justify-content: end;
+        align-items: center;
+        gap: 12px;
+
+        &-icon {
+            height: 20px;
+            margin-right: fn.rem(12px);
+        }
+
+        &-arrow {
+            height: 16px;
+            margin-left: fn.rem(4px);
+            transition: transform $transition;
+            transform: rotate(0deg);
+        }
+    }
+
+    &-link {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        font-size: fn.rem(14px);
+        line-height: fn.rem(20px);
+        font-weight: 500;
+        padding: fn.rem(8px) fn.rem(16px);
+        color: $text-subtitle;
+        border-radius: $radius-full;
+        transition: all $transition;
+        &:hover {
+            color: $text-body;
+            background-color: $neutral-300;
+        }
+        &:active {
+            color: $text-light;
+            background-color: $bg-brand;
+        }
+        &.active {
+            color: $text-light;
+            background-color: $bg-brand;
+        }
+    }
+}
+
+.sort__link.active.asc .sort__menu-arrow {
+    transform: rotate(0deg);
+} //* вверх */
+
+.sort__link.active.desc .sort__menu-arrow {
+    transform: rotate(180deg);
+} //* вниз */
+
+/* Ensure rotation works for catalog classes used in templates */
+.catalog__sort-link.active.asc .catalog__sort-menu-arrow {
+    transform: rotate(0deg);
+}
+
+.catalog__sort-link.active.desc .catalog__sort-menu-arrow {
+    transform: rotate(180deg);
+}

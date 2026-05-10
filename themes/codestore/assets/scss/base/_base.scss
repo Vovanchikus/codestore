@@ -1,0 +1,43 @@
+@use "../abstracts/variables" as *;
+
+html {
+    min-height: 100%;
+}
+
+body {
+    position: relative;
+    font-family: $fontFamily;
+    font-weight: normal;
+    font-size: 1rem;
+    line-height: 1rem;
+    color: $text-body;
+    background-color: $bg-body;
+    min-width: 320px;
+    min-height: 100%;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    transition: $transition;
+    &:hover {
+        color: $text-brand;
+    }
+}
+
+header {
+    grid-area: header;
+}
+
+aside {
+    grid-area: aside;
+    align-self: start;
+}
+
+main {
+    grid-area: main;
+}
+
+footer {
+    grid-area: footer;
+}

@@ -1,0 +1,37 @@
+title = "Каталог"
+url = "/:catalogCode"
+layout = "default"
+
+[catalogList]
+catalogCode = "{{ :catalogCode }}"
+[catalogsList]
+==
+{# Универсальные хлебные крошки (catalog only) #}
+
+<div class="catalog">
+
+  <div class="catalog__controls box--light">
+
+    <div class="catalog__controls-top">
+      {% partial 'catalog/breadcrumbs' catalog=catalog %}
+      <div class="catalog__controls-count">Всего:<span>{{ items.total() }}</span></div>
+    </div>{# catalog__controls-top #}
+
+    <div class="catalog__controls-middle">
+      {% partial 'catalog/categories' %}
+    </div>{# catalog-controls-middle #}
+
+    <div class="catalog__controls-bottom">
+      {% partial "catalog/sorting" %}
+    </div>{# catalog__controls-bottom #}
+
+  </div>{# catalog__controls box--light #}
+
+  <div class="catalog-products">
+    {% partial 'catalog/product-card' %}
+  </div>
+
+  {% partial "pagination" %}
+
+</div>{# catalog #}
+

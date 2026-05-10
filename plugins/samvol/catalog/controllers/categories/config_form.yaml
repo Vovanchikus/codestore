@@ -1,0 +1,12 @@
+name: Category
+modelClass: Samvol\Catalog\Models\Category
+defaultRedirect: samvol/catalog/categories
+form: $/samvol/catalog/models/category/fields.yaml
+create:
+    title: Create category
+    redirect: samvol/catalog/categories/update/:id
+    redirectClose: samvol/catalog/categories
+update:
+    title: Edit category
+    redirect: samvol/catalog/categories
+    redirectClose: samvol/catalog/categories

@@ -1,0 +1,56 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
+
+.breadcrumbs {
+    display: flex;
+    justify-content: start;
+    align-items: flex-end;
+}
+
+.breadcrumb {
+    display: flex;
+    justify-content: start;
+    align-items: baseline;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-body);
+
+    &-arrow {
+        color: $text-title;
+        margin: 0 fn.rem(8px);
+        transform: rotate(-90deg);
+    }
+
+    &.link::before {
+        width: calc(100% - 22px);
+    }
+
+    &.breadcrumb:nth-child(1) {
+        color: $text-title;
+    }
+
+    &.breadcrumb:nth-child(n + 2) a:hover {
+        color: var(--text-brand);
+    }
+
+    &.breadcrumb:nth-child(n + 2)::after {
+        content: "/";
+        display: block;
+        font-size: 12px;
+        font-weight: normal;
+        margin: 0 8px;
+        color: var(--text-subtitle);
+    }
+
+    &.breadcrumb:last-child {
+        font-size: 18px;
+        line-height: 20px;
+        font-weight: 500;
+        color: var(--text-title);
+    }
+
+    &.breadcrumb:last-child::after {
+        display: none;
+        visibility: hidden;
+    }
+}
