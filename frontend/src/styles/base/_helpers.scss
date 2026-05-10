@@ -1,0 +1,22 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
+
+// .box {
+//   background-color: $bg-box;
+//   box-shadow: $box-light-shadow;
+//   border-radius: $radius-lg;
+// }
+
+// .dropdownContent {
+//   padding: 4px;
+//   background-color: $grey-bg;
+//   border-radius: $radius-nm;
+//   backdrop-filter: blur(16px);
+// }
+
+// .logo {
+//   font-size: fn.rem(24px);
+//   font-weight: 600;
+//   line-height: 1;
+//   color: $text-primary;
+// }

@@ -1,0 +1,32 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as fn;
+
+.container {
+  position: relative;
+  display: grid;
+  grid-template-areas:
+    "aside header"
+    "aside main"
+    "aside footer";
+  grid-template-columns: 100px 10fr;
+  grid-template-rows: 100px auto 64px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  grid-area: header;
+}
+
+aside {
+  grid-area: aside;
+}
+
+main {
+  grid-area: main;
+}
+
+footer {
+  grid-area: footer;
+}

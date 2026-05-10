@@ -1,0 +1,26 @@
+@use "../abstracts/variables" as *;
+
+html {
+  min-height: 100%;
+}
+
+body {
+  position: relative;
+  font-family: var(--font-onest);
+  font-weight: 300;
+  font-size: 1rem;
+  line-height: 1rem;
+  color: $text-muted;
+  background-color: $bg-body;
+  min-width: 320px;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  transition: $transition;
+  &:hover {
+    color: $text-primary;
+  }
+}
